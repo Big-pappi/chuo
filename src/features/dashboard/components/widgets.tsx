@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {colors} from '@/theme';
 import {SurfaceCard, SectionHeader, IconTile, Pill} from '@/components/ui/Cards';
@@ -22,7 +23,7 @@ import {
 export function HeroCard({onProfile}: {onProfile?: () => void}) {
   return (
     <Pressable onPress={onProfile}>
-      <SurfaceCard style={styles.heroCard}>
+      <LinearGradient colors={['#06245E', '#0B4FD8', '#3A82F6']} start={{x: 0, y: 0}} end={{x: 1, y: 1}} style={styles.heroCard}>
         {/* Header row */}
         <View style={styles.heroRow}>
           <View style={styles.heroBadge}>
@@ -68,7 +69,7 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
             </View>
           </Pressable>
         </View>
-      </SurfaceCard>
+      </LinearGradient>
     </Pressable>
   );
 }
@@ -259,9 +260,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     marginBottom: 16,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.line,
+    backgroundColor: colors.navy,
+    overflow: 'hidden',
     shadowColor: colors.navy,
     shadowOpacity: 0.06,
     shadowRadius: 12,
@@ -278,21 +278,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: colors.blueSoft,
+    backgroundColor: 'rgba(255,255,255,0.16)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
   },
   heroBadgeText: {
-    color: colors.blue,
+    color: colors.white,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   heroBadgeGreen: {
-    backgroundColor: colors.greenSoft,
+    backgroundColor: 'rgba(255,255,255,0.16)',
   },
   heroBadgeTextGreen: {
-    color: colors.green,
+    color: colors.white,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   gpaLabel: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.72)',
     fontSize: 10,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -316,8 +316,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gpaValue: {
-    color: colors.ink,
-    fontSize: 36,
+    color: colors.white,
+    fontSize: 42,
     fontWeight: '800',
     lineHeight: 38,
   },
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   standingBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.greenSoft,
+    backgroundColor: 'rgba(255,255,255,0.14)',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
@@ -355,15 +355,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: colors.panel,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 14,
     padding: 10,
   },
   infoText: {
     flex: 1,
   },
   infoLabel: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.68)',
     fontSize: 9,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -371,13 +371,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   infoValue: {
-    color: colors.ink,
+    color: colors.white,
     fontSize: 11,
     fontWeight: '700',
     marginBottom: 1,
   },
   infoMeta: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.72)',
     fontSize: 9,
     fontWeight: '500',
   },

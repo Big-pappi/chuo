@@ -175,7 +175,7 @@ const DashboardScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1},
+  container: {flex: 1, backgroundColor: colors.bg},
   fixedHeader: {
     position: 'absolute',
     top: 0,
