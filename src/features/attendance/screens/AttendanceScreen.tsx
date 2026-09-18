@@ -202,8 +202,12 @@ const AttendanceScreen: React.FC = () => {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          {/* Period filter */}
-          <View style={styles.periodFilter}>
+          {/* Period filter - Horizontal scrolling like announcements */}
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.periodScroll}
+            contentContainerStyle={styles.periodContent}>
             {(['semester', 'month', 'week'] as const).map(period => {
               const isActive = selectedPeriod === period;
               return (
@@ -217,7 +221,7 @@ const AttendanceScreen: React.FC = () => {
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           {/* Course attendance list */}
           <View style={styles.content}>
@@ -284,31 +288,32 @@ const styles = StyleSheet.create({
   scrollContent: {flex: 1},
   scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
-  periodFilter: {
-    flexDirection: 'row',
+  periodScroll: {
+    marginBottom: 20,
+  },
+  periodContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  periodTab: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 6,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  periodTab: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
   activePeriodTab: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.blueSoft,
+    borderColor: colors.blue,
   },
   periodTabText: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '600',
     color: colors.slate,
   },
   activePeriodTabText: {
-    color: colors.white,
+    color: colors.blue,
   },
   content: {marginBottom: 16},
   attendanceCard: {

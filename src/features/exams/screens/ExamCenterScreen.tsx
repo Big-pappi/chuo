@@ -351,11 +351,17 @@ const ExamCenterScreen: React.FC = () => {
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
 
         {/* Tab navigation */}
-        <View style={styles.tabContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabScroll}
+          contentContainerStyle={styles.tabContent}>
           {(['schedule', 'results', 'instructions'] as const).map(tab => {
             const isActive = activeTab === tab;
             const icon = tab === 'schedule' ? 'calendar-clock' : 
                          tab === 'results' ? 'chart-line' : 'information';
+            const count = tab === 'schedule' ? exams.filter(e => e.status === 'scheduled').length :
+                         tab === 'results' ? examResults.length : 0;
             return (
               <Pressable
                 key={tab}
@@ -363,16 +369,23 @@ const ExamCenterScreen: React.FC = () => {
                 onPress={() => setActiveTab(tab)}>
                 <MaterialCommunityIcons 
                   name={icon as any} 
-                  size={22} 
+                  size={18} 
                   color={isActive ? colors.blue : colors.slate} 
                 />
                 <Text style={[styles.tabText, isActive && styles.activeTabText]}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </Text>
+                {count > 0 && (
+                  <View style={[styles.tabBadge, isActive && styles.activeTabBadge]}>
+                    <Text style={[styles.tabBadgeText, isActive && styles.activeTabBadgeText]}>
+                      {count}
+                    </Text>
+                  </View>
+                )}
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* Content based on active tab */}
         <View style={styles.content}>
@@ -544,34 +557,54 @@ const styles = StyleSheet.create({
   scrollContent: {flex: 1},
   scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
-  /* Tab Container - Cool Design */
-  tabContainer: {
+  /* Tab Container - Horizontal scrolling like announcements */
+  tabScroll: {
+    marginBottom: 20,
+  },
+  tabContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  tab: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 6,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
   activeTab: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.blueSoft,
+    borderColor: colors.blue,
   },
   tabText: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '600',
     color: colors.slate,
   },
   activeTabText: {
+    color: colors.blue,
+  },
+  tabBadge: {
+    backgroundColor: colors.panel,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    minWidth: 16,
+    alignItems: 'center',
+  },
+  activeTabBadge: {
+    backgroundColor: colors.blue,
+  },
+  tabBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.slate,
+  },
+  activeTabBadgeText: {
     color: colors.white,
   },
   content: {marginBottom: 16},

@@ -213,10 +213,18 @@ const AssignmentsScreen: React.FC = () => {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          {/* View toggle */}
-          <View style={styles.toggleContainer}>
+          {/* View toggle - Horizontal scrolling like announcements */}
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.toggleScroll}
+            contentContainerStyle={styles.toggleContent}>
             {(['all', 'pending', 'submitted', 'graded'] as const).map(tab => {
               const active = activeTab === tab;
+              const count = tab === 'all' ? assignments.length :
+                           tab === 'pending' ? assignments.filter(a => a.status === 'pending').length :
+                           tab === 'submitted' ? assignments.filter(a => a.status === 'submitted').length :
+                           assignments.filter(a => a.status === 'graded').length;
               return (
                 <Pressable
                   key={tab}
@@ -225,10 +233,17 @@ const AssignmentsScreen: React.FC = () => {
                   <Text style={[styles.toggleText, active && styles.activeToggleText]}>
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
                   </Text>
+                  {count > 0 && (
+                    <View style={[styles.toggleBadge, active && styles.activeToggleBadge]}>
+                      <Text style={[styles.toggleBadgeText, active && styles.activeToggleBadgeText]}>
+                        {count}
+                      </Text>
+                    </View>
+                  )}
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           {/* Assignments list */}
           {filteredAssignments.length === 0 ? (
@@ -301,27 +316,50 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
 
-  /* Toggle - Cool Design */
-  toggleContainer: {
+  /* Toggle - Horizontal scrolling like announcements */
+  toggleScroll: {
+    marginBottom: 20,
+  },
+  toggleContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  toggleButton: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 6,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  toggleButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
+  activeToggle: {
+    backgroundColor: colors.blueSoft,
+    borderColor: colors.blue,
+  },
+  toggleText: {fontSize: 12, fontWeight: '600', color: colors.slate},
+  activeToggleText: {color: colors.blue},
+  toggleBadge: {
+    backgroundColor: colors.panel,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    minWidth: 16,
     alignItems: 'center',
   },
-  activeToggle: {
+  activeToggleBadge: {
     backgroundColor: colors.blue,
   },
-  toggleText: {fontSize: 13, fontWeight: '700', color: colors.slate},
-  activeToggleText: {color: colors.white},
+  toggleBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.slate,
+  },
+  activeToggleBadgeText: {
+    color: colors.white,
+  },
 
   /* Assignment card */
   assignmentCard: {marginBottom: 16},

@@ -370,13 +370,20 @@ const LibraryScreen: React.FC = () => {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          {/* Tab navigation */}
-          <View style={styles.tabContainer}>
+          {/* Tab navigation - Horizontal scrolling like announcements */}
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabScroll}
+            contentContainerStyle={styles.tabContent}>
             {(['borrowed', 'digital', 'history', 'search'] as const).map(tab => {
               const isActive = activeTab === tab;
               const icon = tab === 'borrowed' ? 'book' : 
                            tab === 'digital' ? 'cloud' : 
                            tab === 'history' ? 'clock-time-three' : 'magnify';
+              const count = tab === 'borrowed' ? borrowedBooks.length :
+                           tab === 'digital' ? digitalResources.length :
+                           tab === 'history' ? readingHistory.length : 0;
               return (
                 <Pressable
                   key={tab}
@@ -384,16 +391,23 @@ const LibraryScreen: React.FC = () => {
                   onPress={() => setActiveTab(tab)}>
                   <MaterialCommunityIcons 
                     name={icon as any} 
-                    size={22} 
+                    size={18} 
                     color={isActive ? colors.blue : colors.slate} 
                   />
                   <Text style={[styles.tabText, isActive && styles.activeTabText]}>
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
                   </Text>
+                  {count > 0 && (
+                    <View style={[styles.tabBadge, isActive && styles.activeTabBadge]}>
+                      <Text style={[styles.tabBadgeText, isActive && styles.activeTabBadgeText]}>
+                        {count}
+                      </Text>
+                    </View>
+                  )}
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           {/* Content based on active tab */}
           <View style={styles.content}>
@@ -512,34 +526,54 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
 
-  /* Tab Container - Cool Design */
-  tabContainer: {
+  /* Tab Container - Horizontal scrolling like announcements */
+  tabScroll: {
+    marginBottom: 20,
+  },
+  tabContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  tab: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 6,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
   activeTab: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.blueSoft,
+    borderColor: colors.blue,
   },
   tabText: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '600',
     color: colors.slate,
   },
   activeTabText: {
+    color: colors.blue,
+  },
+  tabBadge: {
+    backgroundColor: colors.panel,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    minWidth: 16,
+    alignItems: 'center',
+  },
+  activeTabBadge: {
+    backgroundColor: colors.blue,
+  },
+  tabBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.slate,
+  },
+  activeTabBadgeText: {
     color: colors.white,
   },
   content: {marginBottom: 16},
