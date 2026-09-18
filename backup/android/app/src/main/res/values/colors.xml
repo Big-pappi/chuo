@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Chuo Brand Colors -->
+    <color name="primary_color">#0B2A6B</color>
+    <color name="primary_dark_color">#0A1E4D</color>
+    <color name="primary_light_color">#1D4ED8</color>
+    <color name="secondary_color">#3B82F6</color>
+    <color name="accent_color">#10B981</color>
+    
+    <!-- Neutral Colors -->
+    <color name="ink_color">#0F172A</color>
+    <color name="slate_color">#475569</color>
+    <color name="muted_color">#94A3B8</color>
+    <color name="line_color">#E2E8F0</color>
+    <color name="panel_color">#F1F5F9</color>
+    <color name="panel2_color">#EEF4FF</color>
+    
+    <!-- Status Colors -->
+    <color name="success_color">#10B981</color>
+    <color name="warning_color">#F59E0B</color>
+    <color name="error_color">#EF4444</color>
+    <color name="info_color">#3B82F6</color>
+    
+    <!-- Base Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+</resources>

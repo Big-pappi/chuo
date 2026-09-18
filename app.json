@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "ChuoApp",
+    "slug": "chuo-app",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "icon": {
+      "light": "./assets/chuo-app-icon.png",
+      "dark": "./assets/chuo-app-icon.png"
+    },
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/chuo-app-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#08285f"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chuoapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/chuo-app-icon.png",
+        "backgroundColor": "#08285f"
+      },
+      "package": "com.chuoapp"
+    },
+    "web": {
+      "favicon": "./assets/chuo-app-icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8ed94280-2263-4d34-9880-523d2d345a53"
+      }
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-status-bar"
+    ]
+  }
+}

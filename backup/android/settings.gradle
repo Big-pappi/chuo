@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "ChuoApp"
+
+include(":app")
+
+includeBuild("../node_modules/@react-native/gradle-plugin")
