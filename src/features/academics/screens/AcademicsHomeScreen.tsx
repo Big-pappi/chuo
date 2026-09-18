@@ -6,8 +6,6 @@ import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {resultsSemesters, mockStudent} from '@/data/mock';
 import {
-  ResultsHero,
-  ResultsStats,
   SemesterTabs,
   CourseResults,
   PerformanceOverview,
@@ -42,8 +40,6 @@ const AcademicsHomeScreen: React.FC = () => {
           </Pressable>
         </View>
 
-        <ResultsHero />
-        <ResultsStats />
         <SemesterTabs
           semesters={resultsSemesters}
           activeId={activeSemester}

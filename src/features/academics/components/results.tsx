@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet, ImageBackground, Pressable, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import Svg, {Circle} from 'react-native-svg';
 import {colors} from '@/theme';
 import {SurfaceCard, IconTile} from '@/components/ui/Cards';
 import {
@@ -11,95 +10,6 @@ import {
   courseResults,
   gradeGrade,
 } from '@/data/mock';
-
-/* ------------------------------------------------------------------ */
-/* Results hero card                                                  */
-/* ------------------------------------------------------------------ */
-export function ResultsHero() {
-  return (
-    <ImageBackground
-      source={{uri: mockUniversity.image}}
-      style={styles.hero}
-      imageStyle={styles.heroImage}
-      resizeMode="cover">
-      <View style={styles.heroOverlay} />
-
-      {/* University identity */}
-      <View style={styles.heroTopRow}>
-        {/* Crest badge — swap the icon for the university logo image when provided */}
-        <View style={styles.heroLogo}>
-          <MaterialCommunityIcons name="school" size={20} color={colors.blue} />
-        </View>
-        <View style={styles.heroUniRow}>
-          <Text style={styles.heroUni} numberOfLines={1}>
-            {mockUniversity.name}
-          </Text>
-          {mockUniversity.verified ? (
-            <MaterialCommunityIcons name="check-decagram" size={14} color="#6EE7B7" />
-          ) : null}
-        </View>
-      </View>
-
-      <View style={styles.heroBody}>
-        <View style={styles.heroLeft}>
-          <Text style={styles.heroSub}>
-            {mockStudent.universityShort}  •  {mockStudent.campus}
-          </Text>
-          <Text style={styles.heroProgram} numberOfLines={2}>
-            {mockStudent.programme}
-          </Text>
-          <Text style={styles.heroMeta}>
-            Year {mockStudent.year}  •  Semester {mockStudent.semester} ({mockStudent.academicYear})
-          </Text>
-          <View style={styles.standingPill}>
-            <View style={styles.standingDot} />
-            <Text style={styles.standingText}>{mockStudent.standing}</Text>
-          </View>
-        </View>
-
-        <View style={styles.heroDivider} />
-
-        <View style={styles.heroRight}>
-          <Text style={styles.heroLabel}>CGPA (Current)</Text>
-          <View style={styles.cgpaRow}>
-            <Text style={styles.cgpaValue}>{resultsSummary.cgpa.toFixed(2)}</Text>
-            <Text style={styles.cgpaScale}>/ {resultsSummary.scale.toFixed(2)}</Text>
-          </View>
-          <Text style={styles.heroLabel}>Class</Text>
-          <Text style={styles.classText}>{resultsSummary.class}</Text>
-        </View>
-      </View>
-    </ImageBackground>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Stats row                                                          */
-/* ------------------------------------------------------------------ */
-const STATS = [
-  {label: 'Courses Taken', value: String(resultsSummary.coursesTaken), icon: 'clipboard-text', color: colors.blue, soft: colors.blueSoft},
-  {label: 'A Grades', value: String(resultsSummary.aGrades), icon: 'star-circle', color: colors.green, soft: colors.greenSoft},
-  {label: 'B Grades', value: String(resultsSummary.bGrades), icon: 'medal', color: colors.orange, soft: colors.orangeSoft},
-  {label: 'Pass Rate', value: resultsSummary.passRate, icon: 'chart-line', color: colors.sky, soft: colors.blueSoft},
-];
-
-export function ResultsStats() {
-  return (
-    <View style={styles.statsGrid}>
-      {STATS.map(s => (
-        <View key={s.label} style={styles.statCard}>
-          <IconTile icon={s.icon} color={s.color} soft={s.soft} size={44} iconSize={22} />
-          <View style={styles.statText}>
-            <Text style={styles.statValue}>{s.value}</Text>
-            <Text style={styles.statLabel} numberOfLines={1}>
-              {s.label}
-            </Text>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Semester selector                                                  */
@@ -333,68 +243,7 @@ export function PerformanceOverview() {
 
 const styles = StyleSheet.create({
   block: {marginBottom: 16},
-
-  /* Hero */
-  hero: {borderRadius: 22, padding: 18, marginBottom: 16, overflow: 'hidden'},
-  heroImage: {borderRadius: 22},
-  heroOverlay: {...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(11,42,107,0.62)'},
-  heroTopRow: {flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14},
-  heroLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.55)',
-  },
-  heroUniRow: {flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6},
-  heroUni: {flexShrink: 1, color: colors.white, fontSize: 15, fontWeight: '800'},
-  heroBody: {flexDirection: 'row', alignItems: 'stretch'},
-  heroLeft: {flex: 1, paddingRight: 14},
-  heroSub: {color: 'rgba(255,255,255,0.8)', fontSize: 11, fontWeight: '600', marginBottom: 6},
-  heroProgram: {color: colors.white, fontSize: 17, fontWeight: '800', lineHeight: 22},
-  heroMeta: {color: 'rgba(255,255,255,0.85)', fontSize: 11, fontWeight: '600', marginTop: 3, marginBottom: 10},
-  standingPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.16)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 999,
-  },
-  standingDot: {width: 7, height: 7, borderRadius: 4, backgroundColor: '#6EE7B7'},
-  standingText: {color: colors.white, fontSize: 11, fontWeight: '700'},
-  heroDivider: {width: 1, alignSelf: 'stretch', backgroundColor: 'rgba(255,255,255,0.22)'},
-  heroRight: {width: 118, paddingLeft: 14, justifyContent: 'center'},
-  heroLabel: {color: 'rgba(255,255,255,0.8)', fontSize: 10, fontWeight: '600', marginBottom: 3},
-  cgpaRow: {flexDirection: 'row', alignItems: 'flex-end', gap: 4, marginBottom: 10},
-  cgpaValue: {color: colors.white, fontSize: 28, fontWeight: '800', lineHeight: 30},
-  cgpaScale: {color: 'rgba(255,255,255,0.8)', fontSize: 12, fontWeight: '600', marginBottom: 3},
-  classText: {color: '#6EE7B7', fontSize: 14, fontWeight: '800'},
-
-  /* Stats */
-  statsGrid: {flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16},
-  statCard: {
-    width: '47.8%',
-    flexGrow: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-    borderRadius: 16,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  statText: {flex: 1},
-  statValue: {fontSize: 22, fontWeight: '800', color: colors.ink, lineHeight: 26},
-  statLabel: {fontSize: 12, fontWeight: '600', color: colors.slate, marginTop: 2},
+  sectionBlock: {marginBottom: 20},
 
   /* Semester tabs */
   tabsRow: {gap: 10, paddingVertical: 4, paddingRight: 8, marginBottom: 16},
