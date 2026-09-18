@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
@@ -164,28 +165,38 @@ const ResultsScreen: React.FC = () => {
         </View>
 
         {/* Summary card */}
-        <SurfaceCard style={styles.summaryCard}>
-          <View style={styles.summaryRow}>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>CGPA</Text>
-              <Text style={styles.summaryValue}>{summary.cgpa.toFixed(2)}</Text>
-              <Text style={styles.summaryMeta}>/ 5.0</Text>
+        <View style={styles.summaryCardWrapper}>
+          <LinearGradient
+            colors={['#06245E', '#0B4FD8', '#3A82F6']}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            style={styles.summaryCard}>
+            <View style={styles.summaryHeader}>
+              <MaterialCommunityIcons name="school" size={24} color="rgba(255,255,255,0.9)" />
+              <Text style={styles.summaryTitle}>Academic Summary</Text>
             </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Credits</Text>
-              <Text style={styles.summaryValue}>{summary.credits}</Text>
+            <View style={styles.summaryRow}>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>CGPA</Text>
+                <Text style={styles.summaryValue}>{summary.cgpa.toFixed(2)}</Text>
+                <Text style={styles.summaryMeta}>/ 5.0</Text>
+              </View>
+              <View style={styles.summaryDivider} />
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Credits</Text>
+                <Text style={styles.summaryValue}>{summary.credits}</Text>
+              </View>
+              <View style={styles.summaryDivider} />
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Best GPA</Text>
+                <Text style={styles.summaryValue}>{summary.best.toFixed(2)}</Text>
+              </View>
             </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Best GPA</Text>
-              <Text style={styles.summaryValue}>{summary.best.toFixed(2)}</Text>
+            <View style={styles.standingBadge}>
+              <Text style={styles.standingText}>{standing(summary.cgpa)}</Text>
             </View>
-          </View>
-          <View style={styles.standingBadge}>
-            <Text style={styles.standingText}>{standing(summary.cgpa)}</Text>
-          </View>
-        </SurfaceCard>
+          </LinearGradient>
+        </View>
 
         {/* Results list */}
         {results.length === 0 ? (
@@ -248,8 +259,28 @@ const styles = StyleSheet.create({
   scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
   /* Summary Card */
-  summaryCard: {
+  summaryCardWrapper: {
     marginBottom: 16,
+    shadowColor: colors.navy,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 3,
+  },
+  summaryCard: {
+    borderRadius: 20,
+    padding: 16,
+  },
+  summaryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 14,
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: 'rgba(255,255,255,0.95)',
   },
   summaryRow: {
     flexDirection: 'row',
@@ -263,27 +294,27 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.7)',
     marginBottom: 4,
   },
   summaryValue: {
     fontSize: 16,
     fontWeight: '800',
-    color: colors.ink,
+    color: colors.white,
     marginBottom: 2,
   },
   summaryMeta: {
     fontSize: 11,
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.8)',
   },
   summaryDivider: {
     width: 1,
     height: 30,
-    backgroundColor: colors.line,
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
   standingBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.greenSoft,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
@@ -291,7 +322,7 @@ const styles = StyleSheet.create({
   standingText: {
     fontSize: 11,
     fontWeight: '700',
-    color: colors.green,
+    color: '#6EE7B7',
   },
 
   /* Toggle */
