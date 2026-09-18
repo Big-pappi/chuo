@@ -106,10 +106,12 @@ const DashboardScreen: React.FC = () => {
     <Screen>
       <View style={styles.container}>
         <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
-          <DashboardHeader
-            onNotifications={() => navigation.navigate('Notifications')}
-            onProfile={() => navigation.navigate('Profile')}
-          />
+          <View style={styles.headerContent}>
+            <DashboardHeader
+              onNotifications={() => navigation.navigate('Notifications')}
+              onProfile={() => navigation.navigate('Profile')}
+            />
+          </View>
         </View>
 
         <View style={styles.scrollContent}>
@@ -182,7 +184,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: colors.bg,
   },
-  scrollContent: {paddingHorizontal: 18, paddingTop: 104, paddingBottom: 20},
+  headerContent: {
+    paddingHorizontal: 16,
+  },
+  scrollContent: {paddingHorizontal: 16, paddingTop: 104, paddingBottom: 20},
   greetingRow: {flexDirection: 'row', alignItems: 'center', marginBottom: 14},
   greeting: {fontSize: 25, fontWeight: '900', color: colors.navy, marginBottom: 4, letterSpacing: -0.5},
   subGreeting: {fontSize: 13, fontWeight: '600', color: colors.slate},

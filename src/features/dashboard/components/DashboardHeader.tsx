@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 18,
+    paddingHorizontal: 16,
   },
   headerCenter: {
     flex: 1,

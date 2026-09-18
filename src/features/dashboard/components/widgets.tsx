@@ -23,14 +23,51 @@ import {
 export function HeroCard({onProfile}: {onProfile?: () => void}) {
   return (
     <View style={styles.summaryBlock}>
-      <View style={styles.summaryHeader}>
-        <View><Text style={styles.summaryEyebrow}>AT A GLANCE</Text><Text style={styles.summaryTitle}>Academic overview</Text></View>
-        <Pressable onPress={onProfile} style={styles.summaryAction}><MaterialCommunityIcons name="arrow-top-right" size={16} color={colors.blue} /></Pressable>
-      </View>
-      <View style={styles.metricsRow}>
-        <View style={[styles.metric, styles.metricPrimary]}><Text style={[styles.metricLabel, styles.metricPrimaryLabel]}>Current GPA</Text><Text style={styles.metricValue}>{mockStudent.gpa.toFixed(2)}</Text><Text style={[styles.metricMeta, styles.metricPrimaryMeta]}>+{mockStudent.gpaDelta.toFixed(2)} this term</Text></View>
-        <View style={styles.metric}><Text style={styles.metricLabel}>Standing</Text><Text style={styles.metricValueSmall}>{mockStudent.standing}</Text><Text style={styles.metricMeta}>Academic status</Text></View>
-        <View style={styles.metric}><Text style={styles.metricLabel}>Year / Sem</Text><Text style={styles.metricValueSmall}>Y{mockStudent.year} / S{mockStudent.semester}</Text><Text style={styles.metricMeta}>Programme</Text></View>
+      <View style={styles.heroCard}>
+        <View style={styles.heroContent}>
+          <View style={styles.gpaSection}>
+            <View style={styles.gpaIconContainer}>
+              <MaterialCommunityIcons name="school" size={32} color={colors.white} />
+            </View>
+            <View style={styles.gpaTextContainer}>
+              <Text style={styles.gpaLabel}>Current GPA</Text>
+              <Text style={styles.gpaValue}>{mockStudent.gpa.toFixed(2)}</Text>
+              <View style={styles.gpaTrend}>
+                <MaterialCommunityIcons name="trending-up" size={14} color={colors.green} />
+                <Text style={styles.gpaTrendText}>+{mockStudent.gpaDelta.toFixed(2)}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.standingContainer}>
+            <Text style={styles.standingLabel}>Standing</Text>
+            <Text style={styles.standingValue}>{mockStudent.standing}</Text>
+          </View>
+        </View>
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="book-open-variant" size={20} color={colors.blue} />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>Year</Text>
+              <Text style={styles.statValue}>Y{mockStudent.year}</Text>
+            </View>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="calendar-blank" size={20} color={colors.purple} />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>Semester</Text>
+              <Text style={styles.statValue}>S{mockStudent.semester}</Text>
+            </View>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="credit-card" size={20} color={colors.orange} />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>Credits</Text>
+              <Text style={styles.statValue}>48</Text>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -117,10 +154,10 @@ export function QuickAccess({
             key={tile.id}
             style={styles.qaItem}
             onPress={() => onTilePress?.(tile.id)}>
-            <View style={[styles.qaTile, {backgroundColor: tile.soft}]}>
-              <MaterialCommunityIcons name={tile.icon as any} size={28} color={tile.color} />
+            <View style={[styles.qaTile, {backgroundColor: tile.color}]}>
+              <MaterialCommunityIcons name={tile.icon as any} size={26} color={colors.white} />
             </View>
-            <Text style={styles.qaLabel} numberOfLines={2}>
+            <Text style={styles.qaLabel} numberOfLines={1}>
               {tile.label}
             </Text>
           </Pressable>
@@ -273,19 +310,108 @@ const styles = StyleSheet.create({
   sectionBlock: {marginBottom: 20},
 
   summaryBlock: {marginBottom: 18},
-  summaryHeader: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10},
-  summaryEyebrow: {fontSize: 10, fontWeight: '800', letterSpacing: 1.2, color: colors.blue, marginBottom: 2},
-  summaryTitle: {fontSize: 18, fontWeight: '900', color: colors.ink},
-  summaryAction: {width: 34, height: 34, borderRadius: 12, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center'},
-  metricsRow: {flexDirection: 'row', gap: 8},
-  metric: {flex: 1, minHeight: 102, borderRadius: 16, padding: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line},
-  metricPrimary: {backgroundColor: colors.blue, borderColor: colors.blue},
-  metricPrimaryLabel: {color: 'rgba(255,255,255,0.76)'},
-  metricPrimaryMeta: {color: 'rgba(255,255,255,0.78)'},
-  metricLabel: {fontSize: 10, fontWeight: '700', color: colors.slate, marginBottom: 9},
-  metricValue: {fontSize: 31, lineHeight: 34, fontWeight: '900', color: colors.white},
-  metricValueSmall: {fontSize: 15, lineHeight: 20, fontWeight: '900', color: colors.ink, marginTop: 7},
-  metricMeta: {fontSize: 10, fontWeight: '600', color: colors.slate, marginTop: 5},
+  heroCard: {
+    borderRadius: 24,
+    padding: 20,
+    backgroundColor: colors.blue,
+    shadowColor: colors.navy,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 3,
+  },
+  heroContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  gpaSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  gpaIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gpaTextContainer: {
+    gap: 4,
+  },
+  gpaLabel: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 11,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  gpaValue: {
+    color: colors.white,
+    fontSize: 36,
+    fontWeight: '800',
+    lineHeight: 38,
+  },
+  gpaTrend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  gpaTrendText: {
+    color: colors.green,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  standingContainer: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  standingLabel: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  standingValue: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    padding: 12,
+  },
+  statItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  statText: {
+    gap: 2,
+  },
+  statLabel: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  statValue: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
 
   /* Hero Card - Clean Style */
   heroCard: {
@@ -419,31 +545,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    rowGap: 16,
+    rowGap: 20,
   },
   qaItem: {
     width: '23%',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   qaTile: {
-    width: 64,
-    height: 64,
-    borderRadius: 18,
+    width: 72,
+    height: 72,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: colors.navy,
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 4},
-    elevation: 2,
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 6},
+    elevation: 4,
   },
   qaLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 14,
+    lineHeight: 16,
   },
 
   /* Clean List Styles */

@@ -55,6 +55,35 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
         </View>
       </View>
 
+      {/* Stats row */}
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
+          <MaterialCommunityIcons name="book-open-variant" size={20} color={colors.blue} />
+          <View style={styles.statText}>
+            <Text style={styles.statLabel}>Year</Text>
+            <Text style={styles.statValue}>Y{mockStudent.year}</Text>
+          </View>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <MaterialCommunityIcons name="trophy" size={20} color={colors.green} />
+          <View style={styles.statText}>
+            <Text style={styles.statLabel}>GPA</Text>
+            <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
+          </View>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <MaterialCommunityIcons name="school" size={20} color={colors.purple} />
+          <View style={styles.statText}>
+            <Text style={styles.statLabel}>Sem</Text>
+            <Text style={styles.statValue}>S{mockStudent.semester}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.divider} />
+
       {/* University row */}
       <View style={styles.uniRow}>
         <View style={styles.uniLogo}>
@@ -67,48 +96,11 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
           <MaterialCommunityIcons name="check-decagram" size={16} color={colors.blue} />
         ) : null}
       </View>
-
-      <View style={styles.divider} />
-
-      {/* Contact / status row */}
-      <View style={styles.metaRow}>
-        <MetaCell icon="email-outline" label="Email" value={mockStudent.email} />
-        <View style={styles.metaDivider} />
-        <MetaCell icon="phone-outline" label="Phone" value={mockStudent.phone} />
-        <View style={styles.metaDivider} />
-        <MetaCell
-          icon="account-outline"
-          label="Campus"
-          value={mockStudent.campus}
-        />
-      </View>
     </SurfaceCard>
   );
 }
 
-function MetaCell({
-  icon,
-  label,
-  value,
-  valueColor,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  valueColor?: string;
-}) {
-  return (
-    <View style={styles.metaCell}>
-      <MaterialCommunityIcons name={icon as any} size={18} color={colors.blue} />
-      <View style={styles.metaText}>
-        <Text style={styles.metaLabel}>{label}</Text>
-        <Text style={[styles.metaValue, valueColor && {color: valueColor}]} numberOfLines={1}>
-          {value}
-        </Text>
-      </View>
-    </View>
-  );
-}
+
 
 /* ------------------------------------------------------------------ */
 /* Quick access row                                                    */
@@ -299,7 +291,7 @@ const styles = StyleSheet.create({
   },
   yearPillText: {fontSize: 11, fontWeight: '700', color: colors.blue},
 
-  uniRow: {flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 16},
+  uniRow: {flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12},
   uniLogo: {
     width: 34,
     height: 34,
@@ -310,14 +302,40 @@ const styles = StyleSheet.create({
   },
   uniName: {flex: 1, fontSize: 13, fontWeight: '700', color: colors.ink},
 
-  divider: {height: 1, backgroundColor: colors.line, marginVertical: 14},
+  divider: {height: 1, backgroundColor: colors.line, marginVertical: 12},
 
-  metaRow: {flexDirection: 'row', alignItems: 'stretch'},
-  metaCell: {flex: 1, flexDirection: 'row', alignItems: 'center', gap: 7, paddingRight: 6},
-  metaText: {flex: 1},
-  metaLabel: {fontSize: 10, color: colors.muted, fontWeight: '600', marginBottom: 2},
-  metaValue: {fontSize: 11, color: colors.ink, fontWeight: '700'},
-  metaDivider: {width: 1, backgroundColor: colors.line, marginHorizontal: 4},
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.panel,
+    borderRadius: 16,
+    padding: 12,
+    marginTop: 12,
+  },
+  statItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  statText: {
+    gap: 2,
+  },
+  statLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.slate,
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.ink,
+  },
+  statDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: colors.line,
+  },
 
   /* Quick access */
   quickRow: {flexDirection: 'row', gap: 8, marginBottom: 24},
