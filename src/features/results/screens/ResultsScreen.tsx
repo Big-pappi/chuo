@@ -118,7 +118,7 @@ const ResultsScreen: React.FC = () => {
           </View>
         </View>
 
-        <ScrollView style={styles.scrollContent}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           {/* View toggle */}
           <View style={styles.toggleContainer}>
             {(['current', 'transcript'] as const).map(mode => {
@@ -128,24 +128,24 @@ const ResultsScreen: React.FC = () => {
                   key={mode}
                   style={[styles.toggleButton, active && styles.activeToggle]}
                   onPress={() => setViewMode(mode)}>
-                <Text style={[styles.toggleText, active && styles.activeToggleText]}>
-                  {mode === 'current' ? 'Current' : 'Full Transcript'}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                  <Text style={[styles.toggleText, active && styles.activeToggleText]}>
+                    {mode === 'current' ? 'Current' : 'Full Transcript'}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
 
-        {/* Results list */}
-        {results.length === 0 ? (
-          <EmptyState
-            icon="file-document-outline"
-            title="No Results Available"
-            message="Your academic results will appear here"
-          />
-        ) : (
-          results.map(renderSemesterCard)
-        )}
+          {/* Results list */}
+          {results.length === 0 ? (
+            <EmptyState
+              icon="file-document-outline"
+              title="No Results Available"
+              message="Your academic results will appear here"
+            />
+          ) : (
+            results.map(renderSemesterCard)
+          )}
         </ScrollView>
       </View>
     </Screen>
@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
   },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
   /* Toggle */
   toggleContainer: {

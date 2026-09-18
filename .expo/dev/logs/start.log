@@ -118,3 +118,16 @@
 {"_e":"metro:client_log","_t":1789771979556,"level":"error","data":["[Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.\n\nCheck the render method of `AcademicsHomeScreen`.]"]}
 {"_e":"metro:client_log","_t":1789772019609,"level":"error","data":["[Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.\n\nCheck the render method of `AcademicsHomeScreen`.]"]}
 {"_e":"metro:server_log","_t":1789772198610,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:bundling:started","_t":1789772378837,"id":"31","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789772378837,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772378839,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772378949,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772379140,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772379240,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772379341,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772379448,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772380153,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772380252,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772380355,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789772380493,"id":"31","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789772380635,"id":"31","total":1,"ms":1798.7328}

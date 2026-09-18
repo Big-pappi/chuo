@@ -45,7 +45,7 @@ const AcademicsHomeScreen: React.FC = () => {
           </View>
         </View>
 
-        <ScrollView style={styles.scrollContent}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           <SemesterTabs
             semesters={resultsSemesters}
             activeId={activeSemester}
@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   avatar: {width: 42, height: 42, borderRadius: 21, backgroundColor: colors.panel},
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 });
 
 export default AcademicsHomeScreen;
