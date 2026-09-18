@@ -1,10 +1,10 @@
 // CHUO Brand Colors
 export const colors = {
   // Primary Colors
-  navy: '#142B63',
-  blue: '#1E3A8A',
-  blueDark: '#173475',
-  sky: '#2563EB',
+  navy: '#06245E',
+  blue: '#0B4FD8',
+  blueDark: '#08379B',
+  sky: '#3A82F6',
 
   // Accent Colors (used for icons / tinted tiles)
   green: '#10B981',
@@ -15,10 +15,9 @@ export const colors = {
   purple: '#7C3AED',
   red: '#EF4444',
   pink: '#EC4899',
-  slate: '#64748B',
 
   // Soft tint backgrounds
-  blueSoft: '#EEF4FF',
+  blueSoft: '#EAF2FF',
   greenSoft: '#ECFDF5',
   orangeSoft: '#FFF7ED',
   purpleSoft: '#F5F3FF',
@@ -32,7 +31,7 @@ export const colors = {
   line: '#E2E8F0',
   panel: '#F1F4F9',
   panel2: '#EEF4FF',
-  bg: '#F7F9FD',
+  bg: '#F4F7FC',
 
   // Status Colors
   success: '#10B981',
@@ -63,7 +62,6 @@ export const darkColors = {
   purple: '#A78BFA',
   red: '#F87171',
   pink: '#F472B6',
-  slate: '#94A3B8',
 
   // Soft tint backgrounds (darker for dark mode)
   blueSoft: '#1E3A8A',
@@ -96,10 +94,10 @@ export const darkColors = {
 
 // Gradients for hero cards / headers
 export const gradients = {
-  hero: ['#142B63', '#1E3A8A', '#2563EB'] as const,
-  heroDeep: ['#142B63', '#1E3A8A'] as const,
-  purple: ['#1E3A8A', '#2563EB'] as const,
-  card: ['#1E3A8A', '#2563EB'] as const,
+  hero: ['#06245E', '#0B4FD8', '#3A82F6'] as const,
+  heroDeep: ['#06245E', '#0B4FD8'] as const,
+  purple: ['#08379B', '#3A82F6'] as const,
+  card: ['#0B4FD8', '#3A82F6'] as const,
 };
 
 export const darkGradients = {

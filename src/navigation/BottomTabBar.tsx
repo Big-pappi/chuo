@@ -27,7 +27,7 @@ export default function BottomTabBar({state, navigation}: BottomTabBarProps) {
           const focused = state.index === index;
           const badge = BADGES[route.name];
           const glyphs = ICONS[route.name];
-          const color = focused ? colors.blue : colors.muted;
+          const color = focused ? colors.white : colors.muted;
 
           const onPress = () => {
             const event = navigation.emit({
@@ -42,7 +42,7 @@ export default function BottomTabBar({state, navigation}: BottomTabBarProps) {
 
           return (
             <Pressable key={route.key} style={styles.tab} onPress={onPress} hitSlop={8}>
-              <View>
+              <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
                 <MaterialCommunityIcons
                   name={(focused ? glyphs.active : glyphs.inactive) as any}
                   size={27}
@@ -76,19 +76,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.white,
-    borderRadius: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    gap: 30,
+    borderRadius: 28,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    gap: 10,
     borderWidth: 1,
-    borderColor: colors.line,
+    borderColor: '#DCE7FA',
     shadowColor: '#0B2A6B',
     shadowOpacity: 0.14,
     shadowRadius: 20,
     shadowOffset: {width: 0, height: 8},
     elevation: 14,
   },
-  tab: {alignItems: 'center', justifyContent: 'center'},
+  tab: {alignItems: 'center', justifyContent: 'center', minWidth: 58},
+  iconWrap: {
+    width: 44,
+    height: 38,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapActive: {
+    backgroundColor: colors.blue,
+    shadowColor: colors.blue,
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    shadowOffset: {width: 0, height: 5},
+    elevation: 6,
+  },
   badge: {
     position: 'absolute',
     top: -5,

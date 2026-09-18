@@ -117,7 +117,7 @@ const DashboardScreen: React.FC = () => {
           <View style={styles.greetingRow}>
             <View style={{flex: 1}}>
               <Text style={styles.greeting}>
-                {greeting()}, {mockStudent.firstName} {'\u{1F44B}'}
+                {greeting()}, {mockStudent.firstName}
               </Text>
               <Text style={styles.subGreeting}>Let&apos;s make today productive.</Text>
             </View>
@@ -184,10 +184,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: colors.bg,
   },
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {paddingHorizontal: 18, paddingTop: 104, paddingBottom: 20},
   greetingRow: {flexDirection: 'row', alignItems: 'center', marginBottom: 14},
-  greeting: {fontSize: 20, fontWeight: '800', color: colors.ink, marginBottom: 4},
-  subGreeting: {fontSize: 12, fontWeight: '600', color: colors.blue},
+  greeting: {fontSize: 25, fontWeight: '900', color: colors.navy, marginBottom: 5, letterSpacing: -0.5},
+  subGreeting: {fontSize: 13, fontWeight: '600', color: colors.slate},
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',

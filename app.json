@@ -5,12 +5,12 @@
     "version": "0.0.1",
     "orientation": "portrait",
     "icon": {
-      "light": "./assets/chuo-app-icon.png",
-      "dark": "./assets/chuo-app-icon.png"
+      "light": "./assets/app-icon.png",
+      "dark": "./assets/app-icon.png"
     },
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/chuo-app-icon.png",
+      "image": "./assets/app-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#08285f"
     },
@@ -23,13 +23,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/chuo-app-icon.png",
+        "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#08285f"
       },
       "package": "com.chuoapp"
     },
     "web": {
-      "favicon": "./assets/chuo-app-icon.png"
+      "favicon": "./assets/app-icon.png"
     },
     "extra": {
       "eas": {

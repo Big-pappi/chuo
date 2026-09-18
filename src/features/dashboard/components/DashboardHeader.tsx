@@ -26,7 +26,8 @@ export default function DashboardHeader({
         <View style={styles.online} />
       </Pressable>
       <View style={styles.headerCenter}>
-        <Text style={styles.headerTitle}>Dashboard</Text>
+        <Text style={styles.eyebrow}>CHUO CAMPUS</Text>
+        <Text style={styles.headerTitle}>Your learning space</Text>
       </View>
       <View style={styles.actions}>
         <Pressable style={styles.iconBtn} onPress={onSearch} hitSlop={8}>
@@ -56,8 +57,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  eyebrow: {
+    fontSize: 9,
+    letterSpacing: 1.4,
+    fontWeight: '800',
+    color: colors.blue,
+    marginBottom: 2,
+  },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     color: colors.ink,
   },
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: colors.white,
+    backgroundColor: colors.blueSoft,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#0B2A6B',
