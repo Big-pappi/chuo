@@ -268,14 +268,14 @@ export function JourneyBanner({onPress}: {onPress?: () => void}) {
 
 const styles = StyleSheet.create({
   /* Card */
-  card: {marginBottom: 20},
-  cardTop: {flexDirection: 'row', gap: 14},
-  avatarWrap: {width: 76, height: 76},
-  avatar: {width: 76, height: 76, borderRadius: 38, backgroundColor: colors.panel},
+  card: {marginBottom: 20, padding: 16},
+  cardTop: {flexDirection: 'row', gap: 14, alignItems: 'center'},
+  avatarWrap: {width: 82, height: 82, marginLeft: 2},
+  avatar: {width: 82, height: 82, borderRadius: 41, backgroundColor: colors.panel, borderWidth: 4, borderColor: colors.white},
   editBadge: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 2,
+    right: -2,
     width: 24,
     height: 24,
     borderRadius: 12,

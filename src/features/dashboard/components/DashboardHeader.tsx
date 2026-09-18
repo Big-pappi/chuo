@@ -25,10 +25,7 @@ export default function DashboardHeader({
         <Image source={mockStudent.avatar} style={styles.avatar} />
         <View style={styles.online} />
       </Pressable>
-      <View style={styles.headerCenter}>
-        <Text style={styles.eyebrow}>CHUO CAMPUS</Text>
-        <Text style={styles.headerTitle}>Your learning space</Text>
-      </View>
+      <View style={styles.headerCenter} />
       <View style={styles.actions}>
         <Pressable style={styles.iconBtn} onPress={onSearch} hitSlop={8}>
           <MaterialCommunityIcons name="magnify" size={20} color={colors.ink} />

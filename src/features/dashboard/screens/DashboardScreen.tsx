@@ -116,8 +116,8 @@ const DashboardScreen: React.FC = () => {
           {/* Greeting */}
           <View style={styles.greetingRow}>
             <View style={{flex: 1}}>
-              <Text style={styles.greeting}>Dashboard</Text>
-              <Text style={styles.subGreeting}>{filterLabel(dateFilter)}</Text>
+              <Text style={styles.greeting}>{greeting()}, {mockStudent.firstName}</Text>
+              <Text style={styles.subGreeting}>Here&apos;s your academic snapshot</Text>
             </View>
           </View>
 
