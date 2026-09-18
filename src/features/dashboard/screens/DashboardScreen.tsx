@@ -116,10 +116,8 @@ const DashboardScreen: React.FC = () => {
           {/* Greeting */}
           <View style={styles.greetingRow}>
             <View style={{flex: 1}}>
-              <Text style={styles.greeting}>
-                {greeting()}, {mockStudent.firstName}
-              </Text>
-              <Text style={styles.subGreeting}>Let&apos;s make today productive.</Text>
+              <Text style={styles.greeting}>Dashboard</Text>
+              <Text style={styles.subGreeting}>{filterLabel(dateFilter)}</Text>
             </View>
           </View>
 
@@ -186,7 +184,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {paddingHorizontal: 18, paddingTop: 104, paddingBottom: 20},
   greetingRow: {flexDirection: 'row', alignItems: 'center', marginBottom: 14},
-  greeting: {fontSize: 25, fontWeight: '900', color: colors.navy, marginBottom: 5, letterSpacing: -0.5},
+  greeting: {fontSize: 25, fontWeight: '900', color: colors.navy, marginBottom: 4, letterSpacing: -0.5},
   subGreeting: {fontSize: 13, fontWeight: '600', color: colors.slate},
   metaRow: {
     flexDirection: 'row',

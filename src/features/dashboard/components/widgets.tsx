@@ -18,9 +18,26 @@ import {
 } from '@/data/mock';
 
 /* ------------------------------------------------------------------ */
-/* Academic hero card                                                 */
+/* At-a-glance academic summary                                       */
 /* ------------------------------------------------------------------ */
 export function HeroCard({onProfile}: {onProfile?: () => void}) {
+  return (
+    <View style={styles.summaryBlock}>
+      <View style={styles.summaryHeader}>
+        <View><Text style={styles.summaryEyebrow}>AT A GLANCE</Text><Text style={styles.summaryTitle}>Academic overview</Text></View>
+        <Pressable onPress={onProfile} style={styles.summaryAction}><MaterialCommunityIcons name="arrow-top-right" size={16} color={colors.blue} /></Pressable>
+      </View>
+      <View style={styles.metricsRow}>
+        <View style={[styles.metric, styles.metricPrimary]}><Text style={[styles.metricLabel, styles.metricPrimaryLabel]}>Current GPA</Text><Text style={styles.metricValue}>{mockStudent.gpa.toFixed(2)}</Text><Text style={[styles.metricMeta, styles.metricPrimaryMeta]}>+{mockStudent.gpaDelta.toFixed(2)} this term</Text></View>
+        <View style={styles.metric}><Text style={styles.metricLabel}>Standing</Text><Text style={styles.metricValueSmall}>{mockStudent.standing}</Text><Text style={styles.metricMeta}>Academic status</Text></View>
+        <View style={styles.metric}><Text style={styles.metricLabel}>Year / Sem</Text><Text style={styles.metricValueSmall}>Y{mockStudent.year} / S{mockStudent.semester}</Text><Text style={styles.metricMeta}>Programme</Text></View>
+      </View>
+    </View>
+  );
+}
+
+/* Legacy detail card kept as a profile entry point for existing routes. */
+function LegacyHeroCard({onProfile}: {onProfile?: () => void}) {
   return (
     <Pressable onPress={onProfile}>
       <LinearGradient colors={['#06245E', '#0B4FD8', '#3A82F6']} start={{x: 0, y: 0}} end={{x: 1, y: 1}} style={styles.heroCard}>
@@ -254,6 +271,21 @@ export function Opportunities({onExplore}: {onExplore?: () => void}) {
 const styles = StyleSheet.create({
   block: {marginBottom: 16},
   sectionBlock: {marginBottom: 20},
+
+  summaryBlock: {marginBottom: 18},
+  summaryHeader: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10},
+  summaryEyebrow: {fontSize: 10, fontWeight: '800', letterSpacing: 1.2, color: colors.blue, marginBottom: 2},
+  summaryTitle: {fontSize: 18, fontWeight: '900', color: colors.ink},
+  summaryAction: {width: 34, height: 34, borderRadius: 12, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center'},
+  metricsRow: {flexDirection: 'row', gap: 8},
+  metric: {flex: 1, minHeight: 102, borderRadius: 16, padding: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line},
+  metricPrimary: {backgroundColor: colors.blue, borderColor: colors.blue},
+  metricPrimaryLabel: {color: 'rgba(255,255,255,0.76)'},
+  metricPrimaryMeta: {color: 'rgba(255,255,255,0.78)'},
+  metricLabel: {fontSize: 10, fontWeight: '700', color: colors.slate, marginBottom: 9},
+  metricValue: {fontSize: 31, lineHeight: 34, fontWeight: '900', color: colors.white},
+  metricValueSmall: {fontSize: 15, lineHeight: 20, fontWeight: '900', color: colors.ink, marginTop: 7},
+  metricMeta: {fontSize: 10, fontWeight: '600', color: colors.slate, marginTop: 5},
 
   /* Hero Card - Clean Style */
   heroCard: {
