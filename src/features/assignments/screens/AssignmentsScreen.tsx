@@ -34,7 +34,7 @@ const AssignmentsScreen: React.FC = () => {
       title: 'Database Design Project',
       course: 'Database Systems',
       courseCode: 'CS 301',
-      dueDate: '2024-08-15',
+      dueDate: '2026-09-25',
       status: 'pending',
       description: 'Design a complete database schema for a university management system including ER diagrams and normalization.',
       attachments: 2,
@@ -44,8 +44,8 @@ const AssignmentsScreen: React.FC = () => {
       title: 'Mobile App Prototype',
       course: 'Mobile Computing',
       courseCode: 'CS 402',
-      dueDate: '2024-08-10',
-      submittedDate: '2024-08-08',
+      dueDate: '2026-09-20',
+      submittedDate: '2026-09-18',
       status: 'submitted',
       description: 'Create a functional prototype of a student attendance tracking app using React Native.',
       attachments: 3,
@@ -55,8 +55,8 @@ const AssignmentsScreen: React.FC = () => {
       title: 'Research Paper on AI Ethics',
       course: 'Artificial Intelligence',
       courseCode: 'CS 401',
-      dueDate: '2024-08-05',
-      submittedDate: '2024-08-03',
+      dueDate: '2026-09-15',
+      submittedDate: '2026-09-13',
       status: 'graded',
       grade: 'A',
       marks: 45,
@@ -69,7 +69,7 @@ const AssignmentsScreen: React.FC = () => {
       title: 'Web Development Assignment',
       course: 'Web Technologies',
       courseCode: 'CS 303',
-      dueDate: '2024-08-01',
+      dueDate: '2026-09-10',
       status: 'overdue',
       description: 'Build a responsive e-commerce website using HTML, CSS, and JavaScript.',
       attachments: 4,
@@ -79,7 +79,7 @@ const AssignmentsScreen: React.FC = () => {
       title: 'Algorithm Analysis',
       course: 'Data Structures & Algorithms',
       courseCode: 'CS 201',
-      dueDate: '2024-08-20',
+      dueDate: '2026-09-30',
       status: 'pending',
       description: 'Analyze time and space complexity of various sorting algorithms with empirical data.',
       attachments: 2,
@@ -181,7 +181,7 @@ const AssignmentsScreen: React.FC = () => {
           {assignment.status === 'pending' && (
             <View style={[styles.daysBadge, {backgroundColor: daysRemaining <= 2 ? colors.redSoft : colors.greenSoft}]}>
               <Text style={[styles.daysText, {color: daysRemaining <= 2 ? colors.red : colors.green}]}>
-                {daysRemaining > 0 ? `${daysRemaining}d left` : 'Due today'}
+                {daysRemaining > 0 ? `${daysRemaining}d left` : daysRemaining === 0 ? 'Due today' : 'Overdue'}
               </Text>
             </View>
           )}

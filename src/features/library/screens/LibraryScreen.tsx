@@ -45,8 +45,8 @@ const LibraryScreen: React.FC = () => {
       isbn: '978-0262033848',
       category: 'Computer Science',
       cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200',
-      dueDate: '2024-08-15',
-      borrowedDate: '2024-07-15',
+      dueDate: '2026-10-15',
+      borrowedDate: '2026-09-15',
       status: 'borrowed',
       renewalCount: 1,
       maxRenewals: 2,
@@ -58,8 +58,8 @@ const LibraryScreen: React.FC = () => {
       isbn: '978-0078022159',
       category: 'Computer Science',
       cover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65dfc?w=200',
-      dueDate: '2024-08-10',
-      borrowedDate: '2024-07-10',
+      dueDate: '2026-10-10',
+      borrowedDate: '2026-09-10',
       status: 'borrowed',
       renewalCount: 0,
       maxRenewals: 2,
@@ -70,8 +70,8 @@ const LibraryScreen: React.FC = () => {
       author: 'Stuart Russell',
       isbn: '978-0134610993',
       category: 'Artificial Intelligence',
-      dueDate: '2024-08-01',
-      borrowedDate: '2024-07-01',
+      dueDate: '2026-09-01',
+      borrowedDate: '2026-08-01',
       status: 'overdue',
       renewalCount: 2,
       maxRenewals: 2,
@@ -227,7 +227,7 @@ const LibraryScreen: React.FC = () => {
               color={daysRemaining <= 3 ? colors.red : colors.green} 
             />
             <Text style={[styles.daysText, {color: daysRemaining <= 3 ? colors.red : colors.green}]}>
-              {daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Due today'}
+              {daysRemaining > 0 ? `${daysRemaining} days remaining` : daysRemaining === 0 ? 'Due today' : 'Overdue'}
             </Text>
           </View>
         )}

@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {LinearGradient} from 'expo-linear-gradient';
 import Screen from '@/components/ui/Screen';
-import {colors, gradients} from '@/theme';
+import {colors} from '@/theme';
 import {SurfaceCard, SectionHeader, IconTile, Pill} from '@/components/ui/Cards';
+import {mockStudent} from '@/data/mock';
 
 interface Exam {
   id: string;
@@ -48,7 +48,7 @@ const ExamCenterScreen: React.FC = () => {
       courseCode: 'CS 301',
       courseName: 'Database Systems',
       examType: 'final',
-      date: '2024-08-20',
+      date: '2026-09-25',
       time: '09:00',
       duration: '3 hours',
       venue: 'Examination Hall A',
@@ -62,7 +62,7 @@ const ExamCenterScreen: React.FC = () => {
       courseCode: 'CS 402',
       courseName: 'Mobile Computing',
       examType: 'final',
-      date: '2024-08-22',
+      date: '2026-09-28',
       time: '14:00',
       duration: '3 hours',
       venue: 'Examination Hall B',
@@ -76,7 +76,7 @@ const ExamCenterScreen: React.FC = () => {
       courseCode: 'CS 401',
       courseName: 'Artificial Intelligence',
       examType: 'midterm',
-      date: '2024-08-25',
+      date: '2026-10-02',
       time: '10:00',
       duration: '2 hours',
       venue: 'Room 305',
@@ -90,7 +90,7 @@ const ExamCenterScreen: React.FC = () => {
       courseCode: 'CS 303',
       courseName: 'Web Technologies',
       examType: 'practical',
-      date: '2024-07-15',
+      date: '2026-08-15',
       time: '09:00',
       duration: '4 hours',
       venue: 'Computer Lab 1',
@@ -258,7 +258,7 @@ const ExamCenterScreen: React.FC = () => {
               color={daysRemaining <= 3 ? colors.red : colors.green} 
             />
             <Text style={[styles.daysText, {color: daysRemaining <= 3 ? colors.red : colors.green}]}>
-              {daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Exam today'}
+              {daysRemaining > 0 ? `${daysRemaining} days remaining` : daysRemaining === 0 ? 'Exam today' : 'Overdue'}
             </Text>
           </View>
         )}
@@ -342,45 +342,13 @@ const ExamCenterScreen: React.FC = () => {
             <Pressable
               style={styles.headerBtn}
               hitSlop={8}
-              onPress={() => console.log('Exam calendar')}>
-              <MaterialCommunityIcons name="calendar" size={22} color={colors.ink} />
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.scrollContent}>
-          {/* Exam stats */}
-          <LinearGradient
-            colors={gradients.hero}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            style={styles.statsCard}>
-          <View style={styles.statsHeader}>
-            <View style={styles.statIcon}>
-              <MaterialCommunityIcons name="file-document-edit" size={26} color={colors.white} />
-            </View>
-            <View style={styles.statInfo}>
-              <Text style={styles.statLabel}>Exam Summary</Text>
-              <Text style={styles.statValue}>Semester 2, 2024</Text>
-            </View>
-          </View>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{exams.filter(e => e.status === 'scheduled').length}</Text>
-              <Text style={styles.statItemLabel}>Scheduled</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{exams.filter(e => e.status === 'completed').length}</Text>
-              <Text style={styles.statItemLabel}>Completed</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{examResults.filter(r => r.status === 'passed').length}</Text>
-              <Text style={styles.statItemLabel}>Passed</Text>
-            </View>
-          </View>
-        </LinearGradient>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
 
         {/* Tab navigation */}
         <View style={styles.tabContainer}>
@@ -395,7 +363,7 @@ const ExamCenterScreen: React.FC = () => {
                 onPress={() => setActiveTab(tab)}>
                 <MaterialCommunityIcons 
                   name={icon as any} 
-                  size={20} 
+                  size={22} 
                   color={isActive ? colors.blue : colors.slate} 
                 />
                 <Text style={[styles.tabText, isActive && styles.activeTabText]}>
@@ -519,38 +487,7 @@ const ExamCenterScreen: React.FC = () => {
             </SurfaceCard>
           )}
         </View>
-
-        {/* Quick actions */}
-        <SurfaceCard style={styles.quickActionsCard}>
-          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
-          <View style={styles.quickActionsGrid}>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Download admit card')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="download" size={24} color={colors.blue} />
-              </View>
-              <Text style={styles.quickActionText}>Admit Card</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('View seating plan')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="chair-school" size={24} color={colors.green} />
-              </View>
-              <Text style={styles.quickActionText}>Seating</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Exam calendar')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="calendar" size={24} color={colors.purple} />
-              </View>
-              <Text style={styles.quickActionText}>Calendar</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Contact exam office')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="email" size={24} color={colors.orange} />
-              </View>
-              <Text style={styles.quickActionText}>Contact</Text>
-            </Pressable>
-          </View>
-        </SurfaceCard>
-        </View>
+        </ScrollView>
       </View>
     </Screen>
   );
@@ -596,98 +533,46 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
   },
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
-  /* Stats Card */
-  statsCard: {
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 16,
-  },
-  statsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  statIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  statInfo: {
-    flex: 1,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.white,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    borderRadius: 14,
-    padding: 16,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.white,
-    marginBottom: 4,
-  },
-  statItemLabel: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.8)',
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: 'rgba(255,255,255,0.22)',
-  },
+  /* Tab Container - Cool Design */
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.panel,
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 6,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   tab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10,
-    borderRadius: 10,
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 12,
   },
   activeTab: {
-    backgroundColor: colors.white,
-    shadowColor: '#0B2A6B',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 2,
+    backgroundColor: colors.blue,
   },
   tabText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.slate,
   },
   activeTabText: {
-    color: colors.blue,
+    color: colors.white,
   },
   content: {marginBottom: 16},
   examCard: {
@@ -950,36 +835,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.slate,
     marginTop: 4,
-  },
-  quickActionsCard: {
-    marginBottom: 20,
-  },
-  quickActionsTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.ink,
-    marginBottom: 12,
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  quickActionItem: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  quickActionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.panel,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quickActionText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.slate,
   },
 });
 
