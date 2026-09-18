@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {colors} from '@/theme';
@@ -24,17 +24,13 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
   return (
     <View style={styles.summaryBlock}>
       <View style={styles.heroCard}>
-        <View style={styles.heroTop}>
-          <View style={styles.avatarWrap}>
-            <Image source={mockStudent.avatar} style={styles.avatar} />
-          </View>
-          <View style={styles.identity}>
-            <Text style={styles.program}>{mockStudent.programme}</Text>
-          </View>
+        <View style={styles.cardHeader}>
+          <MaterialCommunityIcons name="school" size={24} color="rgba(255,255,255,0.9)" />
+          <Text style={styles.cardTitle}>Academic Overview</Text>
         </View>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <MaterialCommunityIcons name="school" size={18} color={colors.blue} />
+            <MaterialCommunityIcons name="school" size={18} color="rgba(255,255,255,0.9)" />
             <View style={styles.statText}>
               <Text style={styles.statLabel}>GPA</Text>
               <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
@@ -42,7 +38,7 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <MaterialCommunityIcons name="book-open-variant" size={18} color={colors.green} />
+            <MaterialCommunityIcons name="book-open-variant" size={18} color="rgba(255,255,255,0.9)" />
             <View style={styles.statText}>
               <Text style={styles.statLabel}>Year</Text>
               <Text style={styles.statValue}>Y{mockStudent.year}</Text>
@@ -50,7 +46,7 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <MaterialCommunityIcons name="calendar-blank" size={18} color={colors.purple} />
+            <MaterialCommunityIcons name="calendar-blank" size={18} color="rgba(255,255,255,0.9)" />
             <View style={styles.statText}>
               <Text style={styles.statLabel}>Sem</Text>
               <Text style={styles.statValue}>S{mockStudent.semester}</Text>
@@ -302,47 +298,30 @@ const styles = StyleSheet.create({
   heroCard: {
     borderRadius: 20,
     padding: 16,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.line,
+    backgroundColor: colors.blue,
     shadowColor: colors.navy,
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 3},
-    elevation: 2,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 3,
   },
-  heroTop: {
+  cardHeader: {
     flexDirection: 'row',
-    gap: 12,
     alignItems: 'center',
+    gap: 10,
     marginBottom: 14,
   },
-  avatarWrap: {
-    width: 56,
-    height: 56,
-  },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.panel,
-    borderWidth: 3,
-    borderColor: colors.white,
-  },
-  identity: {
-    flex: 1,
-  },
-  program: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.ink,
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: 'rgba(255,255,255,0.95)',
   },
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.panel,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 14,
-    padding: 10,
+    padding: 12,
   },
   statItem: {
     flex: 1,
@@ -356,17 +335,17 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.7)',
   },
   statValue: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
-    color: colors.ink,
+    color: colors.white,
   },
   statDivider: {
     width: 1,
-    height: 20,
-    backgroundColor: colors.line,
+    height: 24,
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
 
   /* Hero Card - Clean Style */
