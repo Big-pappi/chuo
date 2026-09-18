@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, Image, ScrollView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
@@ -12,6 +12,7 @@ import Screen from '@/components/ui/Screen';
 import {SurfaceCard, Pill} from '@/components/ui/Cards';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import EmptyState from '../../../components/EmptyState';
+import {mockStudent} from '@/data/mock';
 
 const ResultsScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -107,11 +108,17 @@ const ResultsScreen: React.FC = () => {
               onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
             </Pressable>
-            <Text style={styles.title}>Academic Results</Text>
+            <Text style={styles.title}>My Results</Text>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
           </View>
         </View>
 
-        <View style={styles.scrollContent}>
+        <ScrollView style={styles.scrollContent}>
           {/* View toggle */}
           <View style={styles.toggleContainer}>
             {(['current', 'transcript'] as const).map(mode => {
@@ -139,7 +146,7 @@ const ResultsScreen: React.FC = () => {
         ) : (
           results.map(renderSemesterCard)
         )}
-        </View>
+        </ScrollView>
       </View>
     </Screen>
   );
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    gap: 12,
   },
   title: {
     flex: 1,
@@ -184,6 +191,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
+  },
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
   },
 
   /* Scroll Content */
