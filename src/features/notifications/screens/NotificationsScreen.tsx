@@ -4,7 +4,8 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
-import {colors} from '@/theme';
+import {colors, getColors} from '@/theme';
+import {useTheme} from '@/context/ThemeContext';
 import {
   mockStudent,
   notifications as seedNotifications,
@@ -21,6 +22,8 @@ const GROUPS = ['Today', 'Yesterday'] as const;
 const NotificationsScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
+  const {isDark} = useTheme();
+  const {colors: themeColors} = getColors(isDark);
   const [filter, setFilter] = useState<NotificationFilter>('All');
   const [items, setItems] = useState(seedNotifications);
 
@@ -43,22 +46,22 @@ const NotificationsScreen: React.FC = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor: themeColors.bg}]}>
         {/* Fixed Header */}
-        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+        <View style={[styles.fixedHeader, {paddingTop: insets.top, backgroundColor: themeColors.bg}]}>
           <View style={styles.header}>
             <Pressable
-              style={styles.headerBtn}
+              style={[styles.headerBtn, {backgroundColor: themeColors.white}]}
               hitSlop={8}
               onPress={() => navigation.canGoBack() && navigation.goBack()}
               accessibilityRole="button"
               accessibilityLabel="Go back">
-              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+              <MaterialCommunityIcons name="arrow-left" size={22} color={themeColors.ink} />
             </Pressable>
-            <Text style={styles.title}>Notifications</Text>
+            <View style={styles.titleWrap}><Text style={[styles.title, {color: themeColors.ink}]}>Notifications</Text><Text style={[styles.unreadSummary, {color: themeColors.slate}]}>{unreadCount} unread</Text></View>
             <View style={styles.headerActions}>
               <Pressable style={styles.headerBtn} hitSlop={8} accessibilityLabel="Settings">
-                <MaterialCommunityIcons name="cog-outline" size={20} color={colors.ink} />
+                <MaterialCommunityIcons name="cog-outline" size={20} color={themeColors.ink} />
               </Pressable>
             </View>
           </View>
@@ -134,7 +137,9 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
   },
-  title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
+  titleWrap: {flex: 1, alignItems: 'center'},
+  title: {fontSize: 20, fontWeight: '800'},
+  unreadSummary: {fontSize: 11, fontWeight: '600', marginTop: 2},
   headerActions: {flexDirection: 'row', gap: 8},
 
   /* Scroll Content */

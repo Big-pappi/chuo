@@ -8,7 +8,7 @@
       "light": "./assets/app-icon.png",
       "dark": "./assets/app-icon.png"
     },
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/app-icon.png",
       "resizeMode": "contain",

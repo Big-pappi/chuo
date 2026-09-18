@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {colors} from '@/theme';
 import {SurfaceCard, SectionHeader, IconTile, Pill} from '@/components/ui/Cards';
@@ -17,12 +18,29 @@ import {
 } from '@/data/mock';
 
 /* ------------------------------------------------------------------ */
-/* Academic hero card                                                 */
+/* At-a-glance academic summary                                       */
 /* ------------------------------------------------------------------ */
 export function HeroCard({onProfile}: {onProfile?: () => void}) {
   return (
+    <View style={styles.summaryBlock}>
+      <View style={styles.summaryHeader}>
+        <View><Text style={styles.summaryEyebrow}>AT A GLANCE</Text><Text style={styles.summaryTitle}>Academic overview</Text></View>
+        <Pressable onPress={onProfile} style={styles.summaryAction}><MaterialCommunityIcons name="arrow-top-right" size={16} color={colors.blue} /></Pressable>
+      </View>
+      <View style={styles.metricsRow}>
+        <View style={[styles.metric, styles.metricPrimary]}><Text style={[styles.metricLabel, styles.metricPrimaryLabel]}>Current GPA</Text><Text style={styles.metricValue}>{mockStudent.gpa.toFixed(2)}</Text><Text style={[styles.metricMeta, styles.metricPrimaryMeta]}>+{mockStudent.gpaDelta.toFixed(2)} this term</Text></View>
+        <View style={styles.metric}><Text style={styles.metricLabel}>Standing</Text><Text style={styles.metricValueSmall}>{mockStudent.standing}</Text><Text style={styles.metricMeta}>Academic status</Text></View>
+        <View style={styles.metric}><Text style={styles.metricLabel}>Year / Sem</Text><Text style={styles.metricValueSmall}>Y{mockStudent.year} / S{mockStudent.semester}</Text><Text style={styles.metricMeta}>Programme</Text></View>
+      </View>
+    </View>
+  );
+}
+
+/* Legacy detail card kept as a profile entry point for existing routes. */
+function LegacyHeroCard({onProfile}: {onProfile?: () => void}) {
+  return (
     <Pressable onPress={onProfile}>
-      <SurfaceCard style={styles.heroCard}>
+      <LinearGradient colors={['#06245E', '#0B4FD8', '#3A82F6']} start={{x: 0, y: 0}} end={{x: 1, y: 1}} style={styles.heroCard}>
         {/* Header row */}
         <View style={styles.heroRow}>
           <View style={styles.heroBadge}>
@@ -68,7 +86,7 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
             </View>
           </Pressable>
         </View>
-      </SurfaceCard>
+      </LinearGradient>
     </Pressable>
   );
 }
@@ -254,14 +272,28 @@ const styles = StyleSheet.create({
   block: {marginBottom: 16},
   sectionBlock: {marginBottom: 20},
 
+  summaryBlock: {marginBottom: 18},
+  summaryHeader: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10},
+  summaryEyebrow: {fontSize: 10, fontWeight: '800', letterSpacing: 1.2, color: colors.blue, marginBottom: 2},
+  summaryTitle: {fontSize: 18, fontWeight: '900', color: colors.ink},
+  summaryAction: {width: 34, height: 34, borderRadius: 12, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center'},
+  metricsRow: {flexDirection: 'row', gap: 8},
+  metric: {flex: 1, minHeight: 102, borderRadius: 16, padding: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line},
+  metricPrimary: {backgroundColor: colors.blue, borderColor: colors.blue},
+  metricPrimaryLabel: {color: 'rgba(255,255,255,0.76)'},
+  metricPrimaryMeta: {color: 'rgba(255,255,255,0.78)'},
+  metricLabel: {fontSize: 10, fontWeight: '700', color: colors.slate, marginBottom: 9},
+  metricValue: {fontSize: 31, lineHeight: 34, fontWeight: '900', color: colors.white},
+  metricValueSmall: {fontSize: 15, lineHeight: 20, fontWeight: '900', color: colors.ink, marginTop: 7},
+  metricMeta: {fontSize: 10, fontWeight: '600', color: colors.slate, marginTop: 5},
+
   /* Hero Card - Clean Style */
   heroCard: {
     borderRadius: 18,
     padding: 16,
     marginBottom: 16,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.line,
+    backgroundColor: colors.navy,
+    overflow: 'hidden',
     shadowColor: colors.navy,
     shadowOpacity: 0.06,
     shadowRadius: 12,
@@ -278,21 +310,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: colors.blueSoft,
+    backgroundColor: 'rgba(255,255,255,0.16)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
   },
   heroBadgeText: {
-    color: colors.blue,
+    color: colors.white,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   heroBadgeGreen: {
-    backgroundColor: colors.greenSoft,
+    backgroundColor: 'rgba(255,255,255,0.16)',
   },
   heroBadgeTextGreen: {
-    color: colors.green,
+    color: colors.white,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -302,7 +334,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   gpaLabel: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.72)',
     fontSize: 10,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -316,8 +348,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gpaValue: {
-    color: colors.ink,
-    fontSize: 36,
+    color: colors.white,
+    fontSize: 42,
     fontWeight: '800',
     lineHeight: 38,
   },
@@ -334,7 +366,7 @@ const styles = StyleSheet.create({
   },
   standingBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.greenSoft,
+    backgroundColor: 'rgba(255,255,255,0.14)',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
@@ -355,15 +387,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: colors.panel,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 14,
     padding: 10,
   },
   infoText: {
     flex: 1,
   },
   infoLabel: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.68)',
     fontSize: 9,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -371,13 +403,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   infoValue: {
-    color: colors.ink,
+    color: colors.white,
     fontSize: 11,
     fontWeight: '700',
     marginBottom: 1,
   },
   infoMeta: {
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.72)',
     fontSize: 9,
     fontWeight: '500',
   },
