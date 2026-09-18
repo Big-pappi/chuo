@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {LinearGradient} from 'expo-linear-gradient';
 import Screen from '@/components/ui/Screen';
-import {colors, gradients} from '@/theme';
+import {colors} from '@/theme';
 import {SurfaceCard, Pill} from '@/components/ui/Cards';
+import {mockStudent} from '@/data/mock';
 
 interface Assignment {
   id: string;
@@ -203,85 +203,46 @@ const AssignmentsScreen: React.FC = () => {
               <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
             </Pressable>
             <Text style={styles.title}>Assignments</Text>
-            <Pressable style={styles.headerBtn} hitSlop={8}>
-              <MaterialCommunityIcons name="clipboard-check" size={20} color={colors.blue} />
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.scrollContent}>
-          {/* Hero summary */}
-          <LinearGradient
-            colors={gradients.hero}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            style={styles.hero}>
-          <View style={styles.heroTop}>
-            <View>
-              <Text style={styles.heroLabel}>Total Assignments</Text>
-              <View style={styles.heroCgpaRow}>
-                <Text style={styles.heroCgpa}>{assignments.length}</Text>
-              </View>
-            </View>
-            <View style={styles.standingPill}>
-              <View style={styles.standingDot} />
-              <Text style={styles.standingText}>Active</Text>
-            </View>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          {/* View toggle */}
+          <View style={styles.toggleContainer}>
+            {(['all', 'pending', 'submitted', 'graded'] as const).map(tab => {
+              const active = activeTab === tab;
+              return (
+                <Pressable
+                  key={tab}
+                  style={[styles.toggleButton, active && styles.activeToggle]}
+                  onPress={() => setActiveTab(tab)}>
+                  <Text style={[styles.toggleText, active && styles.activeToggleText]}>
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
 
-          <View style={styles.heroStats}>
-            <View style={styles.heroStat}>
-              <Text style={styles.heroStatValue}>{assignments.filter(a => a.status === 'pending').length}</Text>
-              <Text style={styles.heroStatLabel}>Pending</Text>
+          {/* Assignments list */}
+          {filteredAssignments.length === 0 ? (
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="clipboard-text-outline" size={64} color={colors.muted} />
+              <Text style={styles.emptyText}>No assignments found</Text>
+              <Text style={styles.emptySubtext}>
+                {activeTab === 'all' ? 'You have no assignments yet' : `No ${activeTab} assignments`}
+              </Text>
             </View>
-            <View style={styles.heroStatDivider} />
-            <View style={styles.heroStat}>
-              <Text style={styles.heroStatValue}>{assignments.filter(a => a.status === 'submitted').length}</Text>
-              <Text style={styles.heroStatLabel}>Submitted</Text>
-            </View>
-            <View style={styles.heroStatDivider} />
-            <View style={styles.heroStat}>
-              <Text style={[styles.heroStatValue, {color: colors.green}]}>{assignments.filter(a => a.status === 'graded').length}</Text>
-              <Text style={styles.heroStatLabel}>Graded</Text>
-            </View>
-            <View style={styles.heroStatDivider} />
-            <View style={styles.heroStat}>
-              <Text style={[styles.heroStatValue, {color: colors.red}]}>{assignments.filter(a => a.status === 'overdue').length}</Text>
-              <Text style={styles.heroStatLabel}>Overdue</Text>
-            </View>
-          </View>
-        </LinearGradient>
-
-        {/* View toggle */}
-        <View style={styles.toggleContainer}>
-          {(['all', 'pending', 'submitted', 'graded'] as const).map(tab => {
-            const active = activeTab === tab;
-            return (
-              <Pressable
-                key={tab}
-                style={[styles.toggleButton, active && styles.activeToggle]}
-                onPress={() => setActiveTab(tab)}>
-                <Text style={[styles.toggleText, active && styles.activeToggleText]}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {/* Assignments list */}
-        {filteredAssignments.length === 0 ? (
-          <View style={styles.emptyState}>
-            <MaterialCommunityIcons name="clipboard-text-outline" size={64} color={colors.muted} />
-            <Text style={styles.emptyText}>No assignments found</Text>
-            <Text style={styles.emptySubtext}>
-              {activeTab === 'all' ? 'You have no assignments yet' : `No ${activeTab} assignments`}
-            </Text>
-          </View>
-        ) : (
-          filteredAssignments.map(renderAssignmentCard)
-        )}
-        </View>
+          ) : (
+            filteredAssignments.map(renderAssignmentCard)
+          )}
+        </ScrollView>
       </View>
     </Screen>
   );
@@ -305,7 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    gap: 12,
   },
   title: {
     flex: 1,
@@ -316,7 +277,8 @@ const styles = StyleSheet.create({
   },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
   /* Header Buttons */
   headerBtn: {
@@ -332,50 +294,12 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
   },
-
-  /* Hero */
-  hero: {
-    borderRadius: 22,
-    padding: 20,
-    marginBottom: 16,
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
   },
-  heroTop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  heroLabel: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-  },
-  heroCgpaRow: {flexDirection: 'row', alignItems: 'flex-end', gap: 6, marginTop: 6},
-  heroCgpa: {color: colors.white, fontSize: 44, fontWeight: '800', lineHeight: 46},
-  standingPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(110,231,183,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 999,
-  },
-  standingDot: {width: 7, height: 7, borderRadius: 4, backgroundColor: '#6EE7B7'},
-  standingText: {color: '#6EE7B7', fontSize: 12, fontWeight: '800'},
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 16,
-    paddingVertical: 14,
-  },
-  heroStat: {flex: 1, alignItems: 'center'},
-  heroStatValue: {color: colors.white, fontSize: 20, fontWeight: '800'},
-  heroStatLabel: {color: 'rgba(255,255,255,0.75)', fontSize: 11, fontWeight: '600', marginTop: 3},
-  heroStatDivider: {width: 1, height: 32, backgroundColor: 'rgba(255,255,255,0.2)'},
 
   /* Toggle */
   toggleContainer: {

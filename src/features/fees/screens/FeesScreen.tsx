@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -7,9 +7,8 @@ import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {SectionHeader} from '@/components/ui/Cards';
 import {notifications as allNotifications} from '@/data/mock';
+import {mockStudent} from '@/data/mock';
 import {
-  FeesHero,
-  FeesSummaryTiles,
   FeeBreakdown,
   RecentPayments,
   PaymentMethods,
@@ -48,15 +47,12 @@ const FeesScreen: React.FC = () => {
               onPress={go('Profile')}
               accessibilityRole="button"
               accessibilityLabel="Open profile">
-              <MaterialCommunityIcons name="account-circle" size={20} color={colors.ink} />
+              <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.scrollContent}>
-          <FeesHero />
-          <FeesSummaryTiles />
-
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           <FeeBreakdown />
 
           <SectionHeader title="Recent Payments" />
@@ -64,7 +60,7 @@ const FeesScreen: React.FC = () => {
 
           <SectionHeader title="Payment Methods" />
           <PaymentMethods />
-        </View>
+        </ScrollView>
       </View>
     </Screen>
   );
@@ -88,7 +84,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -104,9 +100,16 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 });
 
 export default FeesScreen;
