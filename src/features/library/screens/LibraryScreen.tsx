@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image, TextInput} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -36,6 +36,106 @@ const LibraryScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<'borrowed' | 'digital' | 'history' | 'search'>('borrowed');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [libraryCatalog] = useState<Book[]>([
+    {
+      id: 'catalog-1',
+      title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
+      author: 'Robert C. Martin',
+      isbn: '978-0132350884',
+      category: 'Software Engineering',
+      cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200',
+      borrowedDate: '2024-06-01',
+      status: 'returned',
+      renewalCount: 1,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-2',
+      title: 'Design Patterns: Elements of Reusable Object-Oriented Software',
+      author: 'Erich Gamma',
+      isbn: '978-0201633610',
+      category: 'Software Engineering',
+      cover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65dfc?w=200',
+      borrowedDate: '2024-05-15',
+      status: 'returned',
+      renewalCount: 0,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-3',
+      title: 'The Pragmatic Programmer',
+      author: 'Andrew Hunt',
+      isbn: '978-0201616224',
+      category: 'Software Engineering',
+      cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200',
+      borrowedDate: '2024-04-10',
+      status: 'returned',
+      renewalCount: 0,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-4',
+      title: 'Refactoring: Improving the Design of Existing Code',
+      author: 'Martin Fowler',
+      isbn: '978-0201485677',
+      category: 'Software Engineering',
+      cover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65dfc?w=200',
+      borrowedDate: '2024-03-20',
+      status: 'returned',
+      renewalCount: 1,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-5',
+      title: 'Introduction to Algorithms',
+      author: 'Thomas H. Cormen',
+      isbn: '978-0262033848',
+      category: 'Computer Science',
+      cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200',
+      borrowedDate: '2024-02-15',
+      status: 'returned',
+      renewalCount: 0,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-6',
+      title: 'Structure and Interpretation of Computer Programs',
+      author: 'Harold Abelson',
+      isbn: '978-0262510875',
+      category: 'Computer Science',
+      cover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65dfc?w=200',
+      borrowedDate: '2024-01-20',
+      status: 'returned',
+      renewalCount: 0,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-7',
+      title: 'Artificial Intelligence: A Modern Approach',
+      author: 'Stuart Russell',
+      isbn: '978-0134610993',
+      category: 'Artificial Intelligence',
+      cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200',
+      borrowedDate: '2024-04-05',
+      status: 'returned',
+      renewalCount: 1,
+      maxRenewals: 2,
+    },
+    {
+      id: 'catalog-8',
+      title: 'Deep Learning',
+      author: 'Ian Goodfellow',
+      isbn: '978-0262035613',
+      category: 'Artificial Intelligence',
+      cover: 'https://images.unsplash.com/photo-1555252333-9f8e92e65dfc?w=200',
+      borrowedDate: '2024-03-10',
+      status: 'returned',
+      renewalCount: 0,
+      maxRenewals: 2,
+    },
+  ]);
 
   const [borrowedBooks] = useState<Book[]>([
     {
@@ -181,6 +281,16 @@ const LibraryScreen: React.FC = () => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
+
+  const filteredCatalog = libraryCatalog.filter(book => {
+    const query = searchQuery.toLowerCase();
+    return (
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query) ||
+      book.isbn.toLowerCase().includes(query) ||
+      book.category.toLowerCase().includes(query)
+    );
+  });
 
   const renderBorrowedBook = (book: Book) => {
     const statusConfig = getStatusConfig(book.status);
@@ -383,7 +493,8 @@ const LibraryScreen: React.FC = () => {
                            tab === 'history' ? 'clock-time-three' : 'magnify';
               const count = tab === 'borrowed' ? borrowedBooks.length :
                            tab === 'digital' ? digitalResources.length :
-                           tab === 'history' ? readingHistory.length : 0;
+                           tab === 'history' ? readingHistory.length :
+                           libraryCatalog.length;
               return (
                 <Pressable
                   key={tab}
@@ -460,11 +571,77 @@ const LibraryScreen: React.FC = () => {
             )}
 
             {activeTab === 'search' && (
-              <View style={styles.emptyState}>
-                <MaterialCommunityIcons name="book-search" size={64} color={colors.muted} />
-                <Text style={styles.emptyText}>Catalog Search</Text>
-                <Text style={styles.emptySubtext}>Search library catalog coming soon</Text>
-              </View>
+              <>
+                <SectionHeader
+                  title="Library Catalog"
+                  actionLabel={`${libraryCatalog.length} books`}
+                />
+                
+                {/* Search input */}
+                <View style={styles.searchContainer}>
+                  <MaterialCommunityIcons name="magnify" size={20} color={colors.slate} />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search by title, author, ISBN, or category..."
+                    placeholderTextColor={colors.slate}
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                  />
+                  {searchQuery.length > 0 && (
+                    <Pressable onPress={() => setSearchQuery('')}>
+                      <MaterialCommunityIcons name="close-circle" size={20} color={colors.slate} />
+                    </Pressable>
+                  )}
+                </View>
+
+                {/* Search results */}
+                {filteredCatalog.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <MaterialCommunityIcons name="book-search" size={64} color={colors.muted} />
+                    <Text style={styles.emptyText}>No books found</Text>
+                    <Text style={styles.emptySubtext}>Try a different search term</Text>
+                  </View>
+                ) : (
+                  filteredCatalog.map(book => (
+                    <SurfaceCard key={book.id} style={styles.catalogCard}>
+                      <View style={styles.catalogHeader}>
+                        <View style={styles.catalogLeft}>
+                          {book.cover ? (
+                            <Image source={{uri: book.cover}} style={styles.catalogCover} />
+                          ) : (
+                            <View style={[styles.catalogCoverPlaceholder, {backgroundColor: colors.panel}]}>
+                              <MaterialCommunityIcons name="book" size={24} color={colors.slate} />
+                            </View>
+                          )}
+                          <View style={styles.catalogInfo}>
+                            <Text style={styles.catalogTitle} numberOfLines={2}>{book.title}</Text>
+                            <Text style={styles.catalogAuthor}>{book.author}</Text>
+                            <Text style={styles.catalogIsbn}>ISBN: {book.isbn}</Text>
+                            <View style={styles.catalogCategory}>
+                              <MaterialCommunityIcons name="tag" size={12} color={colors.blue} />
+                              <Text style={styles.catalogCategoryText}>{book.category}</Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                      <View style={styles.catalogActions}>
+                        <Pressable
+                          style={styles.catalogActionBtn}
+                          onPress={() => console.log('Reserve book:', book.id)}>
+                          <MaterialCommunityIcons name="bookmark" size={18} color={colors.blue} />
+                          <Text style={styles.catalogActionText}>Reserve</Text>
+                        </Pressable>
+                        <Pressable
+                          style={styles.catalogActionBtn}
+                          onPress={() => console.log('Book details:', book.id)}>
+                          <MaterialCommunityIcons name="information" size={18} color={colors.slate} />
+                          <Text style={styles.catalogActionText}>Details</Text>
+                        </Pressable>
+                      </View>
+                    </SurfaceCard>
+                  ))
+                )}
+              </>
             )}
           </View>
         </ScrollView>
@@ -798,6 +975,94 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.slate,
     marginTop: 4,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.line,
+    gap: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.ink,
+  },
+  catalogCard: {
+    marginBottom: 16,
+  },
+  catalogHeader: {
+    marginBottom: 12,
+  },
+  catalogLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  catalogCover: {
+    width: 50,
+    height: 70,
+    borderRadius: 8,
+  },
+  catalogCoverPlaceholder: {
+    width: 50,
+    height: 70,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  catalogInfo: {
+    flex: 1,
+  },
+  catalogTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.ink,
+    marginBottom: 4,
+  },
+  catalogAuthor: {
+    fontSize: 13,
+    color: colors.slate,
+    marginBottom: 2,
+  },
+  catalogIsbn: {
+    fontSize: 11,
+    color: colors.muted,
+    marginBottom: 4,
+  },
+  catalogCategory: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  catalogCategoryText: {
+    fontSize: 11,
+    color: colors.blue,
+    fontWeight: '600',
+  },
+  catalogActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  catalogActionBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: colors.blueSoft,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  catalogActionText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.blue,
   },
 });
 
