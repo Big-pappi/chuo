@@ -28,9 +28,9 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
         <Pressable onPress={onProfile} style={styles.summaryAction}><MaterialCommunityIcons name="arrow-top-right" size={16} color={colors.blue} /></Pressable>
       </View>
       <View style={styles.metricsRow}>
-        <View style={[styles.metric, styles.metricPrimary]}><Text style={[styles.metricLabel, styles.metricPrimaryLabel]}>Current GPA</Text><Text style={styles.metricValue}>{mockStudent.gpa.toFixed(2)}</Text><Text style={[styles.metricMeta, styles.metricPrimaryMeta]}>+{mockStudent.gpaDelta.toFixed(2)} this term</Text></View>
-        <View style={styles.metric}><Text style={styles.metricLabel}>Standing</Text><Text style={styles.metricValueSmall}>{mockStudent.standing}</Text><Text style={styles.metricMeta}>Academic status</Text></View>
-        <View style={styles.metric}><Text style={styles.metricLabel}>Year / Sem</Text><Text style={styles.metricValueSmall}>Y{mockStudent.year} / S{mockStudent.semester}</Text><Text style={styles.metricMeta}>Programme</Text></View>
+        <View style={styles.metric}><View style={[styles.metricIcon, {backgroundColor: colors.blueSoft}]}><MaterialCommunityIcons name="chart-line" size={18} color={colors.blue} /></View><Text style={styles.metricLabel}>GPA</Text><Text style={styles.metricValue}>{mockStudent.gpa.toFixed(2)}</Text><Text style={styles.metricMeta}>+{mockStudent.gpaDelta.toFixed(2)} term</Text></View>
+        <View style={styles.metric}><View style={[styles.metricIcon, {backgroundColor: colors.greenSoft}]}><MaterialCommunityIcons name="medal-outline" size={18} color={colors.green} /></View><Text style={styles.metricLabel}>Standing</Text><Text style={styles.metricValueSmall}>{mockStudent.standing}</Text><Text style={styles.metricMeta}>Current</Text></View>
+        <View style={styles.metric}><View style={[styles.metricIcon, {backgroundColor: colors.orangeSoft}]}><MaterialCommunityIcons name="calendar-outline" size={18} color={colors.orange} /></View><Text style={styles.metricLabel}>Progress</Text><Text style={styles.metricValueSmall}>Y{mockStudent.year} / S{mockStudent.semester}</Text><Text style={styles.metricMeta}>Programme</Text></View>
       </View>
     </View>
   );
@@ -278,7 +278,8 @@ const styles = StyleSheet.create({
   summaryTitle: {fontSize: 18, fontWeight: '900', color: colors.ink},
   summaryAction: {width: 34, height: 34, borderRadius: 12, backgroundColor: colors.blueSoft, alignItems: 'center', justifyContent: 'center'},
   metricsRow: {flexDirection: 'row', gap: 8},
-  metric: {flex: 1, minHeight: 102, borderRadius: 16, padding: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line},
+  metric: {flex: 1, minHeight: 128, borderRadius: 20, padding: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line, shadowColor: colors.navy, shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: {width: 0, height: 4}, elevation: 1},
+  metricIcon: {width: 36, height: 36, borderRadius: 13, alignItems: 'center', justifyContent: 'center', marginBottom: 10},
   metricPrimary: {backgroundColor: colors.blue, borderColor: colors.blue},
   metricPrimaryLabel: {color: 'rgba(255,255,255,0.76)'},
   metricPrimaryMeta: {color: 'rgba(255,255,255,0.78)'},

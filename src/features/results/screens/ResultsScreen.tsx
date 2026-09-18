@@ -9,7 +9,7 @@ import {fetchResults, fetchTranscript} from '../../../store/slices/universitySli
 import {SemesterResults, AcademicResult} from '../../../types/university.types';
 import {colors} from '../../../theme';
 import Screen from '@/components/ui/Screen';
-import {SurfaceCard, Pill} from '@/components/ui/Cards';
+import {Pill} from '@/components/ui/Cards';
 import LoadingSpinner from '../../../components/LoadingSpinner';
 import EmptyState from '../../../components/EmptyState';
 
@@ -162,8 +162,8 @@ const ResultsScreen: React.FC = () => {
           })}
         </View>
 
-        {/* Summary card */}
-        <SurfaceCard style={styles.summaryCard}>
+        {/* Results snapshot */}
+        <View style={styles.summaryCard}>
           <View style={styles.summaryRow}>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryLabel}>CGPA</Text>
@@ -184,7 +184,7 @@ const ResultsScreen: React.FC = () => {
           <View style={styles.standingBadge}>
             <Text style={styles.standingText}>{standing(summary.cgpa)}</Text>
           </View>
-        </SurfaceCard>
+        </View>
 
         {/* Results list */}
         {results.length === 0 ? (
@@ -246,10 +246,8 @@ const styles = StyleSheet.create({
   /* Scroll Content */
   scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
-  /* Summary Card */
-  summaryCard: {
-    marginBottom: 16,
-  },
+  /* Results snapshot */
+  summaryCard: {marginBottom: 24, paddingVertical: 4},
   summaryRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -266,8 +264,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   summaryValue: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 24,
+    fontWeight: '900',
     color: colors.ink,
     marginBottom: 2,
   },

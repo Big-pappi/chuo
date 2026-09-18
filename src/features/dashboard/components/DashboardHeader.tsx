@@ -25,7 +25,9 @@ export default function DashboardHeader({
         <Image source={mockStudent.avatar} style={styles.avatar} />
         <View style={styles.online} />
       </Pressable>
-      <View style={styles.headerCenter} />
+      <View style={styles.headerCenter}>
+        <Text style={styles.headerGreeting}>{`Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, ${mockStudent.firstName}`}</Text>
+      </View>
       <View style={styles.actions}>
         <Pressable style={styles.iconBtn} onPress={onSearch} hitSlop={8}>
           <MaterialCommunityIcons name="magnify" size={20} color={colors.ink} />
@@ -50,10 +52,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 18,
   },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-  },
+  headerCenter: {flex: 1, alignItems: 'flex-start', marginLeft: 12},
+  headerGreeting: {fontSize: 14, fontWeight: '800', color: colors.ink},
   eyebrow: {
     fontSize: 9,
     letterSpacing: 1.4,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   badgeText: {color: colors.white, fontSize: 8, fontWeight: '800'},
-  avatar: {width: 40, height: 40, borderRadius: 20, backgroundColor: colors.line},
+  avatar: {width: 42, height: 42, borderRadius: 21, backgroundColor: colors.line, borderWidth: 3, borderColor: colors.bg},
   online: {
     position: 'absolute',
     bottom: 0,
