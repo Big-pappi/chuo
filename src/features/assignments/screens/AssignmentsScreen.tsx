@@ -139,7 +139,7 @@ const AssignmentsScreen: React.FC = () => {
     const daysRemaining = getDaysRemaining(assignment.dueDate);
 
     return (
-      <SurfaceCard key={assignment.id} style={styles.assignmentCard}>
+      <View key={assignment.id} style={[styles.assignmentCard, {backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line}]}>
         <View style={styles.cardHeader}>
           <View style={styles.cardIcon}>
             <MaterialCommunityIcons name={getStatusIcon(assignment.status)} size={20} color={statusStyle.color} />
@@ -186,7 +186,7 @@ const AssignmentsScreen: React.FC = () => {
             </View>
           )}
         </View>
-      </SurfaceCard>
+      </View>
     );
   };
 
@@ -301,30 +301,27 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
 
-  /* Toggle */
+  /* Toggle - Cool Design */
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.panel,
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 6,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   toggleButton: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: 12,
+    borderRadius: 12,
     alignItems: 'center',
   },
   activeToggle: {
-    backgroundColor: colors.white,
-    shadowColor: '#0B2A6B',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 2,
+    backgroundColor: colors.blue,
   },
   toggleText: {fontSize: 13, fontWeight: '700', color: colors.slate},
-  activeToggleText: {color: colors.blue},
+  activeToggleText: {color: colors.white},
 
   /* Assignment card */
   assignmentCard: {marginBottom: 16},

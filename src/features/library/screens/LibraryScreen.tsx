@@ -363,156 +363,96 @@ const LibraryScreen: React.FC = () => {
             <Pressable
               style={styles.headerBtn}
               hitSlop={8}
-              onPress={() => console.log('Library card')}>
-              <MaterialCommunityIcons name="card-account-details" size={22} color={colors.ink} />
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
           </View>
         </View>
 
-        <ScrollView style={styles.scrollContent}>
-          {/* Library stats */}
-          <SurfaceCard style={styles.statsCard}>
-          <View style={styles.statsHeader}>
-            <View style={styles.statIcon}>
-              <MaterialCommunityIcons name="bookshelf" size={28} color={colors.blue} />
-            </View>
-            <View style={styles.statInfo}>
-              <Text style={styles.statLabel}>Your Library Account</Text>
-              <Text style={styles.statValue}>3 Active Borrowings</Text>
-            </View>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          {/* Tab navigation */}
+          <View style={styles.tabContainer}>
+            {(['borrowed', 'digital', 'history', 'search'] as const).map(tab => {
+              const isActive = activeTab === tab;
+              const icon = tab === 'borrowed' ? 'book' : 
+                           tab === 'digital' ? 'cloud' : 
+                           tab === 'history' ? 'clock-time-three' : 'magnify';
+              return (
+                <Pressable
+                  key={tab}
+                  style={[styles.tab, isActive && styles.activeTab]}
+                  onPress={() => setActiveTab(tab)}>
+                  <MaterialCommunityIcons 
+                    name={icon as any} 
+                    size={22} 
+                    color={isActive ? colors.blue : colors.slate} 
+                  />
+                  <Text style={[styles.tabText, isActive && styles.activeTabText]}>
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{borrowedBooks.filter(b => b.status === 'borrowed').length}</Text>
-              <Text style={styles.statItemLabel}>Borrowed</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={[styles.statNumber, {color: colors.red}]}>{borrowedBooks.filter(b => b.status === 'overdue').length}</Text>
-              <Text style={styles.statItemLabel}>Overdue</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{readingHistory.length}</Text>
-              <Text style={styles.statItemLabel}>History</Text>
-            </View>
-          </View>
-        </SurfaceCard>
 
-        {/* Tab navigation */}
-        <View style={styles.tabContainer}>
-          {(['borrowed', 'digital', 'history', 'search'] as const).map(tab => {
-            const isActive = activeTab === tab;
-            const icon = tab === 'borrowed' ? 'book' : 
-                         tab === 'digital' ? 'cloud' : 
-                         tab === 'history' ? 'clock-time-three' : 'magnify';
-            return (
-              <Pressable
-                key={tab}
-                style={[styles.tab, isActive && styles.activeTab]}
-                onPress={() => setActiveTab(tab)}>
-                <MaterialCommunityIcons 
-                  name={icon as any} 
-                  size={20} 
-                  color={isActive ? colors.blue : colors.slate} 
+          {/* Content based on active tab */}
+          <View style={styles.content}>
+            {activeTab === 'borrowed' && (
+              <>
+                <SectionHeader
+                  title="Borrowed Books"
+                  actionLabel={`${borrowedBooks.length} items`}
                 />
-                <Text style={[styles.tabText, isActive && styles.activeTabText]}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                {borrowedBooks.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <MaterialCommunityIcons name="book-off" size={64} color={colors.muted} />
+                    <Text style={styles.emptyText}>No borrowed books</Text>
+                    <Text style={styles.emptySubtext}>Visit the library to borrow books</Text>
+                  </View>
+                ) : (
+                  borrowedBooks.map(renderBorrowedBook)
+                )}
+              </>
+            )}
 
-        {/* Content based on active tab */}
-        <View style={styles.content}>
-          {activeTab === 'borrowed' && (
-            <>
-              <SectionHeader
-                title="Borrowed Books"
-                actionLabel={`${borrowedBooks.length} items`}
-              />
-              {borrowedBooks.length === 0 ? (
-                <View style={styles.emptyState}>
-                  <MaterialCommunityIcons name="book-off" size={64} color={colors.muted} />
-                  <Text style={styles.emptyText}>No borrowed books</Text>
-                  <Text style={styles.emptySubtext}>Visit the library to borrow books</Text>
+            {activeTab === 'digital' && (
+              <>
+                <SectionHeader
+                  title="Digital Resources"
+                  actionLabel={`${digitalResources.length} available`}
+                />
+                <View style={styles.resourceGrid}>
+                  {digitalResources.map(renderDigitalResource)}
                 </View>
-              ) : (
-                borrowedBooks.map(renderBorrowedBook)
-              )}
-            </>
-          )}
+              </>
+            )}
 
-          {activeTab === 'digital' && (
-            <>
-              <SectionHeader
-                title="Digital Resources"
-                actionLabel={`${digitalResources.length} available`}
-              />
-              <View style={styles.resourceGrid}>
-                {digitalResources.map(renderDigitalResource)}
-              </View>
-            </>
-          )}
+            {activeTab === 'history' && (
+              <>
+                <SectionHeader
+                  title="Reading History"
+                  actionLabel={`${readingHistory.length} items`}
+                />
+                {readingHistory.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <MaterialCommunityIcons name="history" size={64} color={colors.muted} />
+                    <Text style={styles.emptyText}>No reading history</Text>
+                    <Text style={styles.emptySubtext}>Your borrowed books will appear here</Text>
+                  </View>
+                ) : (
+                  readingHistory.map(renderHistoryItem)
+                )}
+              </>
+            )}
 
-          {activeTab === 'history' && (
-            <>
-              <SectionHeader
-                title="Reading History"
-                actionLabel={`${readingHistory.length} items`}
-              />
-              {readingHistory.length === 0 ? (
-                <View style={styles.emptyState}>
-                  <MaterialCommunityIcons name="history" size={64} color={colors.muted} />
-                  <Text style={styles.emptyText}>No reading history</Text>
-                  <Text style={styles.emptySubtext}>Your borrowed books will appear here</Text>
-                </View>
-              ) : (
-                readingHistory.map(renderHistoryItem)
-              )}
-            </>
-          )}
-
-          {activeTab === 'search' && (
-            <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="book-search" size={64} color={colors.muted} />
-              <Text style={styles.emptyText}>Catalog Search</Text>
-              <Text style={styles.emptySubtext}>Search library catalog coming soon</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Quick actions */}
-        <SurfaceCard style={styles.quickActionsCard}>
-          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
-          <View style={styles.quickActionsGrid}>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Search catalog')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="magnify" size={24} color={colors.blue} />
+            {activeTab === 'search' && (
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="book-search" size={64} color={colors.muted} />
+                <Text style={styles.emptyText}>Catalog Search</Text>
+                <Text style={styles.emptySubtext}>Search library catalog coming soon</Text>
               </View>
-              <Text style={styles.quickActionText}>Search</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Reserve book')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="bookmark" size={24} color={colors.green} />
-              </View>
-              <Text style={styles.quickActionText}>Reserve</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Suggest purchase')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="book-plus" size={24} color={colors.purple} />
-              </View>
-              <Text style={styles.quickActionText}>Suggest</Text>
-            </Pressable>
-            <Pressable style={styles.quickActionItem} onPress={() => console.log('Library hours')}>
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons name="clock" size={24} color={colors.orange} />
-              </View>
-              <Text style={styles.quickActionText}>Hours</Text>
-            </Pressable>
+            )}
           </View>
-        </SurfaceCard>
         </ScrollView>
       </View>
     </Screen>
@@ -537,7 +477,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    gap: 12,
   },
   title: {
     flex: 1,
@@ -548,7 +488,8 @@ const styles = StyleSheet.create({
   },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
   /* Header Buttons */
   headerBtn: {
@@ -564,93 +505,42 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
   },
-
-  /* Stats Card */
-  statsCard: {
-    marginBottom: 16,
-  },
-  statsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  statIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.blueSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  statInfo: {
-    flex: 1,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: colors.slate,
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.ink,
-  },
-  statsRow: {
-    flexDirection: 'row',
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: colors.panel,
-    borderRadius: 12,
-    padding: 16,
   },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.blue,
-    marginBottom: 4,
-  },
-  statItemLabel: {
-    fontSize: 12,
-    color: colors.slate,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: colors.line,
-  },
+
+  /* Tab Container - Cool Design */
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.panel,
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 6,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   tab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10,
-    borderRadius: 10,
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 12,
   },
   activeTab: {
-    backgroundColor: colors.white,
-    shadowColor: '#0B2A6B',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 2,
+    backgroundColor: colors.blue,
   },
   tabText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.slate,
   },
   activeTabText: {
-    color: colors.blue,
+    color: colors.white,
   },
   content: {marginBottom: 16},
   bookCard: {
@@ -874,36 +764,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.slate,
     marginTop: 4,
-  },
-  quickActionsCard: {
-    marginBottom: 20,
-  },
-  quickActionsTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.ink,
-    marginBottom: 12,
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  quickActionItem: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  quickActionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.panel,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quickActionText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.slate,
   },
 });
 

@@ -286,32 +286,29 @@ const styles = StyleSheet.create({
 
   periodFilter: {
     flexDirection: 'row',
-    backgroundColor: colors.panel,
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 6,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   periodTab: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: 12,
+    borderRadius: 12,
     alignItems: 'center',
   },
   activePeriodTab: {
-    backgroundColor: colors.white,
-    shadowColor: '#0B2A6B',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 2,
+    backgroundColor: colors.blue,
   },
   periodTabText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.slate,
   },
   activePeriodTabText: {
-    color: colors.blue,
+    color: colors.white,
   },
   content: {marginBottom: 16},
   attendanceCard: {
