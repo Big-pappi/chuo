@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -195,93 +195,38 @@ const AttendanceScreen: React.FC = () => {
             <Pressable
               style={styles.headerBtn}
               hitSlop={8}
-              onPress={() => console.log('Calendar view')}>
-              <MaterialCommunityIcons name="calendar" size={22} color={colors.ink} />
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
           </View>
         </View>
 
-        <ScrollView style={styles.scrollContent}>
-          {/* Overall attendance summary */}
-          <SurfaceCard style={styles.summaryCard}>
-          <View style={styles.summaryHeader}>
-            <View style={styles.summaryIcon}>
-              <MaterialCommunityIcons name={overallConfig.icon as any} size={32} color={overallConfig.color} />
-            </View>
-            <View style={styles.summaryInfo}>
-              <Text style={styles.summaryLabel}>Overall Attendance</Text>
-              <Text style={[styles.summaryPercentage, {color: overallConfig.color}]}>
-                {overallAttendance}%
-              </Text>
-            </View>
-            <View style={[styles.summaryBadge, {backgroundColor: overallConfig.soft}]}>
-              <Text style={[styles.summaryBadgeText, {color: overallConfig.color}]}>
-                {overallConfig.label}
-              </Text>
-            </View>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          {/* Period filter */}
+          <View style={styles.periodFilter}>
+            {(['semester', 'month', 'week'] as const).map(period => {
+              const isActive = selectedPeriod === period;
+              return (
+                <Pressable
+                  key={period}
+                  style={[styles.periodTab, isActive && styles.activePeriodTab]}
+                  onPress={() => setSelectedPeriod(period)}>
+                  <Text style={[styles.periodTabText, isActive && styles.activePeriodTabText]}>
+                    {period.charAt(0).toUpperCase() + period.slice(1)}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
 
-          <View style={styles.summaryStats}>
-            <View style={styles.summaryStat}>
-              <Text style={styles.summaryStatValue}>
-                {attendanceRecords.reduce((sum, r) => sum + r.totalClasses, 0)}
-              </Text>
-              <Text style={styles.summaryStatLabel}>Total Classes</Text>
-            </View>
-            <View style={styles.summaryStatDivider} />
-            <View style={styles.summaryStat}>
-              <Text style={styles.summaryStatValue}>
-                {attendanceRecords.reduce((sum, r) => sum + r.attendedClasses, 0)}
-              </Text>
-              <Text style={styles.summaryStatLabel}>Attended</Text>
-            </View>
-            <View style={styles.summaryStatDivider} />
-            <View style={styles.summaryStat}>
-              <Text style={[styles.summaryStatValue, {color: colors.red}]}>
-                {attendanceRecords.reduce((sum, r) => sum + (r.totalClasses - r.attendedClasses), 0)}
-              </Text>
-              <Text style={styles.summaryStatLabel}>Missed</Text>
-            </View>
+          {/* Course attendance list */}
+          <View style={styles.content}>
+            <SectionHeader
+              title="Course Attendance"
+              actionLabel={`${attendanceRecords.length} courses`}
+            />
+            {attendanceRecords.map(renderAttendanceCard)}
           </View>
-        </SurfaceCard>
-
-        {/* Period filter */}
-        <View style={styles.periodFilter}>
-          {(['semester', 'month', 'week'] as const).map(period => {
-            const isActive = selectedPeriod === period;
-            return (
-              <Pressable
-                key={period}
-                style={[styles.periodTab, isActive && styles.activePeriodTab]}
-                onPress={() => setSelectedPeriod(period)}>
-                <Text style={[styles.periodTabText, isActive && styles.activePeriodTabText]}>
-                  {period.charAt(0).toUpperCase() + period.slice(1)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {/* Course attendance list */}
-        <View style={styles.content}>
-          <SectionHeader
-            title="Course Attendance"
-            actionLabel={`${attendanceRecords.length} courses`}
-          />
-          {attendanceRecords.map(renderAttendanceCard)}
-        </View>
-
-        {/* Attendance policy info */}
-        <SurfaceCard style={styles.policyCard}>
-          <View style={styles.policyHeader}>
-            <MaterialCommunityIcons name="information-outline" size={20} color={colors.blue} />
-            <Text style={styles.policyTitle}>Attendance Policy</Text>
-          </View>
-          <Text style={styles.policyText}>
-            Students must maintain at least 80% attendance to be eligible for final examinations.
-            Attendance below 60% is considered critical and may result in academic penalties.
-          </Text>
-        </SurfaceCard>
         </ScrollView>
       </View>
     </Screen>
@@ -306,7 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    gap: 12,
   },
   title: {
     flex: 1,
@@ -328,73 +273,17 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     elevation: 1,
   },
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
 
   /* Scroll Content */
-  scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
 
-  /* Summary Card */
-  summaryCard: {
-    marginBottom: 16,
-  },
-  summaryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  summaryIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.panel,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  summaryInfo: {
-    flex: 1,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    color: colors.slate,
-    marginBottom: 4,
-  },
-  summaryPercentage: {
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  summaryBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  summaryBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  summaryStats: {
-    flexDirection: 'row',
-    backgroundColor: colors.panel,
-    borderRadius: 12,
-    padding: 16,
-  },
-  summaryStat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  summaryStatValue: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.blue,
-    marginBottom: 4,
-  },
-  summaryStatLabel: {
-    fontSize: 12,
-    color: colors.slate,
-  },
-  summaryStatDivider: {
-    width: 1,
-    backgroundColor: colors.line,
-  },
   periodFilter: {
     flexDirection: 'row',
     backgroundColor: colors.panel,
@@ -521,25 +410,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: colors.blue,
-  },
-  policyCard: {
-    marginBottom: 20,
-  },
-  policyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  policyTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.ink,
-  },
-  policyText: {
-    fontSize: 13,
-    color: colors.slate,
-    lineHeight: 18,
   },
 });
 
