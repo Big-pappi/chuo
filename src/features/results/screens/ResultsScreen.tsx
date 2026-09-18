@@ -79,15 +79,11 @@ const ResultsScreen: React.FC = () => {
   const renderCourse = (course: AcademicResult) => (
     <View key={course.id} style={styles.courseRow}>
       <View style={styles.courseLeft}>
-        <View style={[styles.gradeIndicator, {backgroundColor: gradeColor(course.gradePoint)}]} />
-        <View style={styles.courseInfo}>
-          <Text style={styles.courseName} numberOfLines={1}>
-            {course.courseName}
-          </Text>
-          <Text style={styles.courseMeta}>
-            {course.courseCode} • {course.credits} credits
-          </Text>
-        </View>
+        <Text style={styles.courseCode}>{course.courseCode}</Text>
+        <Text style={styles.courseName} numberOfLines={1}>
+          {course.courseName}
+        </Text>
+        <Text style={styles.courseMeta}>{course.credits} credits</Text>
       </View>
       <View style={styles.courseRight}>
         <View style={[styles.gradeBadge, {backgroundColor: gradeSoft(course.gradePoint)}]}>
@@ -353,45 +349,42 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   gpaValue: {fontSize: 22, fontWeight: '800', color: colors.blue},
-  coursesList: {gap: 16},
+  coursesList: {gap: 12},
   courseRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 14,
+    padding: 14,
     borderWidth: 1,
     borderColor: colors.line,
   },
   courseLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
     flex: 1,
+    gap: 4,
   },
-  gradeIndicator: {
-    width: 4,
-    height: 36,
-    borderRadius: 2,
+  courseCode: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.blue,
   },
-  courseInfo: {flex: 1},
   courseName: {fontSize: 14, fontWeight: '700', color: colors.ink},
-  courseMeta: {fontSize: 12, color: colors.slate, marginTop: 2},
+  courseMeta: {fontSize: 11, color: colors.slate},
   courseRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   gradeBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
     borderRadius: 8,
-    minWidth: 40,
+    minWidth: 36,
     alignItems: 'center',
   },
-  gradeBadgeText: {fontSize: 14, fontWeight: '800'},
-  gradePoint: {fontSize: 16, fontWeight: '800', minWidth: 32, textAlign: 'right'},
+  gradeBadgeText: {fontSize: 13, fontWeight: '800'},
+  gradePoint: {fontSize: 15, fontWeight: '800', minWidth: 28, textAlign: 'right'},
 });
 
 export default ResultsScreen;

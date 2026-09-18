@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {colors} from '@/theme';
@@ -24,28 +24,28 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
   return (
     <View style={styles.summaryBlock}>
       <View style={styles.heroCard}>
-        <View style={styles.heroContent}>
-          <View style={styles.gpaSection}>
-            <View style={styles.gpaIconContainer}>
-              <MaterialCommunityIcons name="school" size={32} color={colors.white} />
-            </View>
-            <View style={styles.gpaTextContainer}>
-              <Text style={styles.gpaLabel}>Current GPA</Text>
-              <Text style={styles.gpaValue}>{mockStudent.gpa.toFixed(2)}</Text>
-              <View style={styles.gpaTrend}>
-                <MaterialCommunityIcons name="trending-up" size={14} color={colors.green} />
-                <Text style={styles.gpaTrendText}>+{mockStudent.gpaDelta.toFixed(2)}</Text>
-              </View>
-            </View>
+        <View style={styles.heroTop}>
+          <View style={styles.avatarWrap}>
+            <Image source={mockStudent.avatar} style={styles.avatar} />
           </View>
-          <View style={styles.standingContainer}>
-            <Text style={styles.standingLabel}>Standing</Text>
-            <Text style={styles.standingValue}>{mockStudent.standing}</Text>
+          <View style={styles.identity}>
+            <Text style={styles.name} numberOfLines={1}>
+              {mockStudent.name}
+            </Text>
+            <Text style={styles.program}>{mockStudent.programme}</Text>
           </View>
         </View>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <MaterialCommunityIcons name="book-open-variant" size={20} color={colors.blue} />
+            <MaterialCommunityIcons name="school" size={18} color={colors.blue} />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>GPA</Text>
+              <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
+            </View>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="book-open-variant" size={18} color={colors.green} />
             <View style={styles.statText}>
               <Text style={styles.statLabel}>Year</Text>
               <Text style={styles.statValue}>Y{mockStudent.year}</Text>
@@ -53,18 +53,10 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <MaterialCommunityIcons name="calendar-blank" size={20} color={colors.purple} />
+            <MaterialCommunityIcons name="calendar-blank" size={18} color={colors.purple} />
             <View style={styles.statText}>
-              <Text style={styles.statLabel}>Semester</Text>
+              <Text style={styles.statLabel}>Sem</Text>
               <Text style={styles.statValue}>S{mockStudent.semester}</Text>
-            </View>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <MaterialCommunityIcons name="credit-card" size={20} color={colors.orange} />
-            <View style={styles.statText}>
-              <Text style={styles.statLabel}>Credits</Text>
-              <Text style={styles.statValue}>48</Text>
             </View>
           </View>
         </View>
@@ -311,82 +303,54 @@ const styles = StyleSheet.create({
 
   summaryBlock: {marginBottom: 18},
   heroCard: {
-    borderRadius: 24,
-    padding: 20,
-    backgroundColor: colors.blue,
+    borderRadius: 20,
+    padding: 16,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.line,
     shadowColor: colors.navy,
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    shadowOffset: {width: 0, height: 4},
-    elevation: 3,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 2,
   },
-  heroContent: {
+  heroTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 12,
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
-  gpaSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  gpaIconContainer: {
+  avatarWrap: {
     width: 56,
     height: 56,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  gpaTextContainer: {
-    gap: 4,
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.panel,
+    borderWidth: 3,
+    borderColor: colors.white,
   },
-  gpaLabel: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 11,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  identity: {
+    flex: 1,
   },
-  gpaValue: {
-    color: colors.white,
-    fontSize: 36,
+  name: {
+    fontSize: 16,
     fontWeight: '800',
-    lineHeight: 38,
+    color: colors.ink,
+    marginBottom: 4,
   },
-  gpaTrend: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  gpaTrendText: {
-    color: colors.green,
+  program: {
     fontSize: 12,
-    fontWeight: '700',
-  },
-  standingContainer: {
-    alignItems: 'flex-end',
-    gap: 4,
-  },
-  standingLabel: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-  standingValue: {
-    color: colors.white,
-    fontSize: 18,
-    fontWeight: '800',
+    color: colors.slate,
   },
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 16,
-    padding: 12,
+    backgroundColor: colors.panel,
+    borderRadius: 14,
+    padding: 10,
   },
   statItem: {
     flex: 1,
@@ -398,19 +362,19 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   statLabel: {
-    color: 'rgba(255,255,255,0.7)',
     fontSize: 10,
     fontWeight: '600',
+    color: colors.slate,
   },
   statValue: {
-    color: colors.white,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
+    color: colors.ink,
   },
   statDivider: {
     width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    height: 20,
+    backgroundColor: colors.line,
   },
 
   /* Hero Card - Clean Style */
@@ -545,31 +509,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    rowGap: 20,
+    rowGap: 16,
   },
   qaItem: {
     width: '23%',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
   },
   qaTile: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
+    width: 58,
+    height: 58,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: colors.navy,
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    shadowOffset: {width: 0, height: 6},
-    elevation: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 2,
   },
   qaLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 14,
   },
 
   /* Clean List Styles */
