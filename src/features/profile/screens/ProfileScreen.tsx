@@ -17,7 +17,6 @@ import {
   profileAppSettings,
 } from '@/data/mock';
 import {
-  ProfileCard,
   MenuList,
   SettingsGroup,
   LogOutRow,
@@ -81,8 +80,6 @@ const ProfileScreen: React.FC = () => {
             ) : null}
           </Pressable>
         </View>
-
-        <ProfileCard onEdit={() => navigation.navigate('EditProfile' as never)} />
 
         <SectionHeader title="Settings" />
         <SettingsGroup

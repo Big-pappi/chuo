@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
@@ -29,31 +28,6 @@ const ResultsScreen: React.FC = () => {
     }
   }, [dispatch, viewMode]);
 
-  // Aggregate stats across all loaded semesters for the hero summary.
-  const summary = useMemo(() => {
-    if (results.length === 0) {
-      return {cgpa: 0, credits: 0, courses: 0, best: 0};
-    }
-    let totalPoints = 0;
-    let totalCredits = 0;
-    let courseCount = 0;
-    let best = 0;
-    results.forEach(sem => {
-      sem.courses.forEach(course => {
-        totalPoints += course.gradePoint * course.credits;
-        totalCredits += course.credits;
-        courseCount += 1;
-      });
-      best = Math.max(best, sem.gpa);
-    });
-    return {
-      cgpa: totalCredits > 0 ? totalPoints / totalCredits : 0,
-      credits: totalCredits,
-      courses: courseCount,
-      best,
-    };
-  }, [results]);
-
   const gradeColor = (gradePoint: number) => {
     if (gradePoint >= 4.0) return colors.green;
     if (gradePoint >= 3.0) return colors.blue;
@@ -66,15 +40,6 @@ const ResultsScreen: React.FC = () => {
     if (gradePoint >= 3.0) return colors.blueSoft;
     if (gradePoint >= 2.0) return colors.orangeSoft;
     return colors.redSoft;
-  };
-
-  // Classification bands on the Tanzanian 5.0 GPA scale.
-  const standing = (cgpa: number) => {
-    if (cgpa >= 4.4) return 'First Class';
-    if (cgpa >= 3.5) return 'Upper Second';
-    if (cgpa >= 2.7) return 'Lower Second';
-    if (cgpa >= 2.0) return 'Pass';
-    return 'Fail';
   };
 
   const renderCourse = (course: AcademicResult) => (
@@ -164,40 +129,6 @@ const ResultsScreen: React.FC = () => {
           })}
         </View>
 
-        {/* Summary card */}
-        <View style={styles.summaryCardWrapper}>
-          <LinearGradient
-            colors={['#06245E', '#0B4FD8', '#3A82F6']}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            style={styles.summaryCard}>
-            <View style={styles.summaryHeader}>
-              <MaterialCommunityIcons name="school" size={24} color="rgba(255,255,255,0.9)" />
-              <Text style={styles.summaryTitle}>Academic Summary</Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>CGPA</Text>
-                <Text style={styles.summaryValue}>{summary.cgpa.toFixed(2)}</Text>
-                <Text style={styles.summaryMeta}>/ 5.0</Text>
-              </View>
-              <View style={styles.summaryDivider} />
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Credits</Text>
-                <Text style={styles.summaryValue}>{summary.credits}</Text>
-              </View>
-              <View style={styles.summaryDivider} />
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Best GPA</Text>
-                <Text style={styles.summaryValue}>{summary.best.toFixed(2)}</Text>
-              </View>
-            </View>
-            <View style={styles.standingBadge}>
-              <Text style={styles.standingText}>{standing(summary.cgpa)}</Text>
-            </View>
-          </LinearGradient>
-        </View>
-
         {/* Results list */}
         {results.length === 0 ? (
           <EmptyState
@@ -257,73 +188,6 @@ const styles = StyleSheet.create({
 
   /* Scroll Content */
   scrollContent: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-
-  /* Summary Card */
-  summaryCardWrapper: {
-    marginBottom: 16,
-    shadowColor: colors.navy,
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    shadowOffset: {width: 0, height: 4},
-    elevation: 3,
-  },
-  summaryCard: {
-    borderRadius: 20,
-    padding: 16,
-  },
-  summaryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 14,
-  },
-  summaryTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: 'rgba(255,255,255,0.95)',
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  summaryItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  summaryLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 4,
-  },
-  summaryValue: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: colors.white,
-    marginBottom: 2,
-  },
-  summaryMeta: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.8)',
-  },
-  summaryDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  standingBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  standingText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#6EE7B7',
-  },
 
   /* Toggle */
   toggleContainer: {

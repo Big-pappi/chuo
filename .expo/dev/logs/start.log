@@ -110,3 +110,6 @@
 {"_e":"metro:bundling:progress","_t":1789770206867,"id":"z","progress":0,"total":1,"current":0}
 {"_e":"metro:bundling:done","_t":1789770206955,"id":"z","total":1,"ms":88.3823}
 {"_e":"metro:client_log","_t":1789770942375,"level":"error","data":["[ReferenceError: Property 'Image' doesn't exist]"]}
+{"_e":"metro:bundling:started","_t":1789771586555,"id":"1r","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789771586556,"id":"1r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789771586651,"id":"1r","total":1,"ms":94.9602}
