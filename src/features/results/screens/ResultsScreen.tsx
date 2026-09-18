@@ -98,7 +98,7 @@ const ResultsScreen: React.FC = () => {
   );
 
   const renderSemesterCard = (semester: SemesterResults) => (
-    <SurfaceCard
+    <View
       key={`${semester.semester}-${semester.academicYear}`}
       style={styles.semesterCard}>
       <View style={styles.semesterHeader}>
@@ -115,7 +115,7 @@ const ResultsScreen: React.FC = () => {
         </View>
       </View>
       <View style={styles.coursesList}>{semester.courses.map(renderCourse)}</View>
-    </SurfaceCard>
+    </View>
   );
 
   if (isLoading && results.length === 0) {
@@ -318,54 +318,8 @@ const styles = StyleSheet.create({
   toggleText: {fontSize: 13, fontWeight: '700', color: colors.slate},
   activeToggleText: {color: colors.blue},
 
-  /* Summary Card */
-  summaryCard: {
-    marginBottom: 16,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  summaryItem: {
-    flex: 1,
-  },
-  summaryLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: colors.slate,
-    marginBottom: 4,
-  },
-  summaryValue: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.ink,
-    marginBottom: 2,
-  },
-  summaryMeta: {
-    fontSize: 12,
-    color: colors.slate,
-  },
-  summaryDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: colors.line,
-  },
-  standingBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.greenSoft,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  standingText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.green,
-  },
-
-  /* Semester card */
-  semesterCard: {marginBottom: 16},
+  /* Semester timeline */
+  semesterCard: {marginBottom: 22, paddingLeft: 14, borderLeftWidth: 3, borderLeftColor: colors.blue},
   semesterHeader: {
     flexDirection: 'row',
     alignItems: 'center',

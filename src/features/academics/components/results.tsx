@@ -297,18 +297,17 @@ export function PerformanceOverview() {
     <SurfaceCard style={styles.block}>
       <Text style={styles.perfTitle}>Performance Overview</Text>
 
-      <View style={styles.perfBody}>
-        <Donut segments={segments} />
-
-        <View style={styles.legend}>
-          {GRADE_BANDS.map((band, i) => (
-            <View key={band.key} style={styles.legendRow}>
-              <View style={[styles.legendDot, {backgroundColor: band.color}]} />
-              <Text style={styles.legendLabel}>{band.label}</Text>
-              <Text style={styles.legendCount}>{counts[i]} Courses</Text>
+      <View style={styles.performanceRows}>
+        {GRADE_BANDS.map((band, i) => {
+          const maxCount = Math.max(...counts, 1);
+          return (
+            <View key={band.key} style={styles.performanceRow}>
+              <View style={[styles.gradeLetter, {backgroundColor: band.color}]}><Text style={styles.gradeLetterText}>{band.key}</Text></View>
+              <View style={styles.performanceTrack}><View style={[styles.performanceFill, {backgroundColor: band.color, width: `${Math.max((counts[i] / maxCount) * 100, counts[i] ? 10 : 0)}%`}]} /></View>
+              <Text style={styles.performanceCount}>{counts[i]}</Text>
             </View>
-          ))}
-        </View>
+          );
+        })}
       </View>
 
       <View style={styles.congrats}>
@@ -470,13 +469,13 @@ const styles = StyleSheet.create({
 
   /* Performance */
   perfTitle: {fontSize: 18, fontWeight: '800', color: colors.ink, marginBottom: 16},
-  perfBody: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
+  performanceRows: {gap: 12},
+  performanceRow: {flexDirection: 'row', alignItems: 'center', gap: 10},
+  gradeLetter: {width: 28, height: 28, borderRadius: 9, alignItems: 'center', justifyContent: 'center'},
+  gradeLetterText: {color: colors.white, fontSize: 12, fontWeight: '900'},
+  performanceTrack: {flex: 1, height: 10, borderRadius: 999, backgroundColor: colors.panel, overflow: 'hidden'},
+  performanceFill: {height: '100%', borderRadius: 999},
+  performanceCount: {width: 22, textAlign: 'right', fontSize: 12, fontWeight: '800', color: colors.ink},
   donutCenter: {...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center'},
   donutValue: {fontSize: 22, fontWeight: '800', color: colors.ink},
   donutLabel: {fontSize: 10, fontWeight: '700', color: colors.slate, marginTop: 2},
