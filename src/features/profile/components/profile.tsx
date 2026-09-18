@@ -25,82 +25,84 @@ type MenuItem = {
 /* ------------------------------------------------------------------ */
 export function ProfileCard({onEdit}: {onEdit?: () => void}) {
   return (
-    <LinearGradient
-      colors={gradients.hero}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
-      style={styles.card}>
-      <View style={styles.cardTop}>
-        {/* Avatar with edit badge */}
-        <View style={styles.avatarWrap}>
-          <Image source={mockStudent.avatar} style={styles.avatar} />
-          <Pressable style={styles.editBadge} onPress={onEdit} hitSlop={6}>
-            <MaterialCommunityIcons name="pencil" size={12} color={colors.white} />
-          </Pressable>
+    <View style={styles.cardWrapper}>
+      <LinearGradient
+        colors={gradients.hero}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={styles.card}>
+        <View style={styles.cardTop}>
+          {/* Avatar with edit badge */}
+          <View style={styles.avatarWrap}>
+            <Image source={mockStudent.avatar} style={styles.avatar} />
+            <Pressable style={styles.editBadge} onPress={onEdit} hitSlop={6}>
+              <MaterialCommunityIcons name="pencil" size={12} color={colors.white} />
+            </Pressable>
+          </View>
+
+          {/* Name + meta */}
+          <View style={styles.identity}>
+            <Text style={styles.name} numberOfLines={1}>
+              {mockStudent.name}
+            </Text>
+            <View style={styles.idRow}>
+              <Text style={styles.idText} numberOfLines={1}>
+                Student ID: {mockStudent.regNumber}
+              </Text>
+              <MaterialCommunityIcons name="content-copy" size={13} color="rgba(255,255,255,0.7)" />
+            </View>
+            <Text style={styles.program}>{mockStudent.faculty}</Text>
+            <View style={styles.yearPill}>
+              <Text style={styles.yearPillText}>
+                Year {mockStudent.year} • Semester {mockStudent.semester}
+              </Text>
+            </View>
+          </View>
         </View>
 
-        {/* Name + meta */}
-        <View style={styles.identity}>
-          <Text style={styles.name} numberOfLines={1}>
-            {mockStudent.name}
+        {/* Stats row */}
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="book-open-variant" size={20} color="rgba(255,255,255,0.9)" />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>Year</Text>
+              <Text style={styles.statValue}>Y{mockStudent.year}</Text>
+            </View>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="trophy" size={20} color="rgba(255,255,255,0.9)" />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>GPA</Text>
+              <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
+            </View>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="school" size={20} color="rgba(255,255,255,0.9)" />
+            <View style={styles.statText}>
+              <Text style={styles.statLabel}>Sem</Text>
+              <Text style={styles.statValue}>S{mockStudent.semester}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* University row */}
+        <View style={styles.uniRow}>
+          <View style={styles.uniLogo}>
+            <MaterialCommunityIcons name="school" size={18} color="rgba(255,255,255,0.9)" />
+          </View>
+          <Text style={styles.uniName} numberOfLines={2}>
+            {mockUniversity.name}
           </Text>
-          <View style={styles.idRow}>
-            <Text style={styles.idText} numberOfLines={1}>
-              Student ID: {mockStudent.regNumber}
-            </Text>
-            <MaterialCommunityIcons name="content-copy" size={13} color="rgba(255,255,255,0.7)" />
-          </View>
-          <Text style={styles.program}>{mockStudent.faculty}</Text>
-          <View style={styles.yearPill}>
-            <Text style={styles.yearPillText}>
-              Year {mockStudent.year} • Semester {mockStudent.semester}
-            </Text>
-          </View>
+          {mockUniversity.verified ? (
+            <MaterialCommunityIcons name="check-decagram" size={16} color="#6EE7B7" />
+          ) : null}
         </View>
-      </View>
-
-      {/* Stats row */}
-      <View style={styles.statsRow}>
-        <View style={styles.statItem}>
-          <MaterialCommunityIcons name="book-open-variant" size={20} color="rgba(255,255,255,0.9)" />
-          <View style={styles.statText}>
-            <Text style={styles.statLabel}>Year</Text>
-            <Text style={styles.statValue}>Y{mockStudent.year}</Text>
-          </View>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <MaterialCommunityIcons name="trophy" size={20} color="rgba(255,255,255,0.9)" />
-          <View style={styles.statText}>
-            <Text style={styles.statLabel}>GPA</Text>
-            <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
-          </View>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <MaterialCommunityIcons name="school" size={20} color="rgba(255,255,255,0.9)" />
-          <View style={styles.statText}>
-            <Text style={styles.statLabel}>Sem</Text>
-            <Text style={styles.statValue}>S{mockStudent.semester}</Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.divider} />
-
-      {/* University row */}
-      <View style={styles.uniRow}>
-        <View style={styles.uniLogo}>
-          <MaterialCommunityIcons name="school" size={18} color="rgba(255,255,255,0.9)" />
-        </View>
-        <Text style={styles.uniName} numberOfLines={2}>
-          {mockUniversity.name}
-        </Text>
-        {mockUniversity.verified ? (
-          <MaterialCommunityIcons name="check-decagram" size={16} color="#6EE7B7" />
-        ) : null}
-      </View>
-    </LinearGradient>
+      </LinearGradient>
+    </View>
   );
 }
 
@@ -264,7 +266,15 @@ export function JourneyBanner({onPress}: {onPress?: () => void}) {
 
 const styles = StyleSheet.create({
   /* Card */
-  card: {marginBottom: 20, padding: 16, borderRadius: 20, overflow: 'hidden'},
+  cardWrapper: {
+    marginBottom: 20,
+    shadowColor: colors.navy,
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 3,
+  },
+  card: {padding: 16, borderRadius: 20, overflow: 'hidden'},
   cardTop: {flexDirection: 'row', gap: 14, alignItems: 'center'},
   avatarWrap: {width: 82, height: 82, marginLeft: 2},
   avatar: {width: 82, height: 82, borderRadius: 41, backgroundColor: 'rgba(255,255,255,0.2)', borderWidth: 4, borderColor: 'rgba(255,255,255,0.4)'},
