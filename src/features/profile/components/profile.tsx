@@ -25,7 +25,11 @@ type MenuItem = {
 /* ------------------------------------------------------------------ */
 export function ProfileCard({onEdit}: {onEdit?: () => void}) {
   return (
-    <SurfaceCard style={styles.card}>
+    <LinearGradient
+      colors={gradients.hero}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.card}>
       <View style={styles.cardTop}>
         {/* Avatar with edit badge */}
         <View style={styles.avatarWrap}>
@@ -44,7 +48,7 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
             <Text style={styles.idText} numberOfLines={1}>
               Student ID: {mockStudent.regNumber}
             </Text>
-            <MaterialCommunityIcons name="content-copy" size={13} color={colors.muted} />
+            <MaterialCommunityIcons name="content-copy" size={13} color="rgba(255,255,255,0.7)" />
           </View>
           <Text style={styles.program}>{mockStudent.faculty}</Text>
           <View style={styles.yearPill}>
@@ -58,7 +62,7 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
       {/* Stats row */}
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
-          <MaterialCommunityIcons name="book-open-variant" size={20} color={colors.blue} />
+          <MaterialCommunityIcons name="book-open-variant" size={20} color="rgba(255,255,255,0.9)" />
           <View style={styles.statText}>
             <Text style={styles.statLabel}>Year</Text>
             <Text style={styles.statValue}>Y{mockStudent.year}</Text>
@@ -66,7 +70,7 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
-          <MaterialCommunityIcons name="trophy" size={20} color={colors.green} />
+          <MaterialCommunityIcons name="trophy" size={20} color="rgba(255,255,255,0.9)" />
           <View style={styles.statText}>
             <Text style={styles.statLabel}>GPA</Text>
             <Text style={styles.statValue}>{mockStudent.gpa.toFixed(2)}</Text>
@@ -74,7 +78,7 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
-          <MaterialCommunityIcons name="school" size={20} color={colors.purple} />
+          <MaterialCommunityIcons name="school" size={20} color="rgba(255,255,255,0.9)" />
           <View style={styles.statText}>
             <Text style={styles.statLabel}>Sem</Text>
             <Text style={styles.statValue}>S{mockStudent.semester}</Text>
@@ -87,16 +91,16 @@ export function ProfileCard({onEdit}: {onEdit?: () => void}) {
       {/* University row */}
       <View style={styles.uniRow}>
         <View style={styles.uniLogo}>
-          <MaterialCommunityIcons name="school" size={18} color={colors.blue} />
+          <MaterialCommunityIcons name="school" size={18} color="rgba(255,255,255,0.9)" />
         </View>
         <Text style={styles.uniName} numberOfLines={2}>
           {mockUniversity.name}
         </Text>
         {mockUniversity.verified ? (
-          <MaterialCommunityIcons name="check-decagram" size={16} color={colors.blue} />
+          <MaterialCommunityIcons name="check-decagram" size={16} color="#6EE7B7" />
         ) : null}
       </View>
-    </SurfaceCard>
+    </LinearGradient>
   );
 }
 
@@ -260,10 +264,10 @@ export function JourneyBanner({onPress}: {onPress?: () => void}) {
 
 const styles = StyleSheet.create({
   /* Card */
-  card: {marginBottom: 20, padding: 16},
+  card: {marginBottom: 20, padding: 16, borderRadius: 20, overflow: 'hidden'},
   cardTop: {flexDirection: 'row', gap: 14, alignItems: 'center'},
   avatarWrap: {width: 82, height: 82, marginLeft: 2},
-  avatar: {width: 82, height: 82, borderRadius: 41, backgroundColor: colors.panel, borderWidth: 4, borderColor: colors.white},
+  avatar: {width: 82, height: 82, borderRadius: 41, backgroundColor: 'rgba(255,255,255,0.2)', borderWidth: 4, borderColor: 'rgba(255,255,255,0.4)'},
   editBadge: {
     position: 'absolute',
     bottom: 2,
@@ -271,43 +275,43 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.blue,
+    backgroundColor: 'rgba(255,255,255,0.9)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: colors.white,
+    borderColor: 'rgba(255,255,255,0.4)',
   },
   identity: {flex: 1},
-  name: {fontSize: 18, fontWeight: '800', color: colors.ink, marginBottom: 4},
+  name: {fontSize: 18, fontWeight: '800', color: colors.white, marginBottom: 4},
   idRow: {flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3},
-  idText: {flexShrink: 1, fontSize: 12, color: colors.slate, fontWeight: '600'},
-  program: {fontSize: 12, color: colors.slate, marginBottom: 8},
+  idText: {flexShrink: 1, fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: '600'},
+  program: {fontSize: 12, color: 'rgba(255,255,255,0.8)', marginBottom: 8},
   yearPill: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.blueSoft,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 999,
   },
-  yearPillText: {fontSize: 11, fontWeight: '700', color: colors.blue},
+  yearPillText: {fontSize: 11, fontWeight: '700', color: colors.white},
 
   uniRow: {flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12},
   uniLogo: {
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: colors.blueSoft,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  uniName: {flex: 1, fontSize: 13, fontWeight: '700', color: colors.ink},
+  uniName: {flex: 1, fontSize: 13, fontWeight: '700', color: colors.white},
 
-  divider: {height: 1, backgroundColor: colors.line, marginVertical: 12},
+  divider: {height: 1, backgroundColor: 'rgba(255,255,255,0.2)', marginVertical: 12},
 
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.panel,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 16,
     padding: 12,
     marginTop: 12,
@@ -324,17 +328,17 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: colors.slate,
+    color: 'rgba(255,255,255,0.7)',
   },
   statValue: {
     fontSize: 14,
     fontWeight: '700',
-    color: colors.ink,
+    color: colors.white,
   },
   statDivider: {
     width: 1,
     height: 24,
-    backgroundColor: colors.line,
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
 
   /* Quick access */

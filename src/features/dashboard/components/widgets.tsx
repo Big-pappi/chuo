@@ -29,9 +29,6 @@ export function HeroCard({onProfile}: {onProfile?: () => void}) {
             <Image source={mockStudent.avatar} style={styles.avatar} />
           </View>
           <View style={styles.identity}>
-            <Text style={styles.name} numberOfLines={1}>
-              {mockStudent.name}
-            </Text>
             <Text style={styles.program}>{mockStudent.programme}</Text>
           </View>
         </View>
@@ -335,15 +332,10 @@ const styles = StyleSheet.create({
   identity: {
     flex: 1,
   },
-  name: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: colors.ink,
-    marginBottom: 4,
-  },
   program: {
-    fontSize: 12,
-    color: colors.slate,
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.ink,
   },
   statsRow: {
     flexDirection: 'row',
