@@ -47,16 +47,8 @@ export default function ChangePasswordScreen() {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          <View style={styles.securityCard}>
-            <MaterialCommunityIcons name="shield-lock" size={32} color={colors.blue} />
-            <View style={styles.securityContent}>
-              <Text style={styles.securityTitle}>Password Security</Text>
-              <Text style={styles.securityText}>
-                Create a strong password to protect your account
-              </Text>
-            </View>
-          </View>
-            
+          <Text style={styles.sectionTitle}>Change Password</Text>
+          
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Current Password</Text>
               <View style={styles.inputWrapper}>
@@ -124,21 +116,21 @@ export default function ChangePasswordScreen() {
             </View>
 
             <View style={styles.tips}>
-              <Text style={styles.tipsTitle}>Password Requirements:</Text>
+              <Text style={styles.tipsTitle}>Password Requirements</Text>
               <View style={styles.tipRow}>
-                <MaterialCommunityIcons name="check-circle" size={16} color={colors.green} />
+                <MaterialCommunityIcons name="circle-outline" size={14} color={colors.slate} />
                 <Text style={styles.tip}>At least 8 characters</Text>
               </View>
               <View style={styles.tipRow}>
-                <MaterialCommunityIcons name="check-circle" size={16} color={colors.green} />
+                <MaterialCommunityIcons name="circle-outline" size={14} color={colors.slate} />
                 <Text style={styles.tip}>Include uppercase and lowercase letters</Text>
               </View>
               <View style={styles.tipRow}>
-                <MaterialCommunityIcons name="check-circle" size={16} color={colors.green} />
+                <MaterialCommunityIcons name="circle-outline" size={14} color={colors.slate} />
                 <Text style={styles.tip}>Include at least one number</Text>
               </View>
               <View style={styles.tipRow}>
-                <MaterialCommunityIcons name="check-circle" size={16} color={colors.green} />
+                <MaterialCommunityIcons name="circle-outline" size={14} color={colors.slate} />
                 <Text style={styles.tip}>Include at least one special character</Text>
               </View>
             </View>
@@ -188,27 +180,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {flex: 1},
   scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-  securityCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.blueSoft,
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: colors.blue,
-  },
-  securityContent: {flex: 1, marginLeft: 12},
-  securityTitle: {
-    fontSize: 16,
+  sectionTitle: {
+    fontSize: 24,
     fontWeight: '800',
-    color: colors.blue,
-    marginBottom: 4,
-  },
-  securityText: {
-    fontSize: 13,
-    color: colors.blue,
-    lineHeight: 18,
+    color: colors.ink,
+    marginBottom: 24,
   },
   inputGroup: {marginBottom: 20},
   label: {fontSize: 14, fontWeight: '600', color: colors.slate, marginBottom: 8},
