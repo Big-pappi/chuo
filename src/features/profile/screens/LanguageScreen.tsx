@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
@@ -42,21 +41,21 @@ export default function LanguageScreen() {
           {languages.map(lang => (
             <Pressable
               key={lang.id}
-              style={[styles.languageCard, selectedLanguage === lang.id && styles.selectedCard]}
+              style={styles.languageCard}
               onPress={() => setSelectedLanguage(lang.id)}>
               <View style={styles.languageRow}>
                 <View style={styles.flagContainer}>
                   <Text style={styles.flag}>{lang.flag}</Text>
-                  {selectedLanguage === lang.id && (
-                    <View style={styles.checkOverlay}>
-                      <MaterialCommunityIcons name="check" size={20} color={colors.white} />
-                    </View>
-                  )}
                 </View>
                 <View style={styles.languageInfo}>
                   <Text style={styles.languageName}>{lang.name}</Text>
                   <Text style={styles.nativeName}>{lang.nativeName}</Text>
                 </View>
+                {selectedLanguage === lang.id && (
+                  <View style={styles.radioButton}>
+                    <View style={styles.radioButtonInner} />
+                  </View>
+                )}
               </View>
             </Pressable>
           ))}
@@ -114,57 +113,55 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: colors.line,
-  },
-  selectedCard: {
-    borderColor: colors.blue,
-    backgroundColor: colors.blueSoft,
   },
   languageRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   flagContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     backgroundColor: colors.panel,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
-    position: 'relative',
   },
   flag: {
-    fontSize: 32,
-  },
-  checkOverlay: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.blue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: colors.white,
+    fontSize: 28,
   },
   languageInfo: {
     flex: 1,
   },
   languageName: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: colors.ink,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   nativeName: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.slate,
+  },
+  radioButton: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioButtonInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: colors.blue,
   },
 });
