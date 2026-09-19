@@ -1,0 +1,377 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model University {
+  id                String    @id @default(uuid())
+  name              String
+  code              String    @unique
+  logo              String?
+  address           String
+  city              String
+  country           String
+  email             String
+  phone             String
+  website           String?
+  type              String    // 'public' | 'private'
+  status            String    @default('active') // 'active' | 'suspended' | 'inactive'
+  apiEndpoint       String?   // For universities with existing systems
+  apiKey            String?   @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  users             User[]
+  departments       Department[]
+  courses           Course[]
+  students          Student[]
+  fees              Fee[]
+  books             Book[]
+
+  @@index([code])
+  @@index([status])
+}
+
+model User {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  email             String    @unique
+  password          String
+  firstName         String
+  lastName          String
+  phone             String?
+  avatar            String?
+  role              Role
+  status            String    @default('active') // 'active' | 'suspended' | 'inactive'
+  lastLogin         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  permissions       Permission[]
+  courses           Course[]
+  attendance        Attendance[]
+  assignments       Assignment[]
+  borrowedBooks     BorrowRecord[]
+
+  @@index([universityId])
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+enum Role {
+  SUPER_ADMIN
+  UNIVERSITY_ADMIN
+  DEAN
+  HOD
+  LECTURER
+  COURSE_COORDINATOR
+  REGISTRAR
+  FINANCE_OFFICER
+  LIBRARIAN
+  IT_ADMIN
+  STUDENT
+}
+
+model Permission {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission        String    // e.g., 'user:create', 'course:read'
+  grantedBy         String?   // User ID who granted this permission
+  createdAt         DateTime  @default(now())
+
+  @@unique([userId, permission])
+  @@index([userId])
+  @@index([permission])
+}
+
+model Department {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  facultyId         String?   // Parent faculty
+  faculty           Department? @relation("FacultyDepartments", fields: [facultyId], references: [id], onDelete: SetNull)
+  departments       Department[] @relation("FacultyDepartments")
+  name              String
+  code              String
+  headId            String?   // HOD user ID
+  head              User?     @relation("DepartmentHead", fields: [headId], references: [id], onDelete: SetNull)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  courses           Course[]
+  students          Student[]
+
+  @@unique([universityId, code])
+  @@index([universityId])
+  @@index([facultyId])
+}
+
+model Course {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  departmentId      String
+  department        Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  lecturerId        String?
+  lecturer          User?     @relation(fields: [lecturerId], references: [id], onDelete: SetNull)
+  code              String
+  name              String
+  credits           Int
+  level             String    // '100' | '200' | '300' | '400'
+  semester          String    // '1' | '2'
+  description       String?
+  status            String    @default('active') // 'active' | 'inactive'
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  enrollments       Enrollment[]
+  assignments       Assignment[]
+  exams             Exam[]
+  attendance        Attendance[]
+
+  @@unique([universityId, code])
+  @@index([universityId])
+  @@index([departmentId])
+  @@index([lecturerId])
+  @@index([status])
+}
+
+model Student {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  departmentId      String
+  department        Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentNumber     String    @unique
+  year              Int
+  semester          String
+  gpa               Float?
+  status            String    @default('active') // 'active' | 'suspended' | 'graduated'
+  admissionDate     DateTime
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  enrollments       Enrollment[]
+  results           Result[]
+  attendance        Attendance[]
+  payments          Payment[]
+  borrowedBooks     BorrowRecord[]
+
+  @@index([universityId])
+  @@index([departmentId])
+  @@index([studentNumber])
+  @@index([status])
+}
+
+model Enrollment {
+  id                String    @id @default(uuid())
+  studentId         String
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId          String
+  course            Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  semester          String
+  academicYear      String
+  status            String    @default('enrolled') // 'enrolled' | 'dropped' | 'completed'
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([studentId, courseId, academicYear])
+  @@index([studentId])
+  @@index([courseId])
+  @@index([academicYear])
+}
+
+model Assignment {
+  id                String    @id @default(uuid())
+  courseId          String
+  course            Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lecturerId        String
+  lecturer          User      @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+  title             String
+  description       String
+  dueDate           DateTime
+  maxScore          Float
+  attachments       String[]  // File URLs
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  submissions       Submission[]
+
+  @@index([courseId])
+  @@index([lecturerId])
+  @@index([dueDate])
+}
+
+model Submission {
+  id                String    @id @default(uuid())
+  assignmentId      String
+  assignment        Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId         String
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  submittedAt       DateTime  @default(now())
+  attachments       String[]  // File URLs
+  score             Float?
+  feedback          String?
+  gradedAt          DateTime?
+  gradedBy          String?
+
+  @@unique([assignmentId, studentId])
+  @@index([assignmentId])
+  @@index([studentId])
+}
+
+model Exam {
+  id                String    @id @default(uuid())
+  courseId          String
+  course            Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lecturerId        String
+  lecturer          User      @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+  title             String
+  type              String    // 'midterm' | 'final' | 'quiz'
+  date              DateTime
+  duration          Int       // minutes
+  location          String?
+  maxScore          Float
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  results           Result[]
+
+  @@index([courseId])
+  @@index([lecturerId])
+  @@index([date])
+}
+
+model Result {
+  id                String    @id @default(uuid())
+  studentId         String
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examId            String
+  exam              Exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
+  score             Float
+  grade             String?
+  published         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([studentId, examId])
+  @@index([studentId])
+  @@index([examId])
+  @@index([published])
+}
+
+model Attendance {
+  id                String    @id @default(uuid())
+  courseId          String
+  course            Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  studentId         String
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lecturerId        String
+  lecturer          User      @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+  date              DateTime
+  status            String    // 'present' | 'absent' | 'late'
+  createdAt         DateTime  @default(now())
+
+  @@unique([courseId, studentId, date])
+  @@index([courseId])
+  @@index([studentId])
+  @@index([date])
+  @@index([status])
+}
+
+model Fee {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  name              String
+  amount            Float
+  type              String    // 'tuition' | 'library' | 'lab' | 'exam'
+  semester          String?
+  year              Int?
+  status            String    @default('active') // 'active' | 'inactive'
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  payments          Payment[]
+
+  @@index([universityId])
+  @@index([type])
+  @@index([status])
+}
+
+model Payment {
+  id                String    @id @default(uuid())
+  studentId         String
+  student           Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  feeId             String
+  fee               Fee       @relation(fields: [feeId], references: [id], onDelete: Cascade)
+  amount            Float
+  method            String    // 'cash' | 'card' | 'mobile' | 'bank'
+  transactionId     String?
+  status            String    @default('pending') // 'pending' | 'completed' | 'failed'
+  paidAt            DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([studentId])
+  @@index([feeId])
+  @@index([status])
+  @@index([paidAt])
+}
+
+model Book {
+  id                String    @id @default(uuid())
+  universityId      String
+  university        University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  isbn              String    @unique
+  title             String
+  author            String
+  category          String
+  publisher         String?
+  year              Int?
+  totalCopies       Int
+  availableCopies   Int
+  location          String?
+  coverImage        String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  borrowRecords     BorrowRecord[]
+
+  @@index([universityId])
+  @@index([isbn])
+  @@index([category])
+  @@index([availableCopies])
+}
+
+model BorrowRecord {
+  id                String    @id @default(uuid())
+  bookId            String
+  book              Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  borrowDate        DateTime
+  dueDate           DateTime
+  returnDate        DateTime?
+  status            String    @default('borrowed') // 'borrowed' | 'returned' | 'overdue'
+  fine              Float     @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([bookId])
+  @@index([userId])
+  @@index([status])
+  @@index([dueDate])
+}
