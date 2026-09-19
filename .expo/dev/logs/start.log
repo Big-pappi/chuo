@@ -426,3 +426,36 @@
 {"_e":"metro:client_log","_t":1789840709586,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
 {"_e":"metro:client_log","_t":1789840726930,"level":"warn","data":["\"caching\" is not a valid icon name for family \"material-community\""]}
 {"_e":"metro:server_log","_t":1789840974353,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:server_log","_t":1789841539972,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:bundling:started","_t":1789841708271,"id":"1k","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789841708271,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708274,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708406,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708488,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708588,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708688,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841708788,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841709273,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841709373,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789841709474,"id":"1k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789841709639,"id":"1k","total":1,"ms":1368.5757}
+{"_e":"metro:client_log","_t":1789841728522,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}
+{"_e":"metro:client_log","_t":1789841734137,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789841736539,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:server_log","_t":1789841799826,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:server_log","_t":1789842141936,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:server_log","_t":1789842814310,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:bundling:started","_t":1789852688145,"id":"1y","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789852688147,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688158,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688320,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688370,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688470,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688571,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852688671,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852689255,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852689355,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852689456,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789852689561,"id":"1y","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789852689661,"id":"1y","total":1,"ms":1514.9213}
+{"_e":"metro:server_log","_t":1789854139659,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
