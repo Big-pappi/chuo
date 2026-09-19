@@ -52,8 +52,8 @@ export default function LanguageScreen() {
                 </View>
               </View>
               {selectedLanguage === lang.id && (
-                <View style={styles.selectedIndicator}>
-                  <MaterialCommunityIcons name="check" size={16} color={colors.white} />
+                <View style={styles.selectedBadge}>
+                  <MaterialCommunityIcons name="check" size={14} color={colors.white} />
                 </View>
               )}
             </Pressable>
@@ -116,11 +116,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 12,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   selectedCard: {
     borderColor: colors.blue,
+    backgroundColor: colors.blueSoft,
   },
   languageRow: {
     flexDirection: 'row',
@@ -143,10 +144,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.slate,
   },
-  selectedIndicator: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+  selectedBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: colors.blue,
     alignItems: 'center',
     justifyContent: 'center',
