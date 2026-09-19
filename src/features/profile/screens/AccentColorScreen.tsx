@@ -44,7 +44,7 @@ export default function AccentColorScreen() {
               onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
             </Pressable>
-            <Text style={styles.title}>Change Theme</Text>
+            <Text style={styles.title}>Theme</Text>
             <Pressable style={styles.headerBtn} hitSlop={8}>
               <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
@@ -52,57 +52,42 @@ export default function AccentColorScreen() {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          <View style={styles.infoCard}>
-            <MaterialCommunityIcons name="palette" size={24} color={colors.blue} />
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>Customize Appearance</Text>
-              <Text style={styles.infoText}>
-                Choose your preferred theme and accent color
-              </Text>
-            </View>
+          <Text style={styles.sectionTitle}>Theme Mode</Text>
+          <View style={styles.themeOptions}>
+            {THEME_OPTIONS.filter(opt => opt.id === 'light' || opt.id === 'dark').map(option => (
+              <Pressable
+                key={option.id}
+                style={[styles.themeOption, theme === option.id && styles.selectedThemeOption]}
+                onPress={() => handleThemeSelect(option.id)}>
+                <View style={[styles.themeIcon, {backgroundColor: option.color}]}>
+                  <MaterialCommunityIcons name={option.icon as any} size={28} color="#fff" />
+                </View>
+                <Text style={styles.themeName}>{option.name}</Text>
+                {theme === option.id && (
+                  <View style={styles.themeCheck}>
+                    <MaterialCommunityIcons name="check" size={16} color="#fff" />
+                  </View>
+                )}
+              </Pressable>
+            ))}
           </View>
 
-          <Text style={styles.sectionTitle}>Mode</Text>
-          {THEME_OPTIONS.filter(opt => opt.id === 'light' || opt.id === 'dark').map(option => (
-            <Pressable
-              key={option.id}
-              style={[styles.option, theme === option.id && styles.selectedOption]}
-              onPress={() => handleThemeSelect(option.id)}>
-              <View style={[styles.colorCircle, {backgroundColor: option.color}]}>
-                <MaterialCommunityIcons name={option.icon as any} size={24} color="#fff" />
-              </View>
-              <View style={styles.optionText}>
-                <Text style={styles.optionName}>{option.name}</Text>
-                <Text style={styles.optionDesc}>{option.desc}</Text>
-              </View>
-              {theme === option.id && (
-                <View style={styles.checkContainer}>
-                  <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
-                </View>
-              )}
-            </Pressable>
-          ))}
-
           <Text style={styles.sectionTitle}>Accent Color</Text>
-          {THEME_OPTIONS.filter(opt => opt.id === 'blue' || opt.id === 'green' || opt.id === 'purple' || opt.id === 'orange' || opt.id === 'red' || opt.id === 'pink').map(option => (
-            <Pressable
-              key={option.id}
-              style={[styles.option, accent === option.id && styles.selectedOption]}
-              onPress={() => handleAccentSelect(option.id)}>
-              <View style={[styles.colorCircle, {backgroundColor: option.color}]}>
-                <MaterialCommunityIcons name={option.icon as any} size={24} color="#fff" />
-              </View>
-              <View style={styles.optionText}>
-                <Text style={styles.optionName}>{option.name}</Text>
-                <Text style={styles.optionDesc}>{option.desc}</Text>
-              </View>
-              {accent === option.id && (
-                <View style={styles.checkContainer}>
-                  <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+          <View style={styles.colorGrid}>
+            {THEME_OPTIONS.filter(opt => opt.id === 'blue' || opt.id === 'green' || opt.id === 'purple' || opt.id === 'orange' || opt.id === 'red' || opt.id === 'pink').map(option => (
+              <Pressable
+                key={option.id}
+                style={styles.colorOption}
+                onPress={() => handleAccentSelect(option.id)}>
+                <View style={[styles.colorCircle, accent === option.id && styles.selectedColorCircle, {backgroundColor: option.color}]}>
+                  {accent === option.id && (
+                    <MaterialCommunityIcons name="check" size={20} color="#fff" />
+                  )}
                 </View>
-              )}
-            </Pressable>
-          ))}
+                <Text style={styles.colorName}>{option.name}</Text>
+              </Pressable>
+            ))}
+          </View>
         </ScrollView>
       </View>
     </Screen>
@@ -146,63 +131,88 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
   scrollContent: {flex: 1},
-  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-  infoCard: {
-    flexDirection: 'row',
+  scrollContentContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 100,
+    paddingBottom: 20,
     alignItems: 'center',
-    backgroundColor: colors.blueSoft,
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: colors.blue,
-  },
-  infoContent: {flex: 1, marginLeft: 12},
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: colors.blue,
-    marginBottom: 4,
-  },
-  infoText: {
-    fontSize: 13,
-    color: colors.blue,
-    lineHeight: 18,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 16,
+    marginBottom: 20,
+    alignSelf: 'flex-start',
   },
-  option: {
+  themeOptions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
+    gap: 16,
+    marginBottom: 32,
+    width: '100%',
+  },
+  themeOption: {
+    flex: 1,
     backgroundColor: colors.white,
     borderRadius: 16,
-    marginBottom: 12,
+    padding: 20,
+    alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  selectedOption: {
+  selectedThemeOption: {
     borderColor: colors.blue,
     backgroundColor: colors.blueSoft,
   },
-  colorCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  themeIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    marginBottom: 12,
   },
-  optionText: {flex: 1},
-  optionName: {fontSize: 16, fontWeight: '700', color: colors.ink, marginBottom: 4},
-  optionDesc: {fontSize: 13, color: colors.slate},
-  checkContainer: {
-    backgroundColor: colors.white,
+  themeName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.ink,
+  },
+  themeCheck: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
     borderRadius: 12,
-    padding: 4,
+    backgroundColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colorGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    width: '100%',
+  },
+  colorOption: {
+    width: '30%',
+    alignItems: 'center',
+  },
+  colorCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  colorName: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.slate,
+  },
+  selectedColorCircle: {
+    borderColor: colors.blue,
   },
 });
