@@ -47,11 +47,12 @@ export default function ChangePasswordScreen() {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          <Text style={styles.sectionTitle}>Change Password</Text>
-          
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Current Password</Text>
               <View style={styles.inputWrapper}>
+                <View style={styles.inputIconContainer}>
+                  <MaterialCommunityIcons name="lock" size={20} color={colors.slate} />
+                </View>
                 <TextInput
                   style={styles.input}
                   value={formData.currentPassword}
@@ -74,6 +75,9 @@ export default function ChangePasswordScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>New Password</Text>
               <View style={styles.inputWrapper}>
+                <View style={styles.inputIconContainer}>
+                  <MaterialCommunityIcons name="lock-reset" size={20} color={colors.slate} />
+                </View>
                 <TextInput
                   style={styles.input}
                   value={formData.newPassword}
@@ -96,6 +100,9 @@ export default function ChangePasswordScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Confirm New Password</Text>
               <View style={styles.inputWrapper}>
+                <View style={styles.inputIconContainer}>
+                  <MaterialCommunityIcons name="lock-check" size={20} color={colors.slate} />
+                </View>
                 <TextInput
                   style={styles.input}
                   value={formData.confirmPassword}
@@ -180,32 +187,35 @@ const styles = StyleSheet.create({
   },
   scrollContent: {flex: 1},
   scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.ink,
-    marginBottom: 24,
-  },
   inputGroup: {marginBottom: 20},
   label: {fontSize: 14, fontWeight: '600', color: colors.slate, marginBottom: 8},
   inputWrapper: {
-    position: 'relative',
-  },
-  input: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    paddingRight: 48,
-    fontSize: 15,
-    color: colors.ink,
     borderWidth: 1,
     borderColor: colors.line,
+    paddingHorizontal: 4,
+  },
+  inputIconContainer: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: colors.ink,
   },
   eyeIcon: {
-    position: 'absolute',
-    right: 16,
-    top: 14,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tips: {
     backgroundColor: colors.white,
