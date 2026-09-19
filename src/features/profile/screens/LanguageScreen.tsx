@@ -10,8 +10,6 @@ import {mockStudent} from '@/data/mock';
 const languages = [
   {id: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧'},
   {id: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇹🇿'},
-  {id: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷'},
-  {id: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦'},
 ];
 
 export default function LanguageScreen() {
@@ -39,17 +37,7 @@ export default function LanguageScreen() {
         </View>
 
         <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
-          <View style={styles.infoCard}>
-            <MaterialCommunityIcons name="translate" size={24} color={colors.blue} />
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>App Language</Text>
-              <Text style={styles.infoText}>
-                Choose your preferred language for the app interface
-              </Text>
-            </View>
-          </View>
-
-          <Text style={styles.sectionTitle}>Available Languages</Text>
+          <Text style={styles.sectionTitle}>Select Language</Text>
 
           {languages.map(lang => (
             <Pressable
@@ -64,8 +52,8 @@ export default function LanguageScreen() {
                 </View>
               </View>
               {selectedLanguage === lang.id && (
-                <View style={styles.checkContainer}>
-                  <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+                <View style={styles.selectedIndicator}>
+                  <MaterialCommunityIcons name="check" size={16} color={colors.white} />
                 </View>
               )}
             </Pressable>
@@ -114,33 +102,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {flex: 1},
   scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-  infoCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.blueSoft,
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: colors.blue,
-  },
-  infoContent: {flex: 1, marginLeft: 12},
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: colors.blue,
-    marginBottom: 4,
-  },
-  infoText: {
-    fontSize: 13,
-    color: colors.blue,
-    lineHeight: 18,
-  },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 16,
+    marginBottom: 24,
   },
   languageCard: {
     flexDirection: 'row',
@@ -148,39 +114,41 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 16,
+    padding: 20,
     marginBottom: 12,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   selectedCard: {
     borderColor: colors.blue,
-    backgroundColor: colors.blueSoft,
   },
   languageRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   flag: {
-    fontSize: 36,
+    fontSize: 40,
     marginRight: 16,
   },
   languageInfo: {
     flex: 1,
   },
   languageName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: colors.ink,
     marginBottom: 4,
   },
   nativeName: {
-    fontSize: 13,
+    fontSize: 14,
     color: colors.slate,
   },
-  checkContainer: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 4,
+  selectedIndicator: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
