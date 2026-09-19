@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: colors.redSoft,
     alignItems: 'center',
-    justifyContent: 'center,
+    justifyContent: 'center',
   },
   actionCard: {
     flexDirection: 'row',
