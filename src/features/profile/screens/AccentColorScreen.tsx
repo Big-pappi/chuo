@@ -19,10 +19,18 @@ const THEME_OPTIONS = [
   {id: 'pink' as const, name: 'Pink Accent', color: '#EC4899', icon: 'flower', desc: 'Pink primary color theme'},
 ];
 
+const APP_ICONS = [
+  {id: 'default' as const, name: 'Default', icon: 'school', color: '#3B82F6'},
+  {id: 'dark' as const, name: 'Dark', icon: 'school', color: '#1E3A8A'},
+  {id: 'gradient' as const, name: 'Gradient', icon: 'palette', color: '#8B5CF6'},
+  {id: 'minimal' as const, name: 'Minimal', icon: 'circle', color: '#10B981'},
+];
+
 export default function AccentColorScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const {theme, accent, setTheme, setAccent} = useTheme();
+  const [selectedAppIcon, setSelectedAppIcon] = React.useState('default');
 
   const handleThemeSelect = (selectedTheme: 'light' | 'dark') => {
     setTheme(selectedTheme);
@@ -30,6 +38,10 @@ export default function AccentColorScreen() {
 
   const handleAccentSelect = (selectedAccent: 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'pink') => {
     setAccent(selectedAccent);
+  };
+
+  const handleAppIconSelect = (iconId: 'default' | 'dark' | 'gradient' | 'minimal') => {
+    setSelectedAppIcon(iconId);
   };
 
   return (
@@ -44,7 +56,7 @@ export default function AccentColorScreen() {
               onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
             </Pressable>
-            <Text style={styles.title}>Theme</Text>
+            <Text style={styles.title}>Appearance</Text>
             <Pressable style={styles.headerBtn} hitSlop={8}>
               <Image source={mockStudent.avatar} style={styles.avatar} />
             </Pressable>
@@ -85,6 +97,26 @@ export default function AccentColorScreen() {
                   )}
                 </View>
                 <Text style={styles.colorName}>{option.name}</Text>
+              </Pressable>
+            ))}
+          </View>
+
+          <Text style={styles.sectionTitle}>App Icon</Text>
+          <View style={styles.iconGrid}>
+            {APP_ICONS.map(icon => (
+              <Pressable
+                key={icon.id}
+                style={styles.iconOption}
+                onPress={() => handleAppIconSelect(icon.id)}>
+                <View style={[styles.iconSquare, selectedAppIcon === icon.id && styles.selectedIconSquare, {backgroundColor: icon.color}]}>
+                  <MaterialCommunityIcons name={icon.icon as any} size={32} color="#fff" />
+                  {selectedAppIcon === icon.id && (
+                    <View style={styles.iconCheck}>
+                      <MaterialCommunityIcons name="check" size={14} color="#fff" />
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.iconName}>{icon.name}</Text>
               </Pressable>
             ))}
           </View>
@@ -214,5 +246,44 @@ const styles = StyleSheet.create({
   },
   selectedColorCircle: {
     borderColor: colors.blue,
+  },
+  iconGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    width: '100%',
+  },
+  iconOption: {
+    width: '30%',
+    alignItems: 'center',
+  },
+  iconSquare: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  selectedIconSquare: {
+    borderColor: colors.blue,
+  },
+  iconCheck: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconName: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.slate,
   },
 });
