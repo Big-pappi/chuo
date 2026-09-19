@@ -18,8 +18,8 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export default function ProfileNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Profile">
+      <Stack.Screen name="ProfileStack" component={ProfileScreen} />
       <Stack.Screen name="AccentColor" component={AccentColorScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
