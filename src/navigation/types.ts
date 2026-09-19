@@ -16,6 +16,7 @@ export type MainTabParamList = {
   Home: undefined;
   Academics: undefined;
   Notifications: undefined;
+  Profile: {screen?: keyof ProfileStackParamList};
 };
 
 // Screens reachable from Home / Academics via a stack.
@@ -35,6 +36,10 @@ export type HomeStackParamList = {
   Library: undefined;
   ExamCenter: undefined;
   Scholarships: undefined;
+};
+
+// Screens reachable from Profile via a stack.
+export type ProfileStackParamList = {
   Profile: undefined;
   AccentColor: undefined;
   EditProfile: undefined;
