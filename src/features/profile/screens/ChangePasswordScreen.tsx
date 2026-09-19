@@ -58,6 +58,7 @@ export default function ChangePasswordScreen() {
                   value={formData.currentPassword}
                   onChangeText={text => setFormData({...formData, currentPassword: text})}
                   placeholder="Enter current password"
+                  placeholderTextColor={colors.slate}
                   secureTextEntry={!showPassword.current}
                 />
                 <Pressable
@@ -83,6 +84,7 @@ export default function ChangePasswordScreen() {
                   value={formData.newPassword}
                   onChangeText={text => setFormData({...formData, newPassword: text})}
                   placeholder="Enter new password"
+                  placeholderTextColor={colors.slate}
                   secureTextEntry={!showPassword.new}
                 />
                 <Pressable
@@ -108,6 +110,7 @@ export default function ChangePasswordScreen() {
                   value={formData.confirmPassword}
                   onChangeText={text => setFormData({...formData, confirmPassword: text})}
                   placeholder="Confirm new password"
+                  placeholderTextColor={colors.slate}
                   secureTextEntry={!showPassword.confirm}
                 />
                 <Pressable
@@ -186,9 +189,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
   scrollContent: {flex: 1},
-  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
-  inputGroup: {marginBottom: 20},
-  label: {fontSize: 14, fontWeight: '600', color: colors.slate, marginBottom: 8},
+  scrollContentContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 100,
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  inputGroup: {
+    marginBottom: 20,
+    width: '100%',
+    maxWidth: 400,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.slate,
+    marginBottom: 8,
+  },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -224,6 +241,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     borderWidth: 1,
     borderColor: colors.line,
+    width: '100%',
+    maxWidth: 400,
   },
   tipsTitle: {
     fontSize: 14,
@@ -243,5 +262,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 8,
+    width: '100%',
+    maxWidth: 400,
   },
 });
