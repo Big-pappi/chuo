@@ -10,7 +10,6 @@ const ICONS: Record<string, {active: string; inactive: string}> = {
   Home: {active: 'home', inactive: 'home-outline'},
   Academics: {active: 'school', inactive: 'school-outline'},
   Notifications: {active: 'bell', inactive: 'bell-outline'},
-  Profile: {active: 'account-circle', inactive: 'account-circle-outline'},
 };
 
 const BADGES: Record<string, number> = {

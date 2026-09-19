@@ -16,7 +16,6 @@ export type MainTabParamList = {
   Home: undefined;
   Academics: undefined;
   Notifications: undefined;
-  Profile: undefined;
 };
 
 // Screens reachable from Home / Academics via a stack.
