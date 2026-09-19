@@ -390,3 +390,39 @@
 {"_e":"metro:bundling:done","_t":1789837126146,"id":"1","total":1367,"ms":1310.5062}
 {"_e":"metro:client_log","_t":1789837143103,"level":"error","data":["[Error: Couldn't find a screen named 'Profile' to use as 'initialRouteName'.]"]}
 {"_e":"metro:client_log","_t":1789837194566,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}
+{"_e":"metro:bundling:failed","_t":1789837329793,"id":null,"message":"SyntaxError: C:\\Users\\AMARU WEBSTER\\Desktop\\projects\\uni\\src\\features\\profile\\screens\\ChangePasswordScreen.tsx: Unexpected token, expected \",\" (232:0)\n\n  230 |   tip: {\n  231 |     fontSize:  green}\n> 232 |\n      | ^","importStack":null,"filename":"src\\features\\profile\\screens\\ChangePasswordScreen.tsx","targetModuleName":null,"originModulePath":null}
+{"_e":"metro:bundling:failed","_t":1789837330064,"id":null,"message":"SyntaxError: C:\\Users\\AMARU WEBSTER\\Desktop\\projects\\uni\\src\\features\\profile\\screens\\ChangePasswordScreen.tsx: Unexpected token, expected \",\" (232:0)\n\n  230 |   tip: {\n  231 |     fontSize:  green}\n> 232 |\n      | ^","importStack":null,"filename":"src\\features\\profile\\screens\\ChangePasswordScreen.tsx","targetModuleName":null,"originModulePath":null}
+{"_e":"metro:bundling:failed","_t":1789837330076,"id":null,"message":"SyntaxError: C:\\Users\\AMARU WEBSTER\\Desktop\\projects\\uni\\src\\features\\profile\\screens\\ChangePasswordScreen.tsx: Unexpected token, expected \",\" (232:0)\n\n  230 |   tip: {\n  231 |     fontSize:  green}\n> 232 |\n      | ^","importStack":null,"filename":"src\\features\\profile\\screens\\ChangePasswordScreen.tsx","targetModuleName":null,"originModulePath":null}
+{"_e":"metro:bundling:failed","_t":1789837330228,"id":null,"message":"SyntaxError: C:\\Users\\AMARU WEBSTER\\Desktop\\projects\\uni\\src\\features\\profile\\screens\\ChangePasswordScreen.tsx: Unexpected token, expected \",\" (232:0)\n\n  230 |   tip: {\n  231 |     fontSize:  green}\n> 232 |\n      | ^","importStack":null,"filename":"src\\features\\profile\\screens\\ChangePasswordScreen.tsx","targetModuleName":null,"originModulePath":null}
+{"_e":"metro:server_log","_t":1789837778722,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:bundling:started","_t":1789838021519,"id":"o","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789838021519,"id":"o","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789838021645,"id":"o","total":1,"ms":125.5472}
+{"_e":"metro:client_log","_t":1789838039263,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}
+{"_e":"metro:client_log","_t":1789838131022,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838131299,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838175792,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838176953,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838177629,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838178083,"level":"error","data":["Failed to save accent preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838194913,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789838198678,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:server_log","_t":1789839736499,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:bundling:started","_t":1789839821120,"id":"15","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789839821120,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821124,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821283,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821357,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821457,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821558,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839821658,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839822013,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839822112,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839822213,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789839822317,"id":"15","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1789839822418,"id":"15","total":1,"ms":1297.8298}
+{"_e":"metro:client_log","_t":1789839845594,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}
+{"_e":"metro:client_log","_t":1789840708769,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789840709586,"level":"error","data":["Failed to save theme preference:","[AsyncStorageError: Native module is null, cannot access legacy storage]"]}
+{"_e":"metro:client_log","_t":1789840726930,"level":"warn","data":["\"caching\" is not a valid icon name for family \"material-community\""]}
+{"_e":"metro:server_log","_t":1789840974353,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
