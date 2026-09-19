@@ -45,17 +45,19 @@ export default function LanguageScreen() {
               style={[styles.languageCard, selectedLanguage === lang.id && styles.selectedCard]}
               onPress={() => setSelectedLanguage(lang.id)}>
               <View style={styles.languageRow}>
-                <Text style={styles.flag}>{lang.flag}</Text>
+                <View style={styles.flagContainer}>
+                  <Text style={styles.flag}>{lang.flag}</Text>
+                  {selectedLanguage === lang.id && (
+                    <View style={styles.checkOverlay}>
+                      <MaterialCommunityIcons name="check" size={20} color={colors.white} />
+                    </View>
+                  )}
+                </View>
                 <View style={styles.languageInfo}>
                   <Text style={styles.languageName}>{lang.name}</Text>
                   <Text style={styles.nativeName}>{lang.nativeName}</Text>
                 </View>
               </View>
-              {selectedLanguage === lang.id && (
-                <View style={styles.selectedBadge}>
-                  <MaterialCommunityIcons name="check" size={14} color={colors.white} />
-                </View>
-              )}
             </Pressable>
           ))}
         </ScrollView>
@@ -111,10 +113,9 @@ const styles = StyleSheet.create({
   languageCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 24,
+    padding: 20,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.line,
@@ -127,9 +128,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  flag: {
-    fontSize: 40,
+  flagContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: colors.panel,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 16,
+    position: 'relative',
+  },
+  flag: {
+    fontSize: 32,
+  },
+  checkOverlay: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.white,
   },
   languageInfo: {
     flex: 1,
@@ -143,14 +166,5 @@ const styles = StyleSheet.create({
   nativeName: {
     fontSize: 14,
     color: colors.slate,
-  },
-  selectedBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.blue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 12,
   },
 });
