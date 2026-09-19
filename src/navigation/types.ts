@@ -41,7 +41,6 @@ export type HomeStackParamList = {
 // Screens reachable from Profile via a stack.
 export type ProfileStackParamList = {
   Profile: undefined;
-  AccentColor: undefined;
   EditProfile: undefined;
   ChangePassword: undefined;
   Security: undefined;
@@ -51,7 +50,6 @@ export type ProfileStackParamList = {
   ContactUs: undefined;
   About: undefined;
   Language: undefined;
-  DataStorage: undefined;
 };
 
 export type AcademicsStackParamList = {

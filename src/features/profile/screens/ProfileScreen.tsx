@@ -38,10 +38,16 @@ const ProfileScreen: React.FC = () => {
   const {isDark, setTheme} = useTheme();
   const {colors: themeColors} = getColors(isDark);
   const unreadCount = allNotifications.filter(n => n.unread).length;
-  const [toggles, setToggles] = useState<Record<string, boolean>>(initialToggles);
+  const [toggles, setToggles] = useState<Record<string, boolean>>({
+    ...initialToggles,
+    darkMode: isDark,
+  });
 
   const handleToggle = (id: string, value: boolean) => {
     setToggles(prev => ({...prev, [id]: value}));
+    if (id === 'darkMode') {
+      setTheme(value ? 'dark' : 'light');
+    }
   };
 
   const go = (route: string) => () => {
@@ -107,15 +113,7 @@ const ProfileScreen: React.FC = () => {
           items={profileAppSettings}
           toggles={toggles}
           onToggle={handleToggle}
-          onPress={id => {
-            if (id === 'accentColor') {
-              navigation.navigate('AccentColor' as never);
-            } else if (id === 'storage') {
-              navigation.navigate('DataStorage' as never);
-            } else {
-              go(id)();
-            }
-          }}
+          onPress={id => go(id)()}
         />
 
         <SectionHeader title="Account" />

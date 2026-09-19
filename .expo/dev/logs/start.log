@@ -366,3 +366,27 @@
 {"_e":"metro:client_log","_t":1789836581503,"level":"error","data":["[ReferenceError: Property 'MaterialCommunityIcons' doesn't exist]"]}
 {"_e":"metro:server_log","_t":1789836689154,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
 {"_e":"metro:client_log","_t":1789836905800,"level":"error","data":["[Error: Couldn't find a screen named 'Profile' to use as 'initialRouteName'.]"]}
+{"_e":"root:init","_t":1789836970460,"format":"v0-jsonl","version":"57.0.22"}
+{"_e":"env:mode","_t":1789836970483,"nodeEnv":"development","babelEnv":"development","mode":"development"}
+{"_e":"env:load","_t":1789836970499,"mode":"development","files":["../..\\..\\.env"],"env":{"API_BASE_URL":"https://chuo-backend-nine.vercel.app/api/v1","API_TIMEOUT":"30000","EAS_SKIP_AUTO_FINGERPRINT":"1","SENTRY_DSN":""}}
+{"_e":"devserver:start","_t":1789836974030,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../..\\..\\app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1789836976488,"serverRoot":"../..\\..","projectRoot":"../..\\..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"expo:dev-tools-plugin:load","_t":1789836987940,"plugins":[]}
+{"_e":"metro:instantiate","_t":1789837030935,"atlas":false,"workers":3,"host":"::","port":8081}
+{"_e":"metro:bundling:started","_t":1789837124835,"id":"1","platform":"ios","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1789837124836,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789837124843,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1789837124946,"id":"1","progress":0.010442751345303427,"total":137,"current":14}
+{"_e":"metro:bundling:progress","_t":1789837125046,"id":"1","progress":0.05960783436426886,"total":299,"current":73}
+{"_e":"metro:bundling:progress","_t":1789837125146,"id":"1","progress":0.18309497063080887,"total":423,"current":181}
+{"_e":"metro:bundling:progress","_t":1789837125247,"id":"1","progress":0.23027634509816125,"total":621,"current":298}
+{"_e":"metro:bundling:progress","_t":1789837125347,"id":"1","progress":0.31805255719175296,"total":727,"current":410}
+{"_e":"metro:bundling:progress","_t":1789837125447,"id":"1","progress":0.4107575348411735,"total":841,"current":539}
+{"_e":"metro:bundling:progress","_t":1789837125547,"id":"1","progress":0.6075317874812577,"total":934,"current":728}
+{"_e":"metro:bundling:progress","_t":1789837125647,"id":"1","progress":0.6227236275449302,"total":1067,"current":842}
+{"_e":"metro:bundling:progress","_t":1789837125747,"id":"1","progress":0.6804082922086485,"total":1142,"current":942}
+{"_e":"metro:bundling:progress","_t":1789837125850,"id":"1","progress":0.7676580816455636,"total":1292,"current":1132}
+{"_e":"metro:bundling:progress","_t":1789837125958,"id":"1","progress":0.9225553315720273,"total":1367,"current":1313}
+{"_e":"metro:bundling:done","_t":1789837126146,"id":"1","total":1367,"ms":1310.5062}
+{"_e":"metro:client_log","_t":1789837143103,"level":"error","data":["[Error: Couldn't find a screen named 'Profile' to use as 'initialRouteName'.]"]}
+{"_e":"metro:client_log","_t":1789837194566,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}

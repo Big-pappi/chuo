@@ -261,6 +261,7 @@ export type ProfileSettingItem = {
 
 export const profilePreferenceSettings: ProfileSettingItem[] = [
   {id: 'language', title: 'Language', subtitle: 'Choose your preferred language', icon: 'translate', color: '#1D4ED8', soft: '#EEF4FF', control: 'value', value: 'English'},
+  {id: 'darkMode', title: 'Dark Mode', subtitle: 'Switch between light and dark theme', icon: 'theme-light-dark', color: '#1D4ED8', soft: '#EEF4FF', control: 'toggle', defaultOn: false},
   {id: 'pushNotifications', title: 'Notifications', subtitle: 'Enable push notifications', icon: 'bell-outline', color: '#F59E0B', soft: '#FFF7ED', control: 'toggle', defaultOn: true},
 ];
 
@@ -270,8 +271,6 @@ export const profilePrivacySettings: ProfileSettingItem[] = [
 ];
 
 export const profileAppSettings: ProfileSettingItem[] = [
-  {id: 'accentColor', title: 'Change Theme', subtitle: 'Choose your preferred theme color', icon: 'palette-outline', color: '#10B981', soft: '#ECFDF5', control: 'chevron'},
-  {id: 'storage', title: 'Data & Storage', subtitle: 'Manage cache and downloads', icon: 'database-outline', color: '#1D4ED8', soft: '#EEF4FF', control: 'chevron'},
   {id: 'appVersion', title: 'App Version', subtitle: 'Current installed version', icon: 'information-outline', color: '#10B981', soft: '#ECFDF5', control: 'value', value: appVersion},
 ];
 
