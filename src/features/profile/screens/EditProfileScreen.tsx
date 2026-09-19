@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, TextInput} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, TextInput, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {mockStudent} from '@/data/mock';
@@ -9,6 +10,7 @@ import Button from '@/components/Button';
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const [formData, setFormData] = useState({
     name: mockStudent.name,
     email: mockStudent.email,
@@ -24,17 +26,29 @@ export default function EditProfileScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable style={styles.headerBtn} onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>Edit Profile</Text>
-          <Pressable style={styles.headerBtn} onPress={handleSave}>
-            <Text style={styles.saveBtn}>Save</Text>
-          </Pressable>
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>Edit Profile</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8} onPress={handleSave}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          <View style={styles.profileCard}>
+            <Image source={mockStudent.avatar} style={styles.profileAvatar} />
+            <Text style={styles.profileName}>{mockStudent.name}</Text>
+            <Text style={styles.profileInfo}>{mockStudent.regNumber}</Text>
+          </View>
+
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Personal Information</Text>
             
@@ -103,6 +117,8 @@ export default function EditProfileScreen() {
               />
             </View>
           </View>
+
+          <Button title="Save Changes" onPress={handleSave} style={styles.saveButton} />
         </ScrollView>
       </View>
     </Screen>
@@ -110,12 +126,20 @@ export default function EditProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -124,13 +148,49 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  saveBtn: {fontSize: 16, fontWeight: '700', color: colors.blue},
-  content: {flex: 1},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  profileCard: {
+    alignItems: 'center',
+    backgroundColor: colors.blueSoft,
+    padding: 24,
+    borderRadius: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: colors.blue,
+  },
+  profileAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 12,
+  },
+  profileName: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.blue,
+    marginBottom: 4,
+  },
+  profileInfo: {
+    fontSize: 13,
+    color: colors.blue,
+  },
   section: {marginBottom: 24},
-  sectionTitle: {fontSize: 16, fontWeight: '800', color: colors.ink, marginBottom: 16},
-  inputGroup: {marginBottom: 16},
+  sectionTitle: {fontSize: 18, fontWeight: '800', color: colors.ink, marginBottom: 16},
+  inputGroup: {marginBottom: 20},
   label: {fontSize: 14, fontWeight: '600', color: colors.slate, marginBottom: 8},
   input: {
     backgroundColor: colors.white,
@@ -145,5 +205,8 @@ const styles = StyleSheet.create({
   disabledInput: {
     backgroundColor: colors.panel,
     color: colors.muted,
+  },
+  saveButton: {
+    marginTop: 8,
   },
 });

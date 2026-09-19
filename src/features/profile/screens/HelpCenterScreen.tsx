@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, TextInput} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, TextInput, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {SurfaceCard} from '@/components/ui/Cards';
+import {mockStudent} from '@/data/mock';
 
 const helpTopics = [
   {id: '1', title: 'Account & Login', icon: 'account-circle', color: colors.blue},
@@ -35,6 +37,7 @@ const faqs = [
 
 export default function HelpCenterScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaqs, setExpandedFaqs] = useState<Record<string, boolean>>({});
 
@@ -45,15 +48,33 @@ export default function HelpCenterScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable style={styles.headerBtn} onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>Help Center</Text>
-          <View style={styles.headerBtn} />
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>Help Center</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          <View style={styles.infoCard}>
+            <MaterialCommunityIcons name="help-circle" size={24} color={colors.blue} />
+            <View style={styles.infoContent}>
+              <Text style={styles.infoTitle}>Need Help?</Text>
+              <Text style={styles.infoText}>
+                Search for answers or browse our help topics
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.searchWrapper}>
             <MaterialCommunityIcons name="magnify" size={20} color={colors.slate} style={styles.searchIcon} />
             <TextInput
@@ -96,10 +117,10 @@ export default function HelpCenterScreen() {
           ))}
 
           <Pressable style={styles.contactCard}>
-            <MaterialCommunityIcons name="headset" size={24} color={colors.blue} />
+            <MaterialCommunityIcons name="headset" size={22} color={colors.blue} />
             <View style={styles.contactText}>
-              <Text style={styles.contactTitle}>Still need help?</Text>
-              <Text style={styles.contactSubtitle}>Contact our support team</Text>
+              <Text style={styles.contactTitle}>Contact Support</Text>
+              <Text style={styles.contactSubtitle}>Get help from our team</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={22} color={colors.slate} />
           </Pressable>
@@ -110,12 +131,20 @@ export default function HelpCenterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -124,58 +153,84 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  content: {flex: 1},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  infoCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.blueSoft,
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.blue,
+  },
+  infoContent: {flex: 1, marginLeft: 12},
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.blue,
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 13,
+    color: colors.blue,
+    lineHeight: 18,
+  },
   searchWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: 16,
     paddingHorizontal: 16,
+    paddingVertical: 12,
     marginBottom: 24,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  searchIcon: {
-    marginRight: 12,
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 14,
-    fontSize: 15,
-    color: colors.ink,
-  },
+  searchIcon: {marginRight: 12},
+  searchInput: {flex: 1, fontSize: 14, color: colors.ink},
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 12,
-    marginTop: 8,
+    marginBottom: 16,
   },
   topicsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 12,
     marginBottom: 24,
   },
   topicCard: {
-    width: '48%',
+    width: '47%',
     backgroundColor: colors.white,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
-    marginRight: '4%',
-    marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.line,
   },
   topicIcon: {
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   topicTitle: {
     fontSize: 13,
@@ -202,8 +257,8 @@ const styles = StyleSheet.create({
   faqAnswer: {
     fontSize: 13,
     color: colors.slate,
-    marginTop: 12,
     lineHeight: 18,
+    marginTop: 12,
   },
   contactCard: {
     flexDirection: 'row',

@@ -1,15 +1,19 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, Switch} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Switch, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {SurfaceCard} from '@/components/ui/Cards';
+import {mockStudent} from '@/data/mock';
 
 export default function SecurityScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const [settings, setSettings] = useState({
     twoFactorAuth: false,
+    biometricLogin: false,
     loginAlerts: true,
     passwordExpiry: false,
     sessionTimeout: true,
@@ -22,27 +26,43 @@ export default function SecurityScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable style={styles.headerBtn} onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>Security</Text>
-          <View style={styles.headerBtn} />
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>Security</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           <SurfaceCard style={styles.card}>
-            <Text style={styles.cardTitle}>Two-Factor Authentication</Text>
-            <Text style={styles.cardSubtitle}>
-              Add an extra layer of security to your account
-            </Text>
-            <View style={styles.cardRow}>
+            <View style={styles.cardHeader}>
               <View style={styles.cardIcon}>
-                <MaterialCommunityIcons name="shield-check" size={24} color={colors.blue} />
+                <MaterialCommunityIcons name="shield-check" size={28} color={colors.blue} />
               </View>
               <View style={styles.cardInfo}>
-                <Text style={styles.cardInfoTitle}>2FA Status</Text>
-                <Text style={[styles.cardInfoStatus, {color: settings.twoFactorAuth ? colors.green : colors.orange}]}>
+                <Text style={styles.cardTitle}>Two-Factor Authentication</Text>
+                <Text style={styles.cardSubtitle}>
+                  Add an extra layer of security to your account
+                </Text>
+              </View>
+            </View>
+            <View style={styles.cardRow}>
+              <View style={styles.statusBadge}>
+                <MaterialCommunityIcons 
+                  name={settings.twoFactorAuth ? "check-circle" : "alert-circle"} 
+                  size={16} 
+                  color={settings.twoFactorAuth ? colors.green : colors.orange} 
+                />
+                <Text style={[styles.statusText, {color: settings.twoFactorAuth ? colors.green : colors.orange}]}>
                   {settings.twoFactorAuth ? 'Enabled' : 'Disabled'}
                 </Text>
               </View>
@@ -56,6 +76,24 @@ export default function SecurityScreen() {
           </SurfaceCard>
 
           <Text style={styles.sectionTitle}>Security Settings</Text>
+
+          <SurfaceCard style={styles.settingCard}>
+            <View style={styles.settingRow}>
+              <View style={styles.settingLeft}>
+                <MaterialCommunityIcons name="fingerprint" size={22} color={colors.purple} />
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>Biometric Login</Text>
+                  <Text style={styles.settingSubtitle}>Use fingerprint or face ID</Text>
+                </View>
+              </View>
+              <Switch
+                value={settings.biometricLogin}
+                onValueChange={() => toggleSetting('biometricLogin')}
+                trackColor={{false: colors.line, true: colors.blue}}
+                thumbColor={settings.biometricLogin ? colors.white : colors.white}
+              />
+            </View>
+          </SurfaceCard>
 
           <SurfaceCard style={styles.settingCard}>
             <View style={styles.settingRow}>
@@ -126,12 +164,20 @@ export default function SecurityScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -140,12 +186,41 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  content: {flex: 1},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
   card: {
     marginBottom: 24,
-    padding: 16,
+    padding: 20,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  cardIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: colors.blueSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  cardInfo: {
+    flex: 1,
   },
   cardTitle: {
     fontSize: 18,
@@ -156,39 +231,30 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 13,
     color: colors.slate,
-    marginBottom: 16,
   },
   cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  cardIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: colors.blueSoft,
+  statusBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
+    gap: 6,
+    backgroundColor: colors.panel,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
-  cardInfo: {
-    flex: 1,
-  },
-  cardInfoTitle: {
-    fontSize: 15,
+  statusText: {
+    fontSize: 12,
     fontWeight: '700',
-    color: colors.ink,
-    marginBottom: 2,
-  },
-  cardInfoStatus: {
-    fontSize: 13,
-    fontWeight: '600',
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   settingCard: {
     marginBottom: 12,

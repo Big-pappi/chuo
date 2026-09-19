@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {useTheme} from '@/context/ThemeContext';
+import {mockStudent} from '@/data/mock';
 
 const THEME_OPTIONS = [
   {id: 'light' as const, name: 'Light Theme', color: '#3B82F6', icon: 'white-balance-sunny', desc: 'Clean and bright interface'},
@@ -19,6 +21,7 @@ const THEME_OPTIONS = [
 
 export default function AccentColorScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const {theme, accent, setTheme, setAccent} = useTheme();
 
   const handleThemeSelect = (selectedTheme: 'light' | 'dark') => {
@@ -32,20 +35,33 @@ export default function AccentColorScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable
-            style={styles.headerBtn}
-            hitSlop={8}
-            onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>Change Theme</Text>
-          <View style={styles.headerBtn} />
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>Change Theme</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <Text style={styles.subtitle}>Choose your preferred theme</Text>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+          <View style={styles.infoCard}>
+            <MaterialCommunityIcons name="palette" size={24} color={colors.blue} />
+            <View style={styles.infoContent}>
+              <Text style={styles.infoTitle}>Customize Appearance</Text>
+              <Text style={styles.infoText}>
+                Choose your preferred theme and accent color
+              </Text>
+            </View>
+          </View>
 
-        <ScrollView style={styles.content}>
           <Text style={styles.sectionTitle}>Mode</Text>
           {THEME_OPTIONS.filter(opt => opt.id === 'light' || opt.id === 'dark').map(option => (
             <Pressable
@@ -60,7 +76,9 @@ export default function AccentColorScreen() {
                 <Text style={styles.optionDesc}>{option.desc}</Text>
               </View>
               {theme === option.id && (
-                <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+                <View style={styles.checkContainer}>
+                  <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+                </View>
               )}
             </Pressable>
           ))}
@@ -79,7 +97,9 @@ export default function AccentColorScreen() {
                 <Text style={styles.optionDesc}>{option.desc}</Text>
               </View>
               {accent === option.id && (
-                <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+                <View style={styles.checkContainer}>
+                  <MaterialCommunityIcons name="check-circle" size={24} color={colors.blue} />
+                </View>
               )}
             </Pressable>
           ))}
@@ -90,12 +110,20 @@ export default function AccentColorScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 18,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -104,11 +132,49 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  subtitle: {fontSize: 14, color: colors.slate, marginBottom: 24, textAlign: 'center'},
-  content: {flex: 1},
-  sectionTitle: {fontSize: 16, fontWeight: '700', color: colors.ink, marginBottom: 12, marginTop: 8},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
+  infoCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.blueSoft,
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: colors.blue,
+  },
+  infoContent: {flex: 1, marginLeft: 12},
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.blue,
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 13,
+    color: colors.blue,
+    lineHeight: 18,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.ink,
+    marginBottom: 16,
+  },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -134,4 +200,9 @@ const styles = StyleSheet.create({
   optionText: {flex: 1},
   optionName: {fontSize: 16, fontWeight: '700', color: colors.ink, marginBottom: 4},
   optionDesc: {fontSize: 13, color: colors.slate},
+  checkContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 4,
+  },
 });

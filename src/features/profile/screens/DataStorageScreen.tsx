@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, Alert} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Alert, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {SurfaceCard} from '@/components/ui/Cards';
+import {mockStudent} from '@/data/mock';
 
 export default function DataStorageScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const [storageInfo, setStorageInfo] = useState({
     cacheSize: '125 MB',
     downloadsSize: '450 MB',
@@ -24,7 +27,7 @@ export default function DataStorageScreen() {
           text: 'Clear',
           style: 'destructive',
           onPress: () => {
-            setStorageInfo({...storageInfo, cacheSize: '0 MB'});
+            setStorageInfo({...storageInfo, cacheSize: '0 MB', totalSize: '450 MB'});
             Alert.alert('Success', 'Cache cleared successfully');
           },
         },
@@ -42,7 +45,7 @@ export default function DataStorageScreen() {
           text: 'Clear',
           style: 'destructive',
           onPress: () => {
-            setStorageInfo({...storageInfo, downloadsSize: '0 MB'});
+            setStorageInfo({...storageInfo, downloadsSize: '0 MB', totalSize: '125 MB'});
             Alert.alert('Success', 'Downloads cleared successfully');
           },
         },
@@ -53,21 +56,33 @@ export default function DataStorageScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable style={styles.headerBtn} onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>Data & Storage</Text>
-          <View style={styles.headerBtn} />
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>Data & Storage</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           <SurfaceCard style={styles.summaryCard}>
             <View style={styles.summaryIcon}>
               <MaterialCommunityIcons name="database" size={32} color={colors.blue} />
             </View>
             <Text style={styles.summaryTitle}>Total Storage Used</Text>
             <Text style={styles.summaryValue}>{storageInfo.totalSize}</Text>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, {width: '75%'}]} />
+            </View>
+            <Text style={styles.progressText}>75% of 1 GB used</Text>
           </SurfaceCard>
 
           <Text style={styles.sectionTitle}>Storage Breakdown</Text>
@@ -145,12 +160,20 @@ export default function DataStorageScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -159,9 +182,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  content: {flex: 1},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
   summaryCard: {
     alignItems: 'center',
     padding: 24,
@@ -186,13 +221,30 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '800',
     color: colors.ink,
+    marginBottom: 12,
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: colors.line,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: colors.blue,
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 12,
+    color: colors.slate,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 12,
-    marginTop: 8,
+    marginBottom: 16,
   },
   storageCard: {
     marginBottom: 12,

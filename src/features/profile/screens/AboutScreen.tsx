@@ -1,14 +1,17 @@
 import React from 'react';
-import {View, Text, StyleSheet, Pressable, ScrollView, Linking} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView, Linking, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Screen from '@/components/ui/Screen';
 import {colors} from '@/theme';
 import {SurfaceCard} from '@/components/ui/Cards';
 import {appVersion} from '@/data/mock';
+import {mockStudent} from '@/data/mock';
 
 export default function AboutScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const openLink = (url: string) => {
     Linking.openURL(url).catch(err => console.error('Failed to open URL:', err));
@@ -17,15 +20,23 @@ export default function AboutScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable style={styles.headerBtn} onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
-          </Pressable>
-          <Text style={styles.title}>About</Text>
-          <View style={styles.headerBtn} />
+        {/* Fixed Header */}
+        <View style={[styles.fixedHeader, {paddingTop: insets.top}]}>
+          <View style={styles.header}>
+            <Pressable
+              style={styles.headerBtn}
+              hitSlop={8}
+              onPress={() => navigation.canGoBack() && navigation.goBack()}>
+              <MaterialCommunityIcons name="arrow-left" size={22} color={colors.ink} />
+            </Pressable>
+            <Text style={styles.title}>About</Text>
+            <Pressable style={styles.headerBtn} hitSlop={8}>
+              <Image source={mockStudent.avatar} style={styles.avatar} />
+            </Pressable>
+          </View>
         </View>
 
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
           <View style={styles.logoSection}>
             <View style={styles.logoContainer}>
               <MaterialCommunityIcons name="school" size={48} color={colors.blue} />
@@ -80,33 +91,13 @@ export default function AboutScreen() {
             <MaterialCommunityIcons name="license" size={22} color={colors.purple} />
             <View style={styles.linkText}>
               <Text style={styles.linkTitle}>Open Source Licenses</Text>
-              <Text style={styles.linkSubtitle}>View third-party licenses</Text>
+              <Text style={styles.linkSubtitle}>Third-party libraries</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={22} color={colors.slate} />
           </Pressable>
 
-          <Text style={styles.sectionTitle}>Support</Text>
-
-          <Pressable style={styles.linkCard} onPress={() => navigation.navigate('HelpCenter' as never)}>
-            <MaterialCommunityIcons name="help-circle" size={22} color={colors.green} />
-            <View style={styles.linkText}>
-              <Text style={styles.linkTitle}>Help Center</Text>
-              <Text style={styles.linkSubtitle}>Get help and support</Text>
-            </View>
-            <MaterialCommunityIcons name="chevron-right" size={22} color={colors.slate} />
-          </Pressable>
-
-          <Pressable style={styles.linkCard} onPress={() => navigation.navigate('ContactUs' as never)}>
-            <MaterialCommunityIcons name="headset" size={22} color={colors.pink} />
-            <View style={styles.linkText}>
-              <Text style={styles.linkTitle}>Contact Us</Text>
-              <Text style={styles.linkSubtitle}>Get in touch with our team</Text>
-            </View>
-            <MaterialCommunityIcons name="chevron-right" size={22} color={colors.slate} />
-          </Pressable>
-
-          <Text style={styles.footer}>
-            © 2025 CHUO University. All rights reserved.
+          <Text style={styles.footerText}>
+            Made with ❤️ for students
           </Text>
         </ScrollView>
       </View>
@@ -115,12 +106,20 @@ export default function AboutScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16, paddingTop: 8},
+  container: {flex: 1},
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: colors.bg,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   headerBtn: {
     width: 42,
@@ -129,18 +128,35 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0B2A6B',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 3},
+    elevation: 1,
   },
   title: {flex: 1, textAlign: 'center', fontSize: 20, fontWeight: '800', color: colors.ink},
-  content: {flex: 1},
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.panel,
+  },
+  scrollContent: {flex: 1},
+  scrollContentContainer: {paddingHorizontal: 16, paddingTop: 100, paddingBottom: 20},
   logoSection: {
     alignItems: 'center',
-    marginBottom: 32,
+    backgroundColor: colors.blueSoft,
+    padding: 32,
+    borderRadius: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: colors.blue,
   },
   logoContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.blueSoft,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -148,19 +164,18 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 24,
     fontWeight: '800',
-    color: colors.ink,
+    color: colors.blue,
     marginBottom: 4,
   },
   version: {
     fontSize: 14,
-    color: colors.slate,
+    color: colors.blue,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
     color: colors.ink,
-    marginBottom: 12,
-    marginTop: 8,
+    marginBottom: 16,
   },
   infoCard: {
     marginBottom: 12,
@@ -176,7 +191,6 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    fontWeight: '600',
     color: colors.slate,
     marginBottom: 2,
   },
@@ -209,11 +223,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.slate,
   },
-  footer: {
-    fontSize: 12,
-    color: colors.muted,
+  footerText: {
     textAlign: 'center',
+    fontSize: 13,
+    color: colors.slate,
     marginTop: 24,
-    marginBottom: 16,
   },
 });
