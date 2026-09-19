@@ -279,404 +279,305 @@ Super Admin (CHUO Platform)
 
 ### Technology Stack
 
-- **Runtime**: Node.js (v18+)
-- **Framework**: Express.js
-- **Database**: PostgreSQL (primary), Redis (caching)
-- **ORM**: Prisma
-- **Authentication**: JWT + bcrypt
-- **API Documentation**: Swagger/OpenAPI
-- **Testing**: Jest + Supertest
-- **Deployment**: Docker + AWS/DigitalOcean
+- **Framework**: Django 4.2
+- **API Framework**: Django REST Framework
+- **Authentication**: djangorestframework-simplejwt
+- **Database**: PostgreSQL
+- **Cache**: Redis
+- **Task Queue**: Celery
+- **API Documentation**: drf-spectacular (OpenAPI)
+- **Testing**: Django Test Framework
+- **Deployment**: Docker + Gunicorn
 
 ### Project Structure
 
 ```
-chuo-backend/
-├── src/
-│   ├── config/          # Configuration files
-│   │   ├── database.ts
-│   │   ├── redis.ts
-│   │   └── jwt.ts
-│   ├── controllers/     # Request handlers
-│   │   ├── auth.controller.ts
-│   │   ├── user.controller.ts
-│   │   ├── university.controller.ts
-│   │   ├── course.controller.ts
-│   │   ├── student.controller.ts
-│   │   ├── fee.controller.ts
-│   │   └── library.controller.ts
-│   ├── middleware/      # Custom middleware
-│   │   ├── auth.middleware.ts
-│   │   ├── rbac.middleware.ts
-│   │   ├── error.middleware.ts
-│   │   └── validation.middleware.ts
-│   ├── models/          # Database models (Prisma)
-│   │   └── schema.prisma
-│   ├── routes/          # API routes
-│   │   ├── auth.routes.ts
-│   │   ├── user.routes.ts
-│   │   ├── university.routes.ts
-│   │   ├── course.routes.ts
-│   │   ├── student.routes.ts
-│   │   ├── fee.routes.ts
-│   │   └── library.routes.ts
-│   ├── services/        # Business logic
-│   │   ├── auth.service.ts
-│   │   ├── user.service.ts
-│   │   ├── rbac.service.ts
-│   │   └── university.service.ts
-│   ├── types/           # TypeScript types
-│   │   ├── auth.types.ts
-│   │   ├── user.types.ts
-│   │   └── api.types.ts
-│   ├── utils/           # Utility functions
-│   │   ├── logger.ts
-│   │   ├── validators.ts
-│   │   └── helpers.ts
-│   └── app.ts           # Express app setup
-├── tests/               # Test files
-├── prisma/              # Prisma migrations
-├── docker-compose.yml
-├── Dockerfile
-├── package.json
-└── tsconfig.json
+chuo-django/
+├── chuo/                    # Django project settings
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── core/                    # Core app (main CHUO functionality)
+│   ├── models/              # Database models
+│   │   ├── user.py
+│   │   ├── university.py
+│   │   ├── department.py
+│   │   ├── course.py
+│   │   ├── student.py
+│   │   ├── enrollment.py
+│   │   ├── assignment.py
+│   │   ├── exam.py
+│   │   ├── attendance.py
+│   │   ├── fee.py
+│   │   └── library.py
+│   ├── serializers/         # DRF serializers
+│   ├── viewsets/            # API viewsets
+│   ├── urls/                # URL routing
+│   ├── permissions/          # RBAC permissions
+│   └── admin.py             # Django admin configuration
+├── integrations/            # Integration app (university API sync)
+│   ├── models/              # Integration models
+│   │   └── integration.py
+│   ├── services/            # Sync services
+│   │   └── sync.py
+│   └── admin.py             # Django admin configuration
+├── manage.py
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
 ## Database Schema
 
-### Core Tables
+### Core Models
 
 #### 1. Universities
-```prisma
-model University {
-  id                String    @id @default(uuid())
-  name              String
-  code              String    @unique
-  logo              String?
-  address           String
-  city              String
-  country           String
-  email             String
-  phone             String
-  website           String?
-  type              String    // 'public' | 'private'
-  status            String    @default('active') // 'active' | 'suspended' | 'inactive'
-  apiEndpoint       String?   // For universities with existing systems
-  apiKey            String?   @unique
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  users             User[]
-  departments       Department[]
-  courses           Course[]
-  students          Student[]
-  fees              Fee[]
-  books             Book[]
-}
+```python
+class University(models.Model):
+    id = UUIDField (primary key)
+    name = CharField
+    code = CharField (unique)
+    logo = ImageField
+    address = TextField
+    city = CharField
+    country = CharField
+    email = EmailField
+    phone = CharField
+    website = URLField
+    type = CharField (public/private)
+    status = CharField (active/suspended/inactive)
+    api_endpoint = URLField (for universities with existing systems)
+    api_key = CharField (unique)
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 2. Users
-```prisma
-model User {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  email             String    @unique
-  password          String
-  firstName         String
-  lastName          String
-  phone             String?
-  avatar            String?
-  role              Role
-  status            String    @default('active') // 'active' | 'suspended' | 'inactive'
-  lastLogin         DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  permissions       Permission[]
-  courses           Course[]
-  attendance        Attendance[]
-  assignments       Assignment[]
-  borrowedBooks     BorrowRecord[]
-}
-
-enum Role {
-  SUPER_ADMIN
-  UNIVERSITY_ADMIN
-  DEAN
-  HOD
-  LECTURER
-  COURSE_COORDINATOR
-  REGISTRAR
-  FINANCE_OFFICER
-  LIBRARIAN
-  IT_ADMIN
-  STUDENT
-}
+```python
+class User(AbstractUser):
+    university = ForeignKey (University)
+    email = EmailField (unique)
+    password = CharField (hashed)
+    first_name = CharField
+    last_name = CharField
+    phone = CharField
+    avatar = ImageField
+    role = CharField (SUPER_ADMIN, UNIVERSITY_ADMIN, DEAN, HOD, LECTURER, COURSE_COORDINATOR, REGISTRAR, FINANCE_OFFICER, LIBRARIAN, IT_ADMIN, STUDENT)
+    status = CharField (active/suspended/inactive)
+    last_login = DateTimeField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 3. Permissions
-```prisma
-model Permission {
-  id                String    @id @default(uuid())
-  userId            String
-  user              User      @relation(fields: [userId], references: [id])
-  permission        String    // e.g., 'user:create', 'course:read'
-  grantedBy         String?   // User ID who granted this permission
-  createdAt         DateTime  @default(now())
-
-  @@unique([userId, permission])
-}
+```python
+class Permission(models.Model):
+    user = ForeignKey (User)
+    permission = CharField (e.g., 'user:create', 'course:read')
+    granted_by = ForeignKey (User)
+    created_at = DateTimeField
 ```
 
 #### 4. Departments
-```prisma
-model Department {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  facultyId         String?   // Parent faculty
-  faculty           Department? @relation("FacultyDepartments", fields: [facultyId], references: [id])
-  departments       Department[] @relation("FacultyDepartments")
-  name              String
-  code              String
-  headId            String?   // HOD user ID
-  head              User?     @relation("DepartmentHead", fields: [headId], references: [id])
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  courses           Course[]
-  students          Student[]
-}
+```python
+class Department(models.Model):
+    university = ForeignKey (University)
+    faculty = ForeignKey (Department, self-reference)
+    name = CharField
+    code = CharField
+    head = ForeignKey (User)
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 5. Courses
-```prisma
-model Course {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  departmentId      String
-  department        Department @relation(fields: [departmentId], references: [id])
-  lecturerId        String?
-  lecturer          User?     @relation(fields: [lecturerId], references: [id])
-  code              String
-  name              String
-  credits           Int
-  level             String    // '100' | '200' | '300' | '400'
-  semester          String    // '1' | '2'
-  description       String?
-  status            String    @default('active') // 'active' | 'inactive'
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  enrollments       Enrollment[]
-  assignments       Assignment[]
-  exams             Exam[]
-  attendance        Attendance[]
-}
+```python
+class Course(models.Model):
+    university = ForeignKey (University)
+    department = ForeignKey (Department)
+    lecturer = ForeignKey (User)
+    code = CharField
+    name = CharField
+    credits = IntegerField
+    level = CharField (100/200/300/400)
+    semester = CharField (1/2)
+    description = TextField
+    status = CharField (active/inactive)
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 6. Students
-```prisma
-model Student {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  departmentId      String
-  department        Department @relation(fields: [departmentId], references: [id])
-  userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id])
-  studentNumber     String    @unique
-  year              Int
-  semester          String
-  gpa               Float?
-  status            String    @default('active') // 'active' | 'suspended' | 'graduated'
-  admissionDate     DateTime
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  enrollments       Enrollment[]
-  results           Result[]
-  attendance        Attendance[]
-  payments          Payment[]
-  borrowedBooks     BorrowRecord[]
-}
+```python
+class Student(models.Model):
+    university = ForeignKey (University)
+    department = ForeignKey (Department)
+    user = OneToOneField (User)
+    student_number = CharField (unique)
+    year = IntegerField
+    semester = CharField
+    gpa = DecimalField
+    status = CharField (active/suspended/graduated)
+    admission_date = DateField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 7. Enrollments
-```prisma
-model Enrollment {
-  id                String    @id @default(uuid())
-  studentId         String
-  student           Student   @relation(fields: [studentId], references: [id])
-  courseId          String
-  course            Course    @relation(fields: [courseId], references: [id])
-  semester          String
-  academicYear      String
-  status            String    @default('enrolled') // 'enrolled' | 'dropped' | 'completed'
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@unique([studentId, courseId, academicYear])
-}
+```python
+class Enrollment(models.Model):
+    student = ForeignKey (Student)
+    course = ForeignKey (Course)
+    semester = CharField
+    academic_year = CharField
+    status = CharField (enrolled/dropped/completed)
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 8. Assignments
-```prisma
-model Assignment {
-  id                String    @id @default(uuid())
-  courseId          String
-  course            Course    @relation(fields: [courseId], references: [id])
-  lecturerId        String
-  lecturer          User      @relation(fields: [lecturerId], references: [id])
-  title             String
-  description       String
-  dueDate           DateTime
-  maxScore          Float
-  attachments       String[]  // File URLs
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  submissions       Submission[]
-}
+```python
+class Assignment(models.Model):
+    course = ForeignKey (Course)
+    lecturer = ForeignKey (User)
+    title = CharField
+    description = TextField
+    due_date = DateTimeField
+    max_score = DecimalField
+    attachments = JSONField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 9. Exams
-```prisma
-model Exam {
-  id                String    @id @default(uuid())
-  courseId          String
-  course            Course    @relation(fields: [courseId], references: [id])
-  lecturerId        String
-  lecturer          User      @relation(fields: [lecturerId], references: [id])
-  title             String
-  type              String    // 'midterm' | 'final' | 'quiz'
-  date              DateTime
-  duration          Int       // minutes
-  location          String?
-  maxScore          Float
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  results           Result[]
-}
+```python
+class Exam(models.Model):
+    course = ForeignKey (Course)
+    lecturer = ForeignKey (User)
+    title = CharField
+    type = CharField (midterm/final/quiz)
+    date = DateTimeField
+    duration = IntegerField (minutes)
+    location = CharField
+    max_score = DecimalField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 10. Results
-```prisma
-model Result {
-  id                String    @id @default(uuid())
-  studentId         String
-  student           Student   @relation(fields: [studentId], references: [id])
-  examId            String
-  exam              Exam      @relation(fields: [examId], references: [id])
-  score             Float
-  grade             String?
-  published         Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@unique([studentId, examId])
-}
+```python
+class Result(models.Model):
+    student = ForeignKey (Student)
+    exam = ForeignKey (Exam)
+    score = DecimalField
+    grade = CharField
+    published = BooleanField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 11. Attendance
-```prisma
-model Attendance {
-  id                String    @id @default(uuid())
-  courseId          String
-  course            Course    @relation(fields: [courseId], references: [id])
-  studentId         String
-  student           Student   @relation(fields: [studentId], references: [id])
-  lecturerId        String
-  lecturer          User      @relation(fields: [lecturerId], references: [id])
-  date              DateTime
-  status            String    // 'present' | 'absent' | 'late'
-  createdAt         DateTime  @default(now())
-
-  @@unique([courseId, studentId, date])
-}
+```python
+class Attendance(models.Model):
+    course = ForeignKey (Course)
+    student = ForeignKey (Student)
+    lecturer = ForeignKey (User)
+    date = DateField
+    status = CharField (present/absent/late)
+    created_at = DateTimeField
 ```
 
 #### 12. Fees
-```prisma
-model Fee {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  name              String
-  amount            Float
-  type              String    // 'tuition' | 'library' | 'lab' | 'exam'
-  semester          String?
-  year              Int?
-  status            String    @default('active') // 'active' | 'inactive'
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  payments          Payment[]
-}
+```python
+class Fee(models.Model):
+    university = ForeignKey (University)
+    name = CharField
+    amount = DecimalField
+    type = CharField (tuition/library/lab/exam)
+    semester = CharField
+    year = IntegerField
+    status = CharField (active/inactive)
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 13. Payments
-```prisma
-model Payment {
-  id                String    @id @default(uuid())
-  studentId         String
-  student           Student   @relation(fields: [studentId], references: [id])
-  feeId             String
-  fee               Fee       @relation(fields: [feeId], references: [id])
-  amount            Float
-  method            String    // 'cash' | 'card' | 'mobile' | 'bank'
-  transactionId     String?
-  status            String    @default('pending') // 'pending' | 'completed' | 'failed'
-  paidAt            DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-}
+```python
+class Payment(models.Model):
+    student = ForeignKey (Student)
+    fee = ForeignKey (Fee)
+    amount = DecimalField
+    method = CharField (cash/card/mobile/bank)
+    transaction_id = CharField
+    status = CharField (pending/completed/failed)
+    paid_at = DateTimeField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 14. Books
-```prisma
-model Book {
-  id                String    @id @default(uuid())
-  universityId      String
-  university        University @relation(fields: [universityId], references: [id])
-  isbn              String    @unique
-  title             String
-  author            String
-  category          String
-  publisher         String?
-  year              Int?
-  totalCopies       Int
-  availableCopies   Int
-  location          String?
-  coverImage        String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  borrowRecords     BorrowRecord[]
-}
+```python
+class Book(models.Model):
+    university = ForeignKey (University)
+    isbn = CharField (unique)
+    title = CharField
+    author = CharField
+    category = CharField
+    publisher = CharField
+    year = IntegerField
+    total_copies = IntegerField
+    available_copies = IntegerField
+    location = CharField
+    cover_image = ImageField
+    created_at = DateTimeField
+    updated_at = DateTimeField
 ```
 
 #### 15. Borrow Records
-```prisma
-model BorrowRecord {
-  id                String    @id @default(uuid())
-  bookId            String
-  book              Book      @relation(fields: [bookId], references: [id])
-  userId            String
-  user              User      @relation(fields: [userId], references: [id])
-  borrowDate        DateTime
-  dueDate           DateTime
-  returnDate        DateTime?
-  status            String    @default('borrowed') // 'borrowed' | 'returned' | 'overdue'
-  fine              Float     @default(0)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-}
+```python
+class BorrowRecord(models.Model):
+    book = ForeignKey (Book)
+    user = ForeignKey (User)
+    borrow_date = DateField
+    due_date = DateField
+    return_date = DateField
+    status = CharField (borrowed/returned/overdue)
+    fine = DecimalField
+    created_at = DateTimeField
+    updated_at = DateTimeField
+```
+
+### Integration Models
+
+#### 16. University Integration
+```python
+class UniversityIntegration(models.Model):
+    university = OneToOneField (University)
+    api_type = CharField (REST/SOAP/GraphQL/Custom)
+    api_endpoint = URLField
+    api_key = CharField
+    api_secret = CharField
+    sync_frequency = IntegerField (seconds)
+    last_sync = DateTimeField
+    sync_enabled = BooleanField
+    configuration = JSONField
+    created_at = DateTimeField
+    updated_at = DateTimeField
+```
+
+#### 17. Sync Log
+```python
+class SyncLog(models.Model):
+    integration = ForeignKey (UniversityIntegration)
+    sync_type = CharField (students/courses/enrollments/grades/full)
+    status = CharField (pending/running/success/failed)
+    records_processed = IntegerField
+    records_failed = IntegerField
+    error_message = TextField
+    started_at = DateTimeField
+    completed_at = DateTimeField
+    created_at = DateTimeField
 ```
 
 ---
@@ -685,23 +586,20 @@ model BorrowRecord {
 
 ### Authentication
 
-#### POST /api/auth/register
-Register a new user (University Admin or Super Admin only)
-
 #### POST /api/auth/login
 Login and receive JWT token
 
-#### POST /api/auth/logout
-Logout (invalidate token)
+#### POST /api/auth/register
+Register a new user (University Admin or Super Admin only)
 
 #### POST /api/auth/refresh
 Refresh JWT token
 
-#### POST /api/auth/forgot-password
-Initiate password reset
+#### GET /api/auth/profile
+Get current user profile
 
-#### POST /api/auth/reset-password
-Reset password with token
+#### POST /api/auth/change-password
+Change user password
 
 ### University Management
 
@@ -720,6 +618,9 @@ Update university (University Admin only)
 #### DELETE /api/universities/:id
 Delete university (Super Admin only)
 
+#### GET /api/universities/active
+Get only active universities
+
 ### User Management
 
 #### GET /api/users
@@ -737,7 +638,7 @@ Update user
 #### DELETE /api/users/:id
 Delete user
 
-#### POST /api/users/:id/role
+#### POST /api/users/:id/assign_role
 Assign/update user role
 
 #### GET /api/users/:id/permissions
@@ -759,12 +660,6 @@ Update course
 
 #### DELETE /api/courses/:id
 Delete course
-
-#### POST /api/courses/:id/enroll
-Enroll a student
-
-#### DELETE /api/courses/:id/enroll/:studentId
-Remove student enrollment
 
 ### Student Management
 
@@ -789,116 +684,6 @@ Get student attendance
 #### GET /api/students/:id/fees
 Get student fee status
 
-### Assessment Management
-
-#### POST /api/assignments
-Create an assignment
-
-#### GET /api/assignments
-List assignments
-
-#### GET /api/assignments/:id
-Get assignment details
-
-#### PUT /api/assignments/:id
-Update assignment
-
-#### DELETE /api/assignments/:id
-Delete assignment
-
-#### POST /api/assignments/:id/submit
-Submit assignment
-
-#### POST /api/assignments/:id/grade
-Grade assignment
-
-#### POST /api/exams
-Create an exam
-
-#### GET /api/exams
-List exams
-
-#### GET /api/exams/:id
-Get exam details
-
-#### PUT /api/exams/:id
-Update exam
-
-#### DELETE /api/exams/:id
-Delete exam
-
-#### POST /api/exams/:id/results
-Submit exam results
-
-#### GET /api/exams/:id/results
-Get exam results
-
-### Attendance Management
-
-#### POST /api/attendance
-Take attendance
-
-#### GET /api/attendance
-Get attendance records
-
-#### GET /api/attendance/:id
-Get attendance details
-
-#### PUT /api/attendance/:id
-Update attendance
-
-### Financial Management
-
-#### GET /api/fees
-List fee structures
-
-#### POST /api/fees
-Create a fee structure
-
-#### PUT /api/fees/:id
-Update fee structure
-
-#### DELETE /api/fees/:id
-Delete fee structure
-
-#### GET /api/payments
-List payments
-
-#### POST /api/payments
-Process a payment
-
-#### GET /api/payments/:id
-Get payment details
-
-#### GET /api/reports/financial
-Generate financial report
-
-### Library Management
-
-#### GET /api/books
-List books in catalog
-
-#### POST /api/books
-Add a new book
-
-#### GET /api/books/:id
-Get book details
-
-#### PUT /api/books/:id
-Update book information
-
-#### DELETE /api/books/:id
-Remove book
-
-#### POST /api/books/:id/borrow
-Borrow a book
-
-#### POST /api/books/:id/return
-Return a book
-
-#### GET /api/books/search
-Search catalog
-
 ---
 
 ## Authentication & Authorization
@@ -909,60 +694,49 @@ Search catalog
 2. **Token Generation**: Server validates credentials and generates JWT
 3. **Token Storage**: Client stores token (localStorage/cookie)
 4. **Request**: Client includes token in `Authorization: Bearer <token>` header
-5. **Validation**: Middleware validates token on protected routes
-6. **Authorization**: RBAC middleware checks user permissions
+5. **Validation**: Django REST Framework validates token on protected routes
+6. **Authorization**: RBAC permission classes check user permissions
 
-### Middleware Stack
+### Permission System
 
-```typescript
-// auth.middleware.ts
-export const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({error: 'No token provided'});
+```python
+# Role-based permission mappings
+ROLE_PERMISSIONS = {
+    'SUPER_ADMIN': ['*'],  # All permissions
+    'UNIVERSITY_ADMIN': [...],
+    'DEAN': [...],
+    # ... other roles
+}
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({error: 'Invalid token'});
-  }
-};
-
-// rbac.middleware.ts
-export const authorize = (permission: string) => {
-  return async (req, res, next) => {
-    const user = await User.findById(req.user.id);
-    const hasPermission = await checkPermission(user, permission);
-
-    if (!hasPermission) {
-      return res.status(403).json({error: 'Insufficient permissions'});
-    }
-
-    next();
-  };
-};
+class HasPermission(permissions.BasePermission):
+    def __init__(self, permission: str = None):
+        self.permission = permission
+    
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        
+        if self.permission:
+            return check_permission(request.user, self.permission)
+        
+        return True
 ```
 
 ### Permission Checking
 
-```typescript
-export const checkPermission = async (user: User, permission: string): Promise<boolean> => {
-  // Super Admin has all permissions
-  if (user.role === 'SUPER_ADMIN') return true;
-
-  // Check role-based permissions
-  const rolePermissions = ROLE_PERMISSIONS[user.role];
-  if (rolePermissions.includes(permission)) return true;
-
-  // Check custom permissions
-  const customPermission = await Permission.findOne({
-    userId: user.id,
-    permission: permission
-  });
-
-  return !!customPermission;
-};
+```python
+def check_permission(user, permission: str) -> bool:
+    # Super Admin has all permissions
+    if user.role == 'SUPER_ADMIN':
+        return True
+    
+    # Check role-based permissions
+    role_permissions = ROLE_PERMISSIONS.get(user.role, [])
+    if '*' in role_permissions or permission in role_permissions:
+        return True
+    
+    # Check custom permissions
+    return user.custom_permissions.filter(permission=permission).exists()
 ```
 
 ---
@@ -972,20 +746,20 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 ### Direct Integration (No Existing System)
 
 1. **University Registration**
-   - Super Admin creates university account
+   - Super Admin creates university account via Django Admin
    - University Admin credentials generated
    - University settings configured
 
 2. **Initial Setup**
-   - Create departments
-   - Create courses
-   - Import students (bulk upload)
+   - Create departments via Django Admin
+   - Create courses via Django Admin
+   - Import students via bulk upload or Django Admin
    - Assign lecturers to courses
    - Configure fee structures
    - Add library books
 
 3. **User Creation**
-   - Create accounts for all staff
+   - Create accounts for all staff via Django Admin
    - Assign appropriate roles
    - Students can self-register or be imported
 
@@ -994,17 +768,19 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 1. **API Key Generation**
    - Generate unique API key for university
    - Configure API endpoint (if university hosts data)
-   - Set up webhooks for real-time sync
+   - Set up sync frequency
 
-2. **Data Mapping**
+2. **Integration Configuration**
+   - Create UniversityIntegration record
    - Map university's data structure to CHUO schema
    - Configure sync frequency
-   - Set up data transformation rules
 
-3. **Authentication**
-   - University uses API key for authentication
-   - OAuth 2.0 option for enhanced security
-   - IP whitelisting for additional security
+3. **Data Synchronization**
+   - Student sync: Sync student data from university API
+   - Course sync: Sync course data from university API
+   - Enrollment sync: Sync enrollment data from university API
+   - Full sync: Perform complete synchronization
+   - Monitor sync logs for status
 
 ---
 
@@ -1013,49 +789,48 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 ### Phase 1: Core Infrastructure (Week 1-2)
 
 1. **Project Setup**
-   - Initialize Node.js project with TypeScript
-   - Set up Express server
-   - Configure Prisma with PostgreSQL
-   - Set up Redis for caching
-   - Configure environment variables
+   - Initialize Django project
+   - Set up PostgreSQL database
+   - Configure Redis for caching
+   - Set up environment variables
 
 2. **Authentication System**
-   - Implement JWT authentication
+   - Implement JWT authentication with SimpleJWT
    - Create login/register endpoints
    - Set up password reset flow
-   - Create auth middleware
+   - Create auth viewsets
 
-3. **Database Schema**
-   - Define Prisma schema
+3. **Database Models**
+   - Define Django models
    - Run migrations
    - Seed initial data (Super Admin)
 
 ### Phase 2: RBAC System (Week 3)
 
 1. **Role Definitions**
-   - Define all roles in database
+   - Define all roles in User model
    - Create role-permission mappings
    - Implement permission checking logic
 
-2. **RBAC Middleware**
-   - Create authorization middleware
+2. **RBAC Permissions**
+   - Create HasPermission permission class
    - Implement custom permission grants
    - Set up permission revocation
 
 3. **User Management**
-   - Create user CRUD endpoints
+   - Create user CRUD viewsets
    - Implement role assignment
    - Add permission management
 
 ### Phase 3: Core Features (Week 4-6)
 
 1. **University Management**
-   - University CRUD operations
+   - University CRUD viewsets
    - Department management
    - Configuration endpoints
 
 2. **Academic Management**
-   - Course management
+   - Course management viewsets
    - Student enrollment
    - Lecturer assignment
 
@@ -1080,10 +855,27 @@ export const checkPermission = async (user: User, permission: string): Promise<b
    - Borrowing system
    - Fine calculation
 
-### Phase 5: Integration & Testing (Week 9-10)
+### Phase 5: Integration System (Week 9-10)
+
+1. **Integration Models**
+   - UniversityIntegration model
+   - SyncLog model
+   - Django admin configuration
+
+2. **Sync Services**
+   - Student sync service
+   - Course sync service
+   - Enrollment sync service
+   - Full sync service
+
+3. **Celery Tasks**
+   - Scheduled sync tasks
+   - Async sync processing
+
+### Phase 6: Testing & Deployment (Week 11-12)
 
 1. **API Documentation**
-   - Set up Swagger/OpenAPI
+   - Set up drf-spectacular
    - Document all endpoints
    - Create examples
 
@@ -1102,7 +894,7 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 ## Security Considerations
 
 1. **Password Security**
-   - Bcrypt hashing (12 rounds)
+   - Django's default PBKDF2 hashing
    - Password complexity requirements
    - Password expiration
 
@@ -1112,16 +904,16 @@ export const checkPermission = async (user: User, permission: string): Promise<b
    - Token rotation on refresh
 
 3. **API Security**
-   - Rate limiting
+   - CORS configuration
    - Request validation
-   - SQL injection prevention (Prisma)
-   - XSS protection
+   - SQL injection prevention (Django ORM)
+   - XSS protection (Django templates)
 
 4. **Data Security**
-   - Encryption at rest
+   - Encryption at rest (PostgreSQL)
    - HTTPS only in production
    - Regular backups
-   - Audit logging
+   - Audit logging via SyncLog
 
 ---
 
@@ -1134,22 +926,22 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 
 2. **Database Optimization**
    - Indexed fields
-   - Query optimization
+   - Query optimization with select_related/prefetch_related
    - Connection pooling
 
 3. **API Optimization**
-   - Pagination
+   - Pagination (PageNumberPagination)
    - Field selection
-   - Compression
+   - Filtering and searching
 
 ---
 
 ## Monitoring & Logging
 
 1. **Application Monitoring**
-   - Error tracking (Sentry)
-   - Performance monitoring (APM)
-   - Uptime monitoring
+   - Django logging configuration
+   - Error tracking
+   - Performance monitoring
 
 2. **Logging**
    - Structured logging
@@ -1165,11 +957,11 @@ export const checkPermission = async (user: User, permission: string): Promise<b
 
 ## Next Steps
 
-1. Initialize backend project
-2. Set up database and Prisma
-3. Implement authentication system
-4. Create RBAC middleware
-5. Build core API endpoints
+1. Install dependencies and set up environment
+2. Run migrations to create database tables
+3. Create superuser for Django Admin
+4. Implement remaining viewsets (assignments, exams, etc.)
+5. Set up Celery for scheduled sync tasks
 6. Integrate with frontend
 7. Deploy to production
 
