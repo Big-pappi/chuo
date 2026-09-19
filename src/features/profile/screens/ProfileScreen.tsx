@@ -46,7 +46,7 @@ const ProfileScreen: React.FC = () => {
 
   const go = (route: string) => () => {
     try {
-      navigation.navigate(route);
+      navigation.navigate(route as never);
     } catch {
       /* route may not exist in this prototype */
     }
@@ -100,7 +100,7 @@ const ProfileScreen: React.FC = () => {
           items={profilePrivacySettings}
           toggles={toggles}
           onToggle={handleToggle}
-          onPress={id => go(id === 'changePassword' ? 'password' : id)()}
+          onPress={id => go(id === 'changePassword' ? 'ChangePassword' : id)()}
         />
         <SettingsGroup
           label="App"
@@ -148,7 +148,10 @@ const ProfileScreen: React.FC = () => {
           }
         }} />
 
-        <LogOutRow onPress={go('Login')} />
+        <LogOutRow onPress={() => {
+          // Handle logout logic here
+          console.log('Logout pressed');
+        }} />
       </View>
     </Screen>
   );
