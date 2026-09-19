@@ -364,3 +364,5 @@
 {"_e":"metro:client_log","_t":1789836378053,"level":"warn","data":["Found screens with the same name nested inside one another. Check:\n\nMain > Profile, Main > Profile > Profile\n\nThis can cause confusing behavior during navigation. Consider using unique names for each screen instead."]}
 {"_e":"metro:server_log","_t":1789836465981,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
 {"_e":"metro:client_log","_t":1789836581503,"level":"error","data":["[ReferenceError: Property 'MaterialCommunityIcons' doesn't exist]"]}
+{"_e":"metro:server_log","_t":1789836689154,"level":"error","data":["[timeout] connection terminated with Device for app='%s' on device='%s' after not responding for %s seconds.","host.exp.Exponent","iPhone","60"]}
+{"_e":"metro:client_log","_t":1789836905800,"level":"error","data":["[Error: Couldn't find a screen named 'Profile' to use as 'initialRouteName'.]"]}
