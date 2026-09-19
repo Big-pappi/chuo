@@ -67,7 +67,7 @@ const DashboardScreen: React.FC = () => {
   const dateText = useMemo(() => filterLabel(dateFilter), [dateFilter]);
 
   const goCustomize = () => navigation.navigate('Customize');
-  const go = (route: string) => navigation.navigate(route);
+  const go = (route: string) => navigation.navigate(route as never);
 
   const renderWidget = (id: WidgetId) => {
     switch (id) {
