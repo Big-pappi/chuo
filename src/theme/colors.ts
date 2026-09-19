@@ -45,7 +45,7 @@ export const colors = {
   transparent: 'transparent',
 };
 
-// Dark Mode Colors
+// Dark Mode Colors - Improved with better contrast
 export const darkColors = {
   // Primary Colors
   navy: '#1E3A8A',
@@ -63,22 +63,22 @@ export const darkColors = {
   red: '#F87171',
   pink: '#F472B6',
 
-  // Soft tint backgrounds (darker for dark mode)
-  blueSoft: '#1E3A8A',
-  greenSoft: '#064E3B',
-  orangeSoft: '#78350F',
-  purpleSoft: '#5B21B6',
-  redSoft: '#7F1D1D',
-  pinkSoft: '#831843',
+  // Soft tint backgrounds - lighter and more saturated for better contrast
+  blueSoft: '#1E40AF',
+  greenSoft: '#065F46',
+  orangeSoft: '#92400E',
+  purpleSoft: '#6D28D9',
+  redSoft: '#991B1B',
+  pinkSoft: '#9D174D',
 
-  // Neutral Colors
-  ink: '#F1F5F9',
-  slate: '#CBD5E1',
-  muted: '#94A3B8',
-  line: '#334155',
-  panel: '#1E293B',
-  panel2: '#0F172A',
-  bg: '#0F172A',
+  // Neutral Colors - improved contrast
+  ink: '#F8FAFC',      // White-ish for primary text
+  slate: '#E2E8F0',    // Light gray for secondary text
+  muted: '#94A3B8',    // Medium gray for tertiary text
+  line: '#334155',     // Border color
+  panel: '#1E293B',    // Card background - lighter than bg
+  panel2: '#0F172A',   // Alternate panel background
+  bg: '#0F172A',      // Main background - deep blue-gray
 
   // Status Colors
   success: '#34D399',
