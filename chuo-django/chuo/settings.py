@@ -66,21 +66,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'chuo.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='chuo_db'),
-        'USER': config('DB_USER', default='chuo_user'),
-        'PASSWORD': config('DB_PASSWORD', default='chuo_password'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-        'OPTIONS': {
-            'psycopg': {
-                'connect_timeout': 10,
+# Use SQLite for local development, PostgreSQL for production
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default='chuo_db'),
+            'USER': config('DB_USER', default='chuo_user'),
+            'PASSWORD': config('DB_PASSWORD', default='chuo_password'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'OPTIONS': {
+                'psycopg': {
+                    'connect_timeout': 10,
+                }
             }
         }
     }
-}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
