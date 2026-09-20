@@ -1,4 +1,4 @@
-from .user import User
+from .user import User, Permission
 from .university import University
 from .department import Department
 from .course import Course
@@ -12,6 +12,7 @@ from .library import Book, BorrowRecord
 
 __all__ = [
     'User',
+    'Permission',
     'University',
     'Department',
     'Course',
