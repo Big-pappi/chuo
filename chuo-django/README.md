@@ -55,6 +55,8 @@ chuo-django/
 - PostgreSQL 15+
 - Redis 7+
 
+**Note for Windows Users**: The project uses `psycopg[binary]` which is a modern PostgreSQL adapter that works well on Windows without requiring compilation.
+
 ## Installation
 
 1. Create virtual environment:
