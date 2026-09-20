@@ -51,11 +51,13 @@ chuo-django/
 
 ## Prerequisites
 
-- Python 3.9+
+- Python 3.9+ (3.11 or 3.12 recommended for best compatibility)
 - PostgreSQL 15+
 - Redis 7+
 
 **Note for Windows Users**: The project uses `psycopg[binary]` which is a modern PostgreSQL adapter that works well on Windows without requiring compilation.
+
+**Python Version Note**: Django 5.0 supports Python 3.9-3.12. For Python 3.14+, ensure you're using Django 5.0 or later.
 
 ## Installation
 
