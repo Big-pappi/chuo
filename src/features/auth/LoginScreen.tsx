@@ -45,6 +45,7 @@ const LoginScreen: React.FC = () => {
     try {
       setLoadingUniversities(true);
       const data = await authService.getUniversities();
+      console.log('Universities data:', data);
       setUniversities(data);
     } catch (error) {
       console.error('Failed to fetch universities:', error);
@@ -62,8 +63,13 @@ const LoginScreen: React.FC = () => {
 
     try {
       setLoading(true);
+      const selectedUni = universities.find(u => u.name === selectedUniversity);
+      if (!selectedUni) {
+        Alert.alert('Error', 'Invalid university selection');
+        return;
+      }
       await authService.studentLogin({
-        university: data.university,
+        university: selectedUni.code,
         registration_number: data.registration_number,
         password: data.password
       });
