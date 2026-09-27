@@ -6,8 +6,8 @@ import { universityConfig } from './university.config';
 const getAPIConfig = async () => {
   const university = await universityConfig.getSelectedUniversity();
   const baseURL = __DEV__
-    ? 'https://chuo-backend-nine.vercel.app/api/v1'
-    : 'https://chuo-backend-nine.vercel.app/api/v1';
+    ? 'https://chuo-backend.vercel.app/api'
+    : 'https://chuo-backend.vercel.app/api';
 
   return {
     baseURL,
@@ -22,7 +22,7 @@ const getAPIConfig = async () => {
 
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'https://chuo-backend-nine.vercel.app/api/v1',
+  baseURL: 'https://chuo-backend.vercel.app/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

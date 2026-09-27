@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import {universityConfig} from '@/api/university.config';
 
 export interface LoginCredentials { email: string; password: string; universityId?: string; }
+export interface StudentLoginCredentials { university: string; registration_number: string; password: string; }
 export interface SignUpCredentials { email: string; password: string; fullName: string; studentId: string; universityId: string; }
 export interface AuthResponse {
   access: string;
@@ -22,6 +23,23 @@ class AuthService {
       email: credentials.email, password: credentials.password, universityId: credentials.universityId,
     });
     await this.storeAuthData(response.data);
+    return response.data;
+  }
+
+  async studentLogin(credentials: StudentLoginCredentials): Promise<AuthResponse> {
+    await updateApiClient();
+    const response = await apiClient.post<AuthResponse>('/auth/student-login/', {
+      university: credentials.university,
+      registration_number: credentials.registration_number,
+      password: credentials.password,
+    });
+    await this.storeAuthData(response.data);
+    return response.data;
+  }
+
+  async getUniversities(): Promise<any[]> {
+    await updateApiClient();
+    const response = await apiClient.get('/auth/universities/');
     return response.data;
   }
 
