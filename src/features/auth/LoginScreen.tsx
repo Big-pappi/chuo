@@ -96,12 +96,12 @@ const LoginScreen: React.FC = () => {
         {loadingUniversities ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0a55b8" />
-            <Text style={styles.loadingText}>Loading universities...</Text>
+            <Text style={[styles.loadingText, {color: themeColors.slate}]}>Loading universities...</Text>
           </View>
         ) : (
           <>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Select University</Text>
+              <Text style={[styles.label, {color: themeColors.ink}]}>Select University</Text>
               <TextInput
                 mode="outlined"
                 value={selectedUniversity}
@@ -167,7 +167,7 @@ const LoginScreen: React.FC = () => {
               )}
             />
 
-            <Text style={styles.forgot} onPress={() => navigation.navigate('ForgotPassword' as never)}>Forgot password?</Text>
+            <Text style={[styles.forgot, {color: themeColors.blue}]} onPress={() => navigation.navigate('ForgotPassword' as never)}>Forgot password?</Text>
 
             <Button
               mode="contained"
@@ -187,33 +187,22 @@ const LoginScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#f7f9fc'},
+  container: {flex: 1},
   content: {flexGrow: 1, padding: 24, justifyContent: 'center', maxWidth: 520, width: '100%', alignSelf: 'center'},
-  logo: {width: 120, height: 120, alignSelf: 'center', marginBottom: 18},
-  title: {fontSize: 32, fontWeight: '800', color: '#061d49'},
-  subtitle: {fontSize: 16, color: '#667085', marginTop: 8, marginBottom: 28},
+  logo: {width: 104, height: 104, alignSelf: 'center', marginBottom: 18},
+  title: {fontSize: 32, fontWeight: '800'},
+  subtitle: {fontSize: 16, marginTop: 8, marginBottom: 28},
   inputGroup: {marginBottom: 14},
-  label: {fontSize: 14, fontWeight: '600', color: '#061d49', marginBottom: 8},
+  label: {fontSize: 14, fontWeight: '600', marginBottom: 8},
   input: {marginBottom: 14},
   loadingContainer: {alignItems: 'center', padding: 20},
-  loadingText: {marginTop: 12, color: '#667085'},
-  dropdown: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    maxHeight: 200,
-  },
-  dropdownItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  forgot: {alignSelf: 'flex-end', color: '#0a55b8', fontWeight: '700', marginTop: 2},
-  button: {marginTop: 26, borderRadius: 12, paddingVertical: 4},
-  footer: {textAlign: 'center', marginTop: 24, color: '#667085', fontSize: 15},
-  link: {color: '#0a55b8', fontWeight: '800'}
+  loadingText: {marginTop: 12},
+  dropdown: {borderRadius: 12, marginTop: 4, borderWidth: 1, maxHeight: 200},
+  dropdownItem: {padding: 14, borderBottomWidth: 1},
+  forgot: {alignSelf: 'flex-end', fontWeight: '700', marginTop: 2},
+  button: {marginTop: 26, borderRadius: 14, paddingVertical: 4},
+  footer: {textAlign: 'center', marginTop: 24, fontSize: 15},
+  link: {fontWeight: '800'}
 });
 
 export default LoginScreen;

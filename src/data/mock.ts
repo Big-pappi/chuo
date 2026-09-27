@@ -263,10 +263,7 @@ export const profilePreferenceSettings: ProfileSettingItem[] = [
   {id: 'pushNotifications', title: 'Notifications', subtitle: 'Enable push notifications', icon: 'bell-outline', color: '#F59E0B', soft: '#FFF7ED', control: 'toggle', defaultOn: true},
 ];
 
-export const profilePrivacySettings: ProfileSettingItem[] = [
-  {id: 'changePassword', title: 'Change Password', subtitle: 'Update your account password', icon: 'lock-outline', color: '#1D4ED8', soft: '#EEF4FF', control: 'chevron'},
-  {id: 'biometric', title: 'Biometric Login', subtitle: 'Use fingerprint or face ID to sign in', icon: 'fingerprint', color: '#10B981', soft: '#ECFDF5', control: 'toggle', defaultOn: false},
-];
+export const profilePrivacySettings: ProfileSettingItem[] = [];
 
 export const profileAppSettings: ProfileSettingItem[] = [
   {id: 'appVersion', title: 'App Version', subtitle: 'Current installed version', icon: 'information-outline', color: '#10B981', soft: '#ECFDF5', control: 'value', value: appVersion},

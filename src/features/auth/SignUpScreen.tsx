@@ -155,6 +155,7 @@ const SignUpScreen: React.FC = () => {
                     anchorPosition="bottom"
                     contentStyle={[
                       styles.menuContent,
+                      {backgroundColor: themeColors.panel},
                       anchorWidth ? {width: anchorWidth} : null,
                     ]}
                     anchor={
@@ -183,7 +184,7 @@ const SignUpScreen: React.FC = () => {
                           setMenuVisible(false);
                         }}
                         title={`${u.name} (${u.acronym})`}
-                        titleStyle={styles.menuItemText}
+                        titleStyle={[styles.menuItemText, {color: themeColors.ink}]}
                         leadingIcon={value === u.id ? 'check' : undefined}
                       />
                     ))}
@@ -318,7 +319,6 @@ const SignUpScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   scrollContent: {
     flexGrow: 1,
@@ -344,7 +344,6 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.ink,
     marginBottom: spacing.sm,
   },
   subtitleText: {
