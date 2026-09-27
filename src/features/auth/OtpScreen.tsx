@@ -8,11 +8,12 @@ import {
   Text,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {colors, spacing, typography} from '@/theme';
+import {getColors, spacing, typography} from '@/theme';
+import {useTheme} from '@/context/ThemeContext';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import {useAuth} from '@/hooks/useAuth';
@@ -20,10 +21,13 @@ import {otpSchema, type OtpFormData} from '@/features/auth/validation/authValida
 
 const OtpScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute<any>();
   const {verifyOtp} = useAuth();
+  const {isDark} = useTheme();
+  const {colors: themeColors} = getColors(isDark);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [countdown, setCountdown] = useState(30);
-  const [email, setEmail] = useState('');
+  const email = route.params?.email ?? '';
 
   const {
     control,
@@ -76,13 +80,15 @@ const OtpScreen: React.FC = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
+      style={[styles.container, {backgroundColor: themeColors.bg}]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <MaterialCommunityIcons name="email-check" size={80} color={colors.blue} />
-          <Text style={styles.title}>Verify Your Email</Text>
-          <Text style={styles.subtitle}>
-            We've sent a 6-digit verification code to your email address
+          <View style={[styles.iconBubble, {backgroundColor: themeColors.blueSoft}]}>
+            <MaterialCommunityIcons name="email-check-outline" size={42} color={themeColors.blue} />
+          </View>
+          <Text style={[styles.title, {color: themeColors.ink}]}>Activate your account</Text>
+          <Text style={[styles.subtitle, {color: themeColors.slate}]}>
+            Enter the 6-digit code sent to {email || 'your university email'} to finish setting up CHUO.
           </Text>
         </View>
 
@@ -115,12 +121,12 @@ const OtpScreen: React.FC = () => {
           </Button>
 
           <View style={styles.resendContainer}>
-            <Text style={styles.resendText}>Didn't receive the code? </Text>
+            <Text style={[styles.resendText, {color: themeColors.slate}]}>Didn't receive the code? </Text>
             {resendDisabled ? (
-              <Text style={styles.countdownText}>Resend in {countdown}s</Text>
+              <Text style={[styles.countdownText, {color: themeColors.slate}]}>Resend in {countdown}s</Text>
             ) : (
-              <Text style={styles.resendLink} onPress={handleResendOtp}>
-                Resend
+              <Text style={[styles.resendLink, {color: themeColors.blue}]} onPress={handleResendOtp}>
+                Resend code
               </Text>
             )}
           </View>
@@ -137,7 +143,14 @@ const OtpScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+  },
+  iconBubble: {
+    width: 88,
+    height: 88,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.lg,
   },
   scrollContent: {
     flexGrow: 1,
@@ -151,13 +164,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.ink,
-    marginTop: spacing.lg,
+    marginTop: spacing.sm,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: typography.fontSize.base,
-    color: colors.slate,
     textAlign: 'center',
     paddingHorizontal: spacing.lg,
   },
@@ -177,15 +188,12 @@ const styles = StyleSheet.create({
   },
   resendText: {
     fontSize: typography.fontSize.sm,
-    color: colors.slate,
   },
   countdownText: {
     fontSize: typography.fontSize.sm,
-    color: colors.slate,
   },
   resendLink: {
     fontSize: typography.fontSize.sm,
-    color: colors.blue,
     fontWeight: typography.fontWeight.medium,
   },
   backButton: {
