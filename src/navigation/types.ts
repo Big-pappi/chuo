@@ -43,9 +43,7 @@ export type ProfileStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   ChangePassword: undefined;
-  Security: undefined;
   NotificationPreferences: undefined;
-  LinkedDevices: undefined;
   HelpCenter: undefined;
   ContactUs: undefined;
   About: undefined;

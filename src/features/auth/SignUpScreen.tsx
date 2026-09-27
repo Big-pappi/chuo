@@ -15,7 +15,8 @@ import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {TextInput, Menu} from 'react-native-paper';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import {colors, spacing, typography} from '@/theme';
+import {colors, spacing, typography, getColors} from '@/theme';
+import {useTheme} from '@/context/ThemeContext';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import {useAuth} from '@/hooks/useAuth';
@@ -25,6 +26,8 @@ import {universityConfig} from '@/api/university.config';
 const SignUpScreen: React.FC = () => {
   const navigation = useNavigation();
   const {signUp} = useAuth();
+  const {isDark} = useTheme();
+  const {colors: themeColors} = getColors(isDark);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureConfirmEntry, setSecureConfirmEntry] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -58,7 +61,7 @@ const SignUpScreen: React.FC = () => {
         password: data.password,
         universityId: data.universityId,
       });
-      // Navigation will be handled by auth state change
+      (navigation as any).navigate('Otp', {email: data.email});
     } catch (error: any) {
       Alert.alert(
         'Sign Up Failed',
@@ -74,7 +77,7 @@ const SignUpScreen: React.FC = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
+      style={[styles.container, {backgroundColor: themeColors.bg}]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
@@ -88,9 +91,9 @@ const SignUpScreen: React.FC = () => {
         </View>
 
         <View style={styles.form}>
-          <Text style={styles.welcomeText}>Create Your Account</Text>
-          <Text style={styles.subtitleText}>
-            Join thousands of students managing their academic journey
+          <Text style={[styles.welcomeText, {color: themeColors.ink}]}>Create Your Account</Text>
+          <Text style={[styles.subtitleText, {color: themeColors.slate}]}>
+            Verify your university registration and activate your student account
           </Text>
 
           <Controller
@@ -279,7 +282,7 @@ const SignUpScreen: React.FC = () => {
                   size={24}
                   color={value ? colors.blue : colors.slate}
                 />
-                <Text style={styles.termsText}>
+                <Text style={[styles.termsText, {color: themeColors.slate}]}>
                   I agree to the{' '}
                   <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
                   <Text style={styles.termsLink}>Privacy Policy</Text>

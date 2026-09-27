@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import Screen from '@/components/ui/Screen';
-import {colors} from '@/theme';
 import {getColors} from '@/theme';
 import {SectionHeader} from '@/components/ui/Cards';
 import {useTheme} from '@/context/ThemeContext';
@@ -122,12 +121,8 @@ const ProfileScreen: React.FC = () => {
             navigation.navigate('EditProfile' as never);
           } else if (id === 'password') {
             navigation.navigate('ChangePassword' as never);
-          } else if (id === 'security') {
-            navigation.navigate('Security' as never);
           } else if (id === 'notifications') {
             navigation.navigate('NotificationPreferences' as never);
-          } else if (id === 'devices') {
-            navigation.navigate('LinkedDevices' as never);
           } else {
             go(id)();
           }

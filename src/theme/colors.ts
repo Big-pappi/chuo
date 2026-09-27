@@ -78,7 +78,7 @@ export const darkColors = {
   line: '#334155',     // Border color
   panel: '#1E293B',    // Card background - lighter than bg
   panel2: '#0F172A',   // Alternate panel background
-  bg: '#0F172A',      // Main background - deep blue-gray
+  bg: '#09111F',      // Main background - deep blue-gray
 
   // Status Colors
   success: '#34D399',

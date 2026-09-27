@@ -231,9 +231,7 @@ export const profileQuickAccess = [
 export const profileAccountItems = [
   {id: 'personal', title: 'Personal Information', subtitle: 'View and update your personal details', icon: 'account-outline', color: '#1D4ED8', soft: '#EEF4FF'},
   {id: 'password', title: 'Change Password', subtitle: 'Update your account password', icon: 'lock-outline', color: '#1D4ED8', soft: '#EEF4FF'},
-  {id: 'security', title: 'Security', subtitle: 'Manage 2FA and security settings', icon: 'shield-check-outline', color: '#10B981', soft: '#ECFDF5'},
   {id: 'notifications', title: 'Notification Preferences', subtitle: 'Choose what you want to be notified about', icon: 'bell-outline', color: '#F59E0B', soft: '#FFF7ED'},
-  {id: 'devices', title: 'Linked Devices', subtitle: 'Manage devices connected to your account', icon: 'cellphone-link', color: '#1D4ED8', soft: '#EEF4FF'},
 ];
 
 export const profileSupportItems = [

@@ -3,7 +3,8 @@ import {Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Te
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
-import {colors, spacing} from '@/theme';
+import {getColors} from '@/theme';
+import {useTheme} from '@/context/ThemeContext';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import authService from '@/features/auth/services/authService';
@@ -28,6 +29,8 @@ const LoginScreen: React.FC = () => {
   const [loadingUniversities, setLoadingUniversities] = useState(true);
   const [selectedUniversity, setSelectedUniversity] = useState<string>('');
   const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
+  const {isDark} = useTheme();
+  const {colors: themeColors} = getColors(isDark);
 
   const {control, handleSubmit, formState: {errors}} = useForm<StudentLoginFormData>({
     defaultValues: {
@@ -84,11 +87,11 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={[styles.container, {backgroundColor: themeColors.bg}]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Image source={require('../../../assets/logo.png')} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.title}>Welcome back</Text>
-        <Text style={styles.subtitle}>Sign in to continue your academic journey.</Text>
+        <Text style={[styles.title, {color: themeColors.ink}]}>Welcome back</Text>
+        <Text style={[styles.subtitle, {color: themeColors.slate}]}>Sign in to continue your academic journey.</Text>
 
         {loadingUniversities ? (
           <View style={styles.loadingContainer}>
@@ -104,8 +107,9 @@ const LoginScreen: React.FC = () => {
                 value={selectedUniversity}
                 onChangeText={setSelectedUniversity}
                 placeholder="Tap to select university"
-                right={<TextInput.Icon icon="chevron-down" />}
+                right={<TextInput.Icon icon="chevron-down" onPress={() => setShowUniversityDropdown(value => !value)} />}
                 style={styles.input}
+                onFocus={() => setShowUniversityDropdown(true)}
                 disabled={loading}
               />
               {showUniversityDropdown && (
@@ -176,7 +180,7 @@ const LoginScreen: React.FC = () => {
           </>
         )}
 
-        <Text style={styles.footer}>Don&apos;t have an account? <Text style={styles.link} onPress={() => navigation.navigate('SignUp' as never)}>Sign Up</Text></Text>
+        <Text style={[styles.footer, {color: themeColors.slate}]}>Don&apos;t have an account? <Text style={[styles.link, {color: themeColors.blue}]} onPress={() => navigation.navigate('SignUp' as never)}>Sign Up</Text></Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );
