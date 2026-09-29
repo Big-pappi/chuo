@@ -59,7 +59,11 @@ const LoginScreen: React.FC = () => {
       setLoadingUniversities(true);
       const data = await authService.getUniversities();
       console.log('Universities data:', data);
+      console.log('Number of universities:', data.length);
       setUniversities(data);
+      if (data.length === 0) {
+        Alert.alert('No Universities', 'No universities found. Please contact support.');
+      }
     } catch (error) {
       console.error('Failed to fetch universities:', error);
       Alert.alert('Error', 'Failed to load universities. Please check your connection.');
@@ -117,9 +121,10 @@ const LoginScreen: React.FC = () => {
                 value={selectedUniversity}
                 onChangeText={setSelectedUniversity}
                 placeholder="Tap to select university"
-                right={<TextInput.Icon icon="chevron-down" />}
+                right={<TextInput.Icon icon="chevron-down" onPress={() => setShowUniversityDropdown(!showUniversityDropdown)} />}
                 style={styles.input}
                 disabled={loading}
+                onFocus={() => setShowUniversityDropdown(true)}
               />
               {showUniversityDropdown && (
                 <View style={styles.dropdown}>
