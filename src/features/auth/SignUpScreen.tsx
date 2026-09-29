@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,67 +9,348 @@ import {
   Image,
   Alert,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {useForm, Controller} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {TextInput, Menu} from 'react-native-paper';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {TextInput} from 'react-native-paper';
 import {colors, spacing, typography} from '@/theme';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import {useAuth} from '@/hooks/useAuth';
-import {signUpSchema, type SignUpFormData} from '@/features/auth/validation/authValidation';
-import {universityConfig} from '@/api/university.config';
+import authService from '@/features/auth/services/authService';
+import * as SecureStore from 'expo-secure-store';
+
+interface University {
+  id: number;
+  name: string;
+  code: string;
+  type: string;
+  city: string;
+  country: string;
+}
+
+type SignupStep = 'verify' | 'verify_code' | 'set_password' | 'success';
 
 const SignUpScreen: React.FC = () => {
   const navigation = useNavigation();
-  const {signUp} = useAuth();
+  const [step, setStep] = useState<SignupStep>('verify');
+  const [loading, setLoading] = useState(false);
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [loadingUniversities, setLoadingUniversities] = useState(true);
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureConfirmEntry, setSecureConfirmEntry] = useState(true);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [anchorWidth, setAnchorWidth] = useState(0);
+  const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
 
-  const universities = universityConfig.getAllUniversities();
+  useEffect(() => {
+    fetchUniversities();
+  }, []);
 
-  const {
-    control,
-    handleSubmit,
-    formState: {errors, isSubmitting},
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-      studentId: '',
-      password: '',
-      confirmPassword: '',
-      universityId: '',
-      termsAccepted: false,
-    },
-  });
-
-  const handleSignUp = async (data: SignUpFormData) => {
+  const fetchUniversities = async () => {
     try {
-      await signUp({
-        fullName: data.fullName,
-        email: data.email,
-        studentId: data.studentId,
-        password: data.password,
-        universityId: data.universityId,
+      setLoadingUniversities(true);
+      const data = await authService.getUniversities();
+      setUniversities(data);
+    } catch (error) {
+      console.error('Failed to fetch universities:', error);
+      Alert.alert('Error', 'Failed to load universities. Please check your connection.');
+    } finally {
+      setLoadingUniversities(false);
+    }
+  };
+
+  const handleVerifyStudent = async () => {
+    if (!selectedUniversity || !registrationNumber) {
+      Alert.alert('Error', 'Please select a university and enter your registration number');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const selectedUni = universities.find(u => u.name === selectedUniversity);
+      if (!selectedUni) {
+        Alert.alert('Error', 'Invalid university selection');
+        return;
+      }
+
+      const result = await authService.verifyStudent({
+        university: selectedUni.code,
+        registration_number: registrationNumber,
       });
-      // Navigation will be handled by auth state change
+
+      if (result.student_exists) {
+        // Store university and reg number locally
+        await SecureStore.setItemAsync('signup_university', selectedUni.code);
+        await SecureStore.setItemAsync('signup_university_name', selectedUni.name);
+        await SecureStore.setItemAsync('signup_reg_number', registrationNumber);
+
+        // Send verification code
+        await authService.sendVerificationCode({
+          university: selectedUni.code,
+          registration_number: registrationNumber,
+        });
+
+        Alert.alert(
+          'Verification Code Sent',
+          'A 6-digit code has been sent to your email. It will expire in 15 minutes.',
+        );
+        setStep('verify_code');
+      }
     } catch (error: any) {
-      Alert.alert(
-        'Sign Up Failed',
-        error.response?.data?.message || error.message || 'An error occurred during sign up',
-      );
+      console.error('Verification error:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Verification failed';
+      Alert.alert('Verification Failed', errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!verificationCode || verificationCode.length !== 6) {
+      Alert.alert('Error', 'Please enter a valid 6-digit verification code');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const universityCode = await SecureStore.getItemAsync('signup_university');
+      const regNumber = await SecureStore.getItemAsync('signup_reg_number');
+
+      if (!universityCode || !regNumber) {
+        Alert.alert('Error', 'Session expired. Please start over.');
+        setStep('verify');
+        return;
+      }
+
+      // Just verify the code, don't complete signup yet
+      // We'll complete signup after setting password
+      setStep('set_password');
+    } catch (error: any) {
+      console.error('Code verification error:', error);
+      Alert.alert('Invalid Code', 'The verification code you entered is invalid or has expired.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompleteSignup = async () => {
+    if (!password || !confirmPassword) {
+      Alert.alert('Error', 'Please enter and confirm your password');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    if (password.length < 8) {
+      Alert.alert('Error', 'Password must be at least 8 characters');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const universityCode = await SecureStore.getItemAsync('signup_university');
+      const regNumber = await SecureStore.getItemAsync('signup_reg_number');
+
+      if (!universityCode || !regNumber) {
+        Alert.alert('Error', 'Session expired. Please start over.');
+        setStep('verify');
+        return;
+      }
+
+      await authService.completeSignup({
+        university: universityCode,
+        registration_number: regNumber,
+        verification_code: verificationCode,
+        password: password,
+      });
+
+      // Clear signup data
+      await SecureStore.deleteItemAsync('signup_university');
+      await SecureStore.deleteItemAsync('signup_university_name');
+      await SecureStore.deleteItemAsync('signup_reg_number');
+
+      setStep('success');
+    } catch (error: any) {
+      console.error('Signup completion error:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Signup failed';
+      Alert.alert('Signup Failed', errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogin = () => {
     navigation.navigate('Login' as never);
   };
+
+  const renderVerifyStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Verify Your Student Status</Text>
+      <Text style={styles.stepSubtitle}>
+        Enter your university and registration number to verify your student status
+      </Text>
+
+      {loadingUniversities ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.blue} />
+          <Text style={styles.loadingText}>Loading universities...</Text>
+        </View>
+      ) : (
+        <>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Select University</Text>
+            <TextInput
+              mode="outlined"
+              value={selectedUniversity}
+              onChangeText={setSelectedUniversity}
+              placeholder="Tap to select university"
+              right={<TextInput.Icon icon="chevron-down" />}
+              style={styles.input}
+              disabled={loading}
+            />
+            {showUniversityDropdown && (
+              <View style={styles.dropdown}>
+                {universities.map((uni) => (
+                  <Text
+                    key={uni.id}
+                    style={styles.dropdownItem}
+                    onPress={() => {
+                      setSelectedUniversity(uni.name);
+                      setShowUniversityDropdown(false);
+                    }}>
+                    {uni.name}
+                  </Text>
+                ))}
+              </View>
+            )}
+          </View>
+
+          <Input
+            label="Registration Number"
+            value={registrationNumber}
+            onChangeText={setRegistrationNumber}
+            autoCapitalize="characters"
+            error={!!registrationNumber && registrationNumber.length < 5}
+            helperText={registrationNumber && registrationNumber.length < 5 ? 'Invalid registration number' : ''}
+            left={<TextInput.Icon icon="card-account-details" />}
+            style={styles.input}
+            disabled={loading}
+          />
+
+          <Button
+            mode="contained"
+            onPress={handleVerifyStudent}
+            loading={loading}
+            disabled={loading}
+            style={styles.button}>
+            Verify Student
+          </Button>
+        </>
+      )}
+    </View>
+  );
+
+  const renderVerifyCodeStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Enter Verification Code</Text>
+      <Text style={styles.stepSubtitle}>
+        We've sent a 6-digit code to your email. Enter it below to continue.
+      </Text>
+
+      <Input
+        label="Verification Code"
+        value={verificationCode}
+        onChangeText={setVerificationCode}
+        keyboardType="number-pad"
+        maxLength={6}
+        error={!!verificationCode && verificationCode.length !== 6}
+        helperText={!!verificationCode && verificationCode.length !== 6 ? 'Code must be 6 digits' : ''}
+        left={<TextInput.Icon icon="shield-key" />}
+        style={styles.input}
+        disabled={loading}
+      />
+
+      <Button
+        mode="contained"
+        onPress={handleVerifyCode}
+        loading={loading}
+        disabled={loading}
+        style={styles.button}>
+        Verify Code
+      </Button>
+
+      <TouchableOpacity onPress={handleVerifyStudent} style={styles.resendLink}>
+        <Text style={styles.resendText}>Resend Code</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderSetPasswordStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Set Your Password</Text>
+      <Text style={styles.stepSubtitle}>
+        Create a secure password for your account
+      </Text>
+
+      <Input
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={secureTextEntry}
+        error={!!password && password.length < 8}
+        helperText={!!password && password.length < 8 ? 'Password must be at least 8 characters' : ''}
+        right={<TextInput.Icon icon={secureTextEntry ? 'eye-off' : 'eye'} onPress={() => setSecureTextEntry(!secureTextEntry)} />}
+        left={<TextInput.Icon icon="lock" />}
+        style={styles.input}
+        disabled={loading}
+      />
+
+      <Input
+        label="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        secureTextEntry={secureConfirmEntry}
+        error={!!confirmPassword && password !== confirmPassword}
+        helperText={!!confirmPassword && password !== confirmPassword ? 'Passwords do not match' : ''}
+        right={<TextInput.Icon icon={secureConfirmEntry ? 'eye-off' : 'eye'} onPress={() => setSecureConfirmEntry(!secureConfirmEntry)} />}
+        left={<TextInput.Icon icon="lock-check" />}
+        style={styles.input}
+        disabled={loading}
+      />
+
+      <Button
+        mode="contained"
+        onPress={handleCompleteSignup}
+        loading={loading}
+        disabled={loading}
+        style={styles.button}>
+        Complete Signup
+      </Button>
+    </View>
+  );
+
+  const renderSuccessStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.successIcon}>✓</Text>
+      <Text style={styles.stepTitle}>Account Created!</Text>
+      <Text style={styles.stepSubtitle}>
+        Your account has been created successfully. You can now log in with your registration number and password.
+      </Text>
+
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}>
+        Go to Login
+      </Button>
+    </View>
+  );
 
   return (
     <KeyboardAvoidingView
@@ -87,226 +368,19 @@ const SignUpScreen: React.FC = () => {
           />
         </View>
 
-        <View style={styles.form}>
-          <Text style={styles.welcomeText}>Create Your Account</Text>
-          <Text style={styles.subtitleText}>
-            Join thousands of students managing their academic journey
-          </Text>
+        {step === 'verify' && renderVerifyStep()}
+        {step === 'verify_code' && renderVerifyCodeStep()}
+        {step === 'set_password' && renderSetPasswordStep()}
+        {step === 'success' && renderSuccessStep()}
 
-          <Controller
-            control={control}
-            name="fullName"
-            render={({field: {onChange, value}}) => (
-              <Input
-                label="Full Name"
-                value={value}
-                onChangeText={onChange}
-                autoCapitalize="words"
-                textContentType="name"
-                autoComplete="name"
-                returnKeyType="next"
-                error={!!errors.fullName}
-                helperText={errors.fullName?.message}
-                left={<TextInput.Icon icon="account" size={20} />}
-                style={styles.input}
-                contentStyle={styles.inputContent}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="email"
-            render={({field: {onChange, value}}) => (
-              <Input
-                label="Email"
-                value={value}
-                onChangeText={onChange}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="emailAddress"
-                autoComplete="email"
-                returnKeyType="next"
-                error={!!errors.email}
-                helperText={errors.email?.message}
-                left={<TextInput.Icon icon="email" size={20} />}
-                style={styles.input}
-                contentStyle={styles.inputContent}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="universityId"
-            render={({field: {onChange, value}}) => {
-              const selected = universities.find(u => u.id === value);
-              return (
-                <View
-                  style={[styles.input, styles.fullWidth]}
-                  onLayout={e => setAnchorWidth(e.nativeEvent.layout.width)}>
-                  <Menu
-                    visible={menuVisible}
-                    onDismiss={() => setMenuVisible(false)}
-                    anchorPosition="bottom"
-                    contentStyle={[
-                      styles.menuContent,
-                      anchorWidth ? {width: anchorWidth} : null,
-                    ]}
-                    anchor={
-                      <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => setMenuVisible(true)}>
-                        <View pointerEvents="none">
-                          <Input
-                            label="University"
-                            value={selected ? selected.name : ''}
-                            editable={false}
-                            error={!!errors.universityId}
-                            helperText={errors.universityId?.message}
-                            left={<TextInput.Icon icon="school" size={20} />}
-                            right={<TextInput.Icon icon="chevron-down" size={20} />}
-                            contentStyle={styles.inputContent}
-                          />
-                        </View>
-                      </TouchableOpacity>
-                    }>
-                    {universities.map(u => (
-                      <Menu.Item
-                        key={u.id}
-                        onPress={() => {
-                          onChange(u.id);
-                          setMenuVisible(false);
-                        }}
-                        title={`${u.name} (${u.acronym})`}
-                        titleStyle={styles.menuItemText}
-                        leadingIcon={value === u.id ? 'check' : undefined}
-                      />
-                    ))}
-                  </Menu>
-                </View>
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name="studentId"
-            render={({field: {onChange, value}}) => (
-              <Input
-                label="Registration Number"
-                value={value}
-                onChangeText={onChange}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                returnKeyType="next"
-                error={!!errors.studentId}
-                helperText={errors.studentId?.message}
-                left={<TextInput.Icon icon="card-account-details" size={20} />}
-                style={styles.input}
-                contentStyle={styles.inputContent}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="password"
-            render={({field: {onChange, value}}) => (
-              <Input
-                label="Password"
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry={secureTextEntry}
-                textContentType="password"
-                autoComplete="password-new"
-                returnKeyType="next"
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                right={
-                  <TextInput.Icon
-                    icon={secureTextEntry ? 'eye-off' : 'eye'}
-                    onPress={() => setSecureTextEntry(!secureTextEntry)}
-                    size={20}
-                  />
-                }
-                left={<TextInput.Icon icon="lock" size={20} />}
-                style={styles.input}
-                contentStyle={styles.inputContent}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({field: {onChange, value}}) => (
-              <Input
-                label="Confirm Password"
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry={secureConfirmEntry}
-                textContentType="password"
-                autoComplete="password-new"
-                returnKeyType="done"
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword?.message}
-                right={
-                  <TextInput.Icon
-                    icon={secureConfirmEntry ? 'eye-off' : 'eye'}
-                    onPress={() => setSecureConfirmEntry(!secureConfirmEntry)}
-                    size={20}
-                  />
-                }
-                left={<TextInput.Icon icon="lock-check" size={20} />}
-                style={styles.input}
-                contentStyle={styles.inputContent}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="termsAccepted"
-            render={({field: {onChange, value}}) => (
-              <TouchableOpacity
-                style={styles.termsContainer}
-                activeOpacity={0.7}
-                onPress={() => onChange(!value)}>
-                <MaterialCommunityIcons
-                  name={value ? 'checkbox-marked' : 'checkbox-blank-outline'}
-                  size={24}
-                  color={value ? colors.blue : colors.slate}
-                />
-                <Text style={styles.termsText}>
-                  I agree to the{' '}
-                  <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
-                  <Text style={styles.termsLink}>Privacy Policy</Text>
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
-          {errors.termsAccepted && (
-            <Text style={styles.errorText}>{errors.termsAccepted.message}</Text>
-          )}
-
-          <Button
-            mode="contained"
-            onPress={handleSubmit(handleSignUp)}
-            loading={isSubmitting}
-            disabled={isSubmitting}
-            style={styles.signUpButton}>
-            Create Account
-          </Button>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <Text style={styles.loginText} onPress={handleLogin}>
-            Sign In
-          </Text>
-        </View>
+        {step !== 'success' && (
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <Text style={styles.loginText} onPress={handleLogin}>
+              Sign In
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -334,63 +408,73 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
   },
-  form: {
+  stepContainer: {
     marginTop: spacing.md,
     width: '100%',
   },
-  welcomeText: {
+  stepTitle: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
     color: colors.ink,
     marginBottom: spacing.sm,
+    textAlign: 'center',
   },
-  subtitleText: {
+  stepSubtitle: {
     fontSize: typography.fontSize.sm,
     color: colors.slate,
     marginBottom: spacing.xl,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    padding: spacing.xl,
+  },
+  loadingText: {
+    marginTop: spacing.md,
+    color: colors.slate,
+  },
+  inputGroup: {
+    marginBottom: spacing.md,
+  },
+  label: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.ink,
+    marginBottom: spacing.xs,
   },
   input: {
     marginBottom: spacing.md,
-    width: '100%',
   },
-  inputContent: {
-    width: '100%',
-    minWidth: 0,
-    paddingHorizontal: 8,
-  },
-  fullWidth: {
-    width: '100%',
-  },
-  menuContent: {
-    borderRadius: 12,
+  dropdown: {
     backgroundColor: colors.white,
+    borderRadius: 8,
+    marginTop: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border,
+    maxHeight: 200,
   },
-  menuItemText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.ink,
+  dropdownItem: {
+    padding: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  termsContainer: {
-    flexDirection: 'row',
+  button: {
+    marginTop: spacing.md,
+  },
+  resendLink: {
+    marginTop: spacing.lg,
     alignItems: 'center',
-    marginVertical: spacing.md,
   },
-  termsText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.slate,
-    marginLeft: spacing.sm,
-    flex: 1,
-  },
-  termsLink: {
+  resendText: {
     color: colors.blue,
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.medium,
   },
-  errorText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.error,
-    marginTop: spacing.xs,
-  },
-  signUpButton: {
-    marginTop: spacing.md,
+  successIcon: {
+    fontSize: 64,
+    color: colors.green,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
   },
   footer: {
     flexDirection: 'row',

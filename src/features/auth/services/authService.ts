@@ -5,6 +5,9 @@ import {universityConfig} from '@/api/university.config';
 export interface LoginCredentials { email: string; password: string; universityId?: string; }
 export interface StudentLoginCredentials { university: string; registration_number: string; password: string; }
 export interface SignUpCredentials { email: string; password: string; fullName: string; studentId: string; universityId: string; }
+export interface VerifyStudentCredentials { university: string; registration_number: string; }
+export interface SendVerificationCodeCredentials { university: string; registration_number: string; }
+export interface CompleteSignupCredentials { university: string; registration_number: string; verification_code: string; password: string; }
 export interface AuthResponse {
   access: string;
   refresh: string;
@@ -40,6 +43,25 @@ class AuthService {
   async getUniversities(): Promise<any[]> {
     await updateApiClient();
     const response = await apiClient.get('/auth/universities/');
+    return response.data;
+  }
+
+  async verifyStudent(credentials: VerifyStudentCredentials): Promise<any> {
+    await updateApiClient();
+    const response = await apiClient.post('/auth/verify-student/', credentials);
+    return response.data;
+  }
+
+  async sendVerificationCode(credentials: SendVerificationCodeCredentials): Promise<any> {
+    await updateApiClient();
+    const response = await apiClient.post('/auth/send-verification-code/', credentials);
+    return response.data;
+  }
+
+  async completeSignup(credentials: CompleteSignupCredentials): Promise<AuthResponse> {
+    await updateApiClient();
+    const response = await apiClient.post<AuthResponse>('/auth/complete-signup/', credentials);
+    await this.storeAuthData(response.data);
     return response.data;
   }
 

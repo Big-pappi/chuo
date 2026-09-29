@@ -7,6 +7,7 @@ import {colors, spacing} from '@/theme';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import authService from '@/features/auth/services/authService';
+import * as SecureStore from 'expo-secure-store';
 
 interface University {
   id: number;
@@ -39,7 +40,19 @@ const LoginScreen: React.FC = () => {
 
   useEffect(() => {
     fetchUniversities();
+    loadSavedUniversity();
   }, []);
+
+  const loadSavedUniversity = async () => {
+    try {
+      const savedUniversityName = await SecureStore.getItemAsync('signup_university_name');
+      if (savedUniversityName) {
+        setSelectedUniversity(savedUniversityName);
+      }
+    } catch (error) {
+      console.error('Failed to load saved university:', error);
+    }
+  };
 
   const fetchUniversities = async () => {
     try {
