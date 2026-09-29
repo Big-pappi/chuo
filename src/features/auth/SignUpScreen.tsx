@@ -10,6 +10,8 @@ import {
   Alert,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-paper';
@@ -18,6 +20,9 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import authService from '@/features/auth/services/authService';
 import * as SecureStore from 'expo-secure-store';
+import {Ionicons} from '@expo/vector-icons';
+
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 interface University {
   id: number;
@@ -36,14 +41,15 @@ const SignUpScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [universities, setUniversities] = useState<University[]>([]);
   const [loadingUniversities, setLoadingUniversities] = useState(true);
-  const [selectedUniversity, setSelectedUniversity] = useState<string>('');
+  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [registrationNumber, setRegistrationNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureConfirmEntry, setSecureConfirmEntry] = useState(true);
-  const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
+  const [showUniversityModal, setShowUniversityModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchUniversities();
@@ -54,7 +60,6 @@ const SignUpScreen: React.FC = () => {
       setLoadingUniversities(true);
       const data = await authService.getUniversities();
       console.log('Universities data:', data);
-      console.log('Number of universities:', data.length);
       setUniversities(data);
       if (data.length === 0) {
         Alert.alert('No Universities', 'No universities found. Please contact support.');
@@ -67,6 +72,11 @@ const SignUpScreen: React.FC = () => {
     }
   };
 
+  const filteredUniversities = universities.filter(uni =>
+    uni.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    uni.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleVerifyStudent = async () => {
     if (!selectedUniversity || !registrationNumber) {
       Alert.alert('Error', 'Please select a university and enter your registration number');
@@ -75,26 +85,20 @@ const SignUpScreen: React.FC = () => {
 
     try {
       setLoading(true);
-      const selectedUni = universities.find(u => u.name === selectedUniversity);
-      if (!selectedUni) {
-        Alert.alert('Error', 'Invalid university selection');
-        return;
-      }
-
       const result = await authService.verifyStudent({
-        university: selectedUni.code,
+        university: selectedUniversity.code,
         registration_number: registrationNumber,
       });
 
       if (result.student_exists) {
         // Store university and reg number locally
-        await SecureStore.setItemAsync('signup_university', selectedUni.code);
-        await SecureStore.setItemAsync('signup_university_name', selectedUni.name);
+        await SecureStore.setItemAsync('signup_university', selectedUniversity.code);
+        await SecureStore.setItemAsync('signup_university_name', selectedUniversity.name);
         await SecureStore.setItemAsync('signup_reg_number', registrationNumber);
 
         // Send verification code
         await authService.sendVerificationCode({
-          university: selectedUni.code,
+          university: selectedUniversity.code,
           registration_number: registrationNumber,
         });
 
@@ -130,8 +134,6 @@ const SignUpScreen: React.FC = () => {
         return;
       }
 
-      // Just verify the code, don't complete signup yet
-      // We'll complete signup after setting password
       setStep('set_password');
     } catch (error: any) {
       console.error('Code verification error:', error);
@@ -194,6 +196,62 @@ const SignUpScreen: React.FC = () => {
     navigation.navigate('Login' as never);
   };
 
+  const renderUniversityModal = () => (
+    <Modal
+      visible={showUniversityModal}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setShowUniversityModal(false)}>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Select University</Text>
+            <TouchableOpacity onPress={() => setShowUniversityModal(false)}>
+              <Ionicons name="close" size={24} color={colors.ink} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color={colors.slate} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search university..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              mode="flat"
+              underlineColor="transparent"
+              dense
+            />
+          </View>
+
+          <ScrollView style={styles.universityList} showsVerticalScrollIndicator={false}>
+            {filteredUniversities.map((uni) => (
+              <TouchableOpacity
+                key={uni.id}
+                style={[
+                  styles.universityItem,
+                  selectedUniversity?.id === uni.id && styles.universityItemSelected,
+                ]}
+                onPress={() => {
+                  setSelectedUniversity(uni);
+                  setShowUniversityModal(false);
+                }}>
+                <View style={styles.universityInfo}>
+                  <Text style={styles.universityName}>{uni.name}</Text>
+                  <Text style={styles.universityCode}>{uni.code}</Text>
+                  <Text style={styles.universityLocation}>{uni.city}, {uni.country}</Text>
+                </View>
+                {selectedUniversity?.id === uni.id && (
+                  <Ionicons name="checkmark-circle" size={24} color={colors.blue} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+
   const renderVerifyStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Verify Your Student Status</Text>
@@ -208,34 +266,21 @@ const SignUpScreen: React.FC = () => {
         </View>
       ) : (
         <>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Select University</Text>
-            <TextInput
-              mode="outlined"
-              value={selectedUniversity}
-              onChangeText={setSelectedUniversity}
-              placeholder="Tap to select university"
-              right={<TextInput.Icon icon="chevron-down" onPress={() => setShowUniversityDropdown(!showUniversityDropdown)} />}
-              style={styles.input}
-              disabled={loading}
-              onFocus={() => setShowUniversityDropdown(true)}
-            />
-            {showUniversityDropdown && (
-              <View style={styles.dropdown}>
-                {universities.map((uni) => (
-                  <Text
-                    key={uni.id}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setSelectedUniversity(uni.name);
-                      setShowUniversityDropdown(false);
-                    }}>
-                    {uni.name}
-                  </Text>
-                ))}
+          <TouchableOpacity
+            style={styles.universitySelector}
+            onPress={() => setShowUniversityModal(true)}
+            activeOpacity={0.7}>
+            <View style={styles.universitySelectorContent}>
+              <Ionicons name="school" size={24} color={colors.blue} />
+              <View style={styles.universitySelectorText}>
+                <Text style={styles.universitySelectorLabel}>University</Text>
+                <Text style={styles.universitySelectorValue}>
+                  {selectedUniversity ? selectedUniversity.name : 'Select your university'}
+                </Text>
               </View>
-            )}
-          </View>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color={colors.slate} />
+          </TouchableOpacity>
 
           <Input
             label="Registration Number"
@@ -254,7 +299,8 @@ const SignUpScreen: React.FC = () => {
             onPress={handleVerifyStudent}
             loading={loading}
             disabled={loading}
-            style={styles.button}>
+            style={styles.button}
+            contentStyle={styles.buttonContent}>
             Verify Student
           </Button>
         </>
@@ -264,6 +310,9 @@ const SignUpScreen: React.FC = () => {
 
   const renderVerifyCodeStep = () => (
     <View style={styles.stepContainer}>
+      <View style={styles.iconContainer}>
+        <Ionicons name="mail" size={48} color={colors.blue} />
+      </View>
       <Text style={styles.stepTitle}>Enter Verification Code</Text>
       <Text style={styles.stepSubtitle}>
         We've sent a 6-digit code to your email. Enter it below to continue.
@@ -287,7 +336,8 @@ const SignUpScreen: React.FC = () => {
         onPress={handleVerifyCode}
         loading={loading}
         disabled={loading}
-        style={styles.button}>
+        style={styles.button}
+        contentStyle={styles.buttonContent}>
         Verify Code
       </Button>
 
@@ -299,6 +349,9 @@ const SignUpScreen: React.FC = () => {
 
   const renderSetPasswordStep = () => (
     <View style={styles.stepContainer}>
+      <View style={styles.iconContainer}>
+        <Ionicons name="lock-closed" size={48} color={colors.blue} />
+      </View>
       <Text style={styles.stepTitle}>Set Your Password</Text>
       <Text style={styles.stepSubtitle}>
         Create a secure password for your account
@@ -335,7 +388,8 @@ const SignUpScreen: React.FC = () => {
         onPress={handleCompleteSignup}
         loading={loading}
         disabled={loading}
-        style={styles.button}>
+        style={styles.button}
+        contentStyle={styles.buttonContent}>
         Complete Signup
       </Button>
     </View>
@@ -343,7 +397,9 @@ const SignUpScreen: React.FC = () => {
 
   const renderSuccessStep = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.successIcon}>✓</Text>
+      <View style={styles.successIconContainer}>
+        <Ionicons name="checkmark-circle" size={80} color={colors.green} />
+      </View>
       <Text style={styles.stepTitle}>Account Created!</Text>
       <Text style={styles.stepSubtitle}>
         Your account has been created successfully. You can now log in with your registration number and password.
@@ -352,7 +408,8 @@ const SignUpScreen: React.FC = () => {
       <Button
         mode="contained"
         onPress={handleLogin}
-        style={styles.button}>
+        style={styles.button}
+        contentStyle={styles.buttonContent}>
         Go to Login
       </Button>
     </View>
@@ -382,12 +439,14 @@ const SignUpScreen: React.FC = () => {
         {step !== 'success' && (
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <Text style={styles.loginText} onPress={handleLogin}>
+            <Text style={styles.footerLink} onPress={handleLogin}>
               Sign In
             </Text>
           </View>
         )}
       </ScrollView>
+
+      {renderUniversityModal()}
     </KeyboardAvoidingView>
   );
 };
@@ -399,23 +458,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
-    maxWidth: 500,
-    width: '100%',
-    alignSelf: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing['2xl'],
   },
   header: {
     alignItems: 'center',
-    marginTop: spacing['2xl'],
-    marginBottom: spacing.md,
+    marginBottom: spacing['2xl'],
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
+    marginBottom: spacing.lg,
   },
   stepContainer: {
-    marginTop: spacing.md,
     width: '100%',
   },
   stepTitle: {
@@ -426,10 +481,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   stepSubtitle: {
-    fontSize: typography.fontSize.sm,
+    fontSize: typography.fontSize.base,
     color: colors.slate,
     marginBottom: spacing.xl,
     textAlign: 'center',
+  },
+  iconContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
   },
   loadingContainer: {
     alignItems: 'center',
@@ -438,34 +497,47 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: spacing.md,
     color: colors.slate,
-  },
-  inputGroup: {
-    marginBottom: spacing.md,
-  },
-  label: {
     fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.ink,
+  },
+  universitySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.offWhite,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: 16,
+    padding: spacing.lg,
+    marginBottom: spacing.lg,
+  },
+  universitySelectorContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  universitySelectorText: {
+    marginLeft: spacing.md,
+    flex: 1,
+  },
+  universitySelectorLabel: {
+    fontSize: typography.fontSize.xs,
+    color: colors.slate,
     marginBottom: spacing.xs,
   },
+  universitySelectorValue: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.ink,
+  },
   input: {
-    marginBottom: spacing.md,
-  },
-  dropdown: {
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    marginTop: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.border,
-    maxHeight: 200,
-  },
-  dropdownItem: {
-    padding: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    marginBottom: spacing.lg,
   },
   button: {
-    marginTop: spacing.md,
+    borderRadius: 16,
+    marginBottom: spacing.xl,
+  },
+  buttonContent: {
+    paddingVertical: spacing.md,
   },
   resendLink: {
     marginTop: spacing.lg,
@@ -476,26 +548,94 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.medium,
   },
-  successIcon: {
-    fontSize: 64,
-    color: colors.green,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
+  successIconContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: spacing.xl,
-    marginBottom: spacing.xl,
+    marginTop: spacing.auto,
   },
   footerText: {
     fontSize: typography.fontSize.base,
     color: colors.slate,
   },
-  loginText: {
+  footerLink: {
     fontSize: typography.fontSize.base,
     color: colors.blue,
-    fontWeight: typography.fontWeight.medium,
+    fontWeight: typography.fontWeight.semibold,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: SCREEN_HEIGHT * 0.8,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  modalTitle: {
+    fontSize: typography.fontSize.xl,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.ink,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  searchIcon: {
+    marginRight: spacing.md,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  universityList: {
+    flex: 1,
+  },
+  universityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  universityItemSelected: {
+    backgroundColor: colors.offWhite,
+  },
+  universityInfo: {
+    flex: 1,
+  },
+  universityName: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.ink,
+    marginBottom: spacing.xs,
+  },
+  universityCode: {
+    fontSize: typography.fontSize.sm,
+    color: colors.slate,
+    marginBottom: spacing.xs,
+  },
+  universityLocation: {
+    fontSize: typography.fontSize.xs,
+    color: colors.slate,
   },
 });
 
